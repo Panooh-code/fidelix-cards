@@ -1,36 +1,60 @@
 import { useState } from "react";
-import { useWizard } from "./WizardContext";
 import { cn } from "@/lib/utils";
-import { Star, Circle, Square, MapPin, Building2, QrCode, Phone, Mail, Heart } from "lucide-react";
+import { Star, Circle, Square, MapPin, Building2, QrCode, Phone, Mail, Heart, ExternalLink } from "lucide-react";
+import { useWizard } from "./WizardContext";
 
-export const CardPreview = () => {
-  const { state } = useWizard();
+export interface CardData {
+  logo_url?: string;
+  business_name: string;
+  reward_description: string;
+  primary_color: string;
+  backgroundColor: string;
+  pattern: 'waves' | 'dots' | 'lines' | 'grid' | 'none';
+  clientCode: string;
+  clientName?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  sealCount: number;
+  sealShape: 'star' | 'circle' | 'square' | 'heart';
+}
+
+export interface CardPreviewProps {
+  cardData: CardData;
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+// Função para detectar se a cor é clara ou escura
+const isLightColor = (color: string) => {
+  const hex = color.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 128;
+};
+
+export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showContactDetails, setShowContactDetails] = useState(false);
 
+  // Algoritmo para calcular grid otimizado
+  const getOptimalGrid = (count: number) => {
+    if (count <= 4) return { cols: 2, rows: 2 };
+    if (count <= 9) return { cols: 3, rows: 3 };
+    if (count <= 16) return { cols: 4, rows: 4 };
+    return { cols: 5, rows: Math.ceil(count / 5) };
+  };
+
   const renderSeals = () => {
-    const { sealCount, sealShape } = state.rewardConfig;
+    const { sealCount, sealShape } = cardData;
     const seals = [];
+    const { cols, rows } = getOptimalGrid(sealCount);
     
-    // Calculate optimal grid layout for square format
-    let cols, rows;
-    if (sealCount <= 4) {
-      cols = 2;
-      rows = 2;
-    } else if (sealCount <= 9) {
-      cols = 3;
-      rows = 3;
-    } else if (sealCount <= 16) {
-      cols = 4;
-      rows = 4;
-    } else {
-      cols = 5;
-      rows = Math.ceil(sealCount / 5);
-    }
-    
-    // Adjust seal size based on grid
-    const sealSize = sealCount <= 4 ? 'w-8 h-8' : sealCount <= 9 ? 'w-6 h-6' : sealCount <= 16 ? 'w-5 h-5' : 'w-4 h-4';
-    const iconSize = sealCount <= 4 ? 'w-4 h-4' : sealCount <= 9 ? 'w-3 h-3' : sealCount <= 16 ? 'w-2.5 h-2.5' : 'w-2 h-2';
+    // Tamanhos adaptativos
+    const sealSize = sealCount <= 4 ? 'w-10 h-10' : sealCount <= 9 ? 'w-8 h-8' : sealCount <= 16 ? 'w-6 h-6' : 'w-5 h-5';
+    const iconSize = sealCount <= 4 ? 'w-5 h-5' : sealCount <= 9 ? 'w-4 h-4' : sealCount <= 16 ? 'w-3 h-3' : 'w-2.5 h-2.5';
     
     for (let i = 0; i < sealCount; i++) {
       const isFirst = i === 0;
@@ -38,20 +62,38 @@ export const CardPreview = () => {
       seals.push(
         <div key={i} className="flex justify-center">
           <div 
-            className={`${sealSize} rounded-full bg-white/30 backdrop-blur-sm border border-white/50 flex items-center justify-center shadow-md transition-all duration-300 hover:scale-110 hover:bg-white/40`}
+            className={cn(
+              sealSize,
+              "relative rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg",
+              "shadow-card-elegant backdrop-blur-sm",
+              isFirst 
+                ? "border-current bg-white/95 shadow-lg" 
+                : "border-white/30 bg-white/20"
+            )}
+            style={{ 
+              borderColor: isFirst ? cardData.primary_color : undefined,
+              color: cardData.primary_color 
+            }}
           >
-            {isFirst && state.businessData.logoUrl ? (
+            {isFirst && cardData.logo_url ? (
               <img 
-                src={state.businessData.logoUrl} 
+                src={cardData.logo_url} 
                 alt="Logo" 
                 className="w-full h-full rounded-full object-cover"
               />
             ) : sealShape === 'star' ? (
-              <Star className={`${iconSize} text-white/90 fill-current`} />
+              <Star className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
             ) : sealShape === 'heart' ? (
-              <Heart className={`${iconSize} text-white/90 fill-current`} />
+              <Heart className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+            ) : sealShape === 'square' ? (
+              <Square className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
             ) : (
-              <Circle className={`${iconSize} text-white/90 fill-current`} />
+              <Circle className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+            )}
+            {!isFirst && (
+              <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white/60">
+                {i}
+              </span>
             )}
           </div>
         </div>
@@ -60,7 +102,7 @@ export const CardPreview = () => {
 
     return (
       <div 
-        className="grid gap-1.5 w-full place-items-center"
+        className="grid gap-2 w-full place-items-center"
         style={{ 
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
@@ -72,14 +114,16 @@ export const CardPreview = () => {
   };
 
   const getBackgroundPattern = () => {
-    const { backgroundPattern, primaryColor } = state.customization;
-    const patternColor = `${primaryColor}15`; // Very transparent
+    const { pattern, primary_color, backgroundColor } = cardData;
+    const isLight = isLightColor(backgroundColor);
+    const patternOpacity = isLight ? '0.05' : '0.1';
+    const patternColor = `${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')}`;
 
-    switch (backgroundPattern) {
+    switch (pattern) {
       case 'dots':
         return {
-          backgroundImage: `radial-gradient(circle, ${patternColor} 1px, transparent 1px)`,
-          backgroundSize: '15px 15px',
+          backgroundImage: `radial-gradient(circle at 25% 25%, ${patternColor} 1px, transparent 1px)`,
+          backgroundSize: '20px 20px',
         };
       case 'lines':
         return {
@@ -88,156 +132,200 @@ export const CardPreview = () => {
         };
       case 'waves':
         return {
-          backgroundImage: `repeating-linear-gradient(0deg, ${patternColor}, ${patternColor} 1px, transparent 1px, transparent 15px)`,
+          backgroundImage: `radial-gradient(circle at 50% 50%, ${patternColor} 1px, transparent 1px), 
+                           linear-gradient(45deg, transparent 46%, ${patternColor} 47%, ${patternColor} 53%, transparent 54%)`,
+          backgroundSize: '10px 10px, 20px 20px',
         };
       case 'grid':
         return {
-          backgroundImage: `linear-gradient(${patternColor} 1px, transparent 1px), linear-gradient(90deg, ${patternColor} 1px, transparent 1px)`,
-          backgroundSize: '15px 15px',
+          backgroundImage: `linear-gradient(${patternColor} 1px, transparent 1px), 
+                           linear-gradient(90deg, ${patternColor} 1px, transparent 1px)`,
+          backgroundSize: '20px 20px',
         };
       default:
         return {};
     }
   };
 
-  const hasContactData = state.businessData.phone || state.businessData.email || state.businessData.address;
+  // Configurações de tamanho
+  const sizeConfig = {
+    sm: { width: 'w-60', height: 'h-60', padding: 'p-4', textSizes: { title: 'text-base', subtitle: 'text-xs', body: 'text-xs' } },
+    md: { width: 'w-72', height: 'h-72', padding: 'p-6', textSizes: { title: 'text-lg', subtitle: 'text-sm', body: 'text-sm' } },
+    lg: { width: 'w-84', height: 'h-84', padding: 'p-8', textSizes: { title: 'text-xl', subtitle: 'text-base', body: 'text-base' } }
+  };
+
+  const currentSize = sizeConfig[size];
+  const isLight = isLightColor(cardData.backgroundColor);
+  const textColor = isLight ? 'text-gray-800' : 'text-white';
+  const hasContactData = cardData.phone || cardData.email || cardData.address;
 
   return (
-    <div 
-      className="perspective-1000 cursor-pointer group"
-      onClick={() => setIsFlipped(!isFlipped)}
-    >
+    <div className={cn("perspective-1000 cursor-pointer group", className)}>
       <div 
-        className={`relative w-72 h-72 transition-transform duration-700 transform-style-preserve-3d hover:scale-105 ${
+        className={cn(
+          "relative transition-transform duration-700 transform-style-preserve-3d group-hover:scale-105",
+          currentSize.width,
+          currentSize.height,
           isFlipped ? 'rotate-y-180' : ''
-        }`}
+        )}
+        onClick={() => setIsFlipped(!isFlipped)}
       >
-        {/* Front Face */}
+        {/* Front Face - Face dos Selos */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-3xl shadow-2xl overflow-hidden"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft paper-texture"
           style={{ 
-            background: `linear-gradient(135deg, ${state.customization.primaryColor || '#3b82f6'}, ${state.customization.backgroundColor || '#1e40af'})`,
+            background: `linear-gradient(135deg, ${cardData.backgroundColor}, ${cardData.primary_color}20)`,
             ...getBackgroundPattern()
           }}
         >
-          <div className="p-6 h-full flex flex-col relative">
-            {/* Header with Logo */}
-            <div className="flex justify-center mb-4">
-              {state.businessData.logoUrl ? (
-                <img 
-                  src={state.businessData.logoUrl} 
-                  alt="Logo" 
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40 shadow-lg"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/40 shadow-lg">
-                  <Building2 className="w-6 h-6 text-white/80" />
-                </div>
-              )}
+          <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
+            {/* Header - Logo e Textos */}
+            <div className="flex items-start gap-3 mb-4">
+              {/* Logo no canto superior esquerdo */}
+              <div className="flex-shrink-0">
+                {cardData.logo_url ? (
+                  <img 
+                    src={cardData.logo_url} 
+                    alt="Logo" 
+                    className="w-12 h-12 rounded-full object-cover border-3 shadow-card-elegant"
+                    style={{ borderColor: cardData.primary_color }}
+                  />
+                ) : (
+                  <div 
+                    className="w-12 h-12 rounded-full flex items-center justify-center border-3 shadow-card-elegant bg-white/10"
+                    style={{ borderColor: cardData.primary_color }}
+                  >
+                    <Building2 className={cn("w-6 h-6", textColor)} />
+                  </div>
+                )}
+              </div>
+              
+              {/* Textos à direita do logo */}
+              <div className="flex-1 min-w-0">
+                <h3 className={cn("font-poppins font-bold leading-tight drop-shadow-md", currentSize.textSizes.title, textColor)}>
+                  {cardData.business_name}
+                </h3>
+                <p className={cn("font-inter leading-relaxed drop-shadow-sm mt-1", currentSize.textSizes.subtitle, isLight ? 'text-gray-600' : 'text-white/90')}>
+                  {cardData.reward_description}
+                </p>
+              </div>
             </div>
 
-            {/* Business Name */}
-            <div className="text-center mb-4">
-              <h3 className="font-bold text-lg text-white drop-shadow-md">
-                {state.businessData.name || 'Nome do Negócio'}
-              </h3>
-            </div>
-
-            {/* Reward Description */}
-            <div className="mb-6 text-center">
-              <p className="text-sm text-white/95 leading-relaxed drop-shadow-sm">
-                {state.rewardConfig.rewardDescription || 'Complete sua cartela e ganhe prêmios incríveis!'}
-              </p>
-            </div>
-
-            {/* Seals Grid */}
+            {/* Grid de Selos - Centralizado */}
             <div className="flex-1 flex items-center justify-center">
-              <div className="w-full max-w-[180px]">
+              <div className="w-full max-w-[200px]">
                 {renderSeals()}
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex justify-between items-center text-xs text-white/90 mt-4 pt-4 border-t border-white/20">
-              <span className="font-semibold">Fidelix</span>
-              <span className="font-mono">#00001</span>
+            {/* Rodapé */}
+            <div className={cn("flex justify-between items-center mt-4 pt-3 border-t", isLight ? 'border-gray-300/50' : 'border-white/20')}>
+              <a 
+                href="https://www.fidelix.app" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={cn("flex items-center gap-1 text-xs font-semibold hover:opacity-80 transition-opacity", isLight ? 'text-gray-700' : 'text-white/90')}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span>Criado com Fidelix</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-white/80 rounded border flex items-center justify-center">
+                  <QrCode className="w-4 h-4 text-gray-800" />
+                </div>
+                <span className={cn("font-mono text-xs font-medium", isLight ? 'text-gray-700' : 'text-white/90')}>
+                  {cardData.clientCode}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Back Face */}
+        {/* Back Face - Face de Identificação */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl shadow-2xl overflow-hidden"
+          className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-craft paper-texture"
           style={{ 
-            background: `linear-gradient(135deg, ${state.customization.backgroundColor || '#1e40af'}, ${state.customization.primaryColor || '#3b82f6'})`
+            background: `linear-gradient(135deg, ${cardData.primary_color}, ${cardData.backgroundColor}40)`
           }}
         >
-          <div className="p-6 h-full flex flex-col items-center justify-center text-center relative">
-            {/* Large Logo */}
+          <div className={cn("h-full flex flex-col items-center justify-center text-center relative", currentSize.padding)}>
+            {/* Logo Grande */}
             <div className="mb-6">
-              {state.businessData.logoUrl ? (
+              {cardData.logo_url ? (
                 <img 
-                  src={state.businessData.logoUrl} 
+                  src={cardData.logo_url} 
                   alt="Logo" 
-                  className="w-20 h-20 rounded-full object-cover border-3 border-white/50 shadow-xl"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-white/50 shadow-card-elegant"
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-white/25 flex items-center justify-center border-3 border-white/50 shadow-xl">
-                  <Building2 className="w-10 h-10 text-white/80" />
+                <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center border-4 border-white/50 shadow-card-elegant">
+                  <Building2 className="w-12 h-12 text-white/80" />
                 </div>
               )}
             </div>
 
-            {/* Business Name */}
-            <h3 className="text-xl font-bold text-white mb-6 drop-shadow-md">
-              {state.businessData.name || 'Nome do Negócio'}
+            {/* Nome do Negócio */}
+            <h3 className={cn("font-poppins font-bold mb-6 drop-shadow-md text-white", currentSize.textSizes.title)}>
+              {cardData.business_name}
             </h3>
 
-            {/* QR Code */}
-            <div className="w-24 h-24 bg-white/90 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-              <QrCode className="w-16 h-16 text-gray-800" />
+            {/* QR Code Grande */}
+            <div className="w-32 h-32 bg-white/95 rounded-2xl flex items-center justify-center mb-4 shadow-card-elegant backdrop-blur-sm">
+              <QrCode className="w-24 h-24 text-gray-800" />
             </div>
 
-            {/* Card ID */}
-            <p className="text-sm text-white/90 mb-4 font-mono">#00001</p>
+            {/* Código do Cliente */}
+            <p className="text-white/90 mb-6 font-mono text-lg font-bold tracking-widest drop-shadow-md">
+              {cardData.clientCode}
+            </p>
 
-            {/* Contact Toggle */}
-            {hasContactData && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowContactDetails(!showContactDetails);
-                }}
-                className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm"
-              >
-                <MapPin className="w-4 h-4" />
-                <span className="text-xs font-medium">Contato</span>
-              </button>
-            )}
+            {/* Rodapé da Face Traseira */}
+            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+              {/* Nome do Cliente */}
+              {cardData.clientName && (
+                <span className="font-inter text-sm text-white/80">
+                  {cardData.clientName}
+                </span>
+              )}
+              
+              {/* Ícone de Localização - Toggle de Contato */}
+              {hasContactData && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowContactDetails(!showContactDetails);
+                  }}
+                  className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm"
+                >
+                  <MapPin className="w-5 h-5 text-white" />
+                </button>
+              )}
+            </div>
 
-            {/* Contact Details Dropdown */}
+            {/* Dropdown de Detalhes de Contato */}
             {showContactDetails && hasContactData && (
               <div 
-                className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md rounded-xl p-3 shadow-xl"
+                className="absolute bottom-16 left-4 right-4 bg-white/95 backdrop-blur-md rounded-xl p-4 shadow-card-elegant border border-white/30"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="space-y-2 text-xs text-gray-700">
-                  {state.businessData.phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-3 h-3 text-gray-500" />
-                      <span>{state.businessData.phone}</span>
+                <div className="space-y-3 text-sm text-gray-700">
+                  {cardData.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium">{cardData.phone}</span>
                     </div>
                   )}
-                  {state.businessData.email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-3 h-3 text-gray-500" />
-                      <span className="truncate">{state.businessData.email}</span>
+                  {cardData.email && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium truncate">{cardData.email}</span>
                     </div>
                   )}
-                  {state.businessData.address && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-3 h-3 text-gray-500 mt-0.5" />
-                      <span className="text-left leading-tight">{state.businessData.address}</span>
+                  {cardData.address && (
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                      <span className="font-medium text-left leading-tight">{cardData.address}</span>
                     </div>
                   )}
                 </div>
@@ -248,4 +336,27 @@ export const CardPreview = () => {
       </div>
     </div>
   );
+};
+
+// Componente Wrapper que usa o contexto (para compatibilidade)
+export const CardPreviewWizard = () => {
+  const { state } = useWizard();
+  
+  const cardData: CardData = {
+    logo_url: state.businessData.logoUrl,
+    business_name: state.businessData.name || 'Nome do Negócio',
+    reward_description: state.rewardConfig.rewardDescription || 'Complete sua cartela e ganhe prêmios incríveis!',
+    primary_color: state.customization.primaryColor,
+    backgroundColor: state.customization.backgroundColor,
+    pattern: state.customization.backgroundPattern,
+    clientCode: '#00001',
+    clientName: undefined,
+    phone: state.businessData.phone,
+    email: state.businessData.email,
+    address: state.businessData.address,
+    sealCount: state.rewardConfig.sealCount,
+    sealShape: state.rewardConfig.sealShape,
+  };
+  
+  return <CardPreview cardData={cardData} />;
 };

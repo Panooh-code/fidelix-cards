@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Step1BusinessData } from "@/components/wizard/Step1BusinessData";
 import { Step2Customize } from "@/components/wizard/Step2Customize";
 import { Step3SetupRewards } from "@/components/wizard/Step3SetupRewards";
-import { CardPreview } from "@/components/wizard/CardPreview";
+import { CardPreviewWizard } from "@/components/wizard/CardPreview";
 import { WizardProvider } from "@/components/wizard/WizardContext";
 
 const WizardPage = () => {
@@ -32,7 +32,7 @@ const WizardPage = () => {
             <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 p-4">
               <div className="flex justify-center">
                 <div className="scale-90">
-                  <CardPreview />
+            <CardPreviewWizard />
                 </div>
               </div>
             </div>
@@ -53,7 +53,7 @@ const WizardPage = () => {
               {/* Preview Section */}
               <div className="bg-gradient-to-br from-muted/30 to-muted/10 flex items-center justify-center p-8 sticky top-0">
                 <div className="scale-110">
-                  <CardPreview />
+                  <CardPreviewWizard />
                 </div>
               </div>
 
