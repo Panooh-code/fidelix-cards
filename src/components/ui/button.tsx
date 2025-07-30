@@ -18,8 +18,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        accent: "bg-accent-yellow hover:bg-accent-yellow text-accent-yellow-foreground shadow-soft hover:shadow-glow transition-all duration-300 font-semibold hover:scale-105 transform-gpu rounded-xl",
-        hero: "bg-gradient-to-r from-primary via-primary-glow to-accent-yellow text-white shadow-glow hover:shadow-premium hover:scale-105 border-0 font-bold transition-all duration-300 transform-gpu rounded-2xl animate-[pulse_3s_ease-in-out_infinite] hover:animate-none",
+        accent: "bg-accent-yellow hover:bg-accent-yellow hover:brightness-110 text-accent-yellow-foreground shadow-soft hover:shadow-soft-glow transition-all duration-500 ease-out font-semibold hover:scale-[1.02] transform-gpu rounded-xl hover:-translate-y-0.5",
+        hero: "bg-gradient-to-r from-primary via-primary-glow to-accent-yellow text-white shadow-glow hover:shadow-soft-premium hover:scale-[1.02] border-0 font-bold transition-all duration-500 cubic-bezier(0.4,0,0.2,1) transform-gpu rounded-2xl hover:-translate-y-0.5 hover:brightness-110",
       },
       size: {
         default: "h-11 px-6 py-3",
