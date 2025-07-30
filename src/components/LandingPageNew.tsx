@@ -2,12 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "./Header";
 import CardGallery from "./CardGallery";
-import logoIcon from "@/assets/logo-icon.png";
-import advantageImage1 from "@/assets/advantage-1.png";
-import advantageImage2 from "@/assets/advantage-2.png";
-import advantageImage3 from "@/assets/advantage-3.png";
+import { getFidelixImageUrls } from "@/utils/uploadImages";
 
 const LandingPageNew = () => {
+  const imageUrls = getFidelixImageUrls();
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -60,7 +59,7 @@ const LandingPageNew = () => {
               <CardContent className="p-8 space-y-6">
                 <div className="w-32 h-32 mx-auto mb-6 group-hover:scale-105 transition-transform duration-300">
                   <img 
-                    src={advantageImage1} 
+                    src={imageUrls.advantage1} 
                     alt="Fidelize e aumente suas vendas" 
                     className="w-full h-full object-contain"
                   />
@@ -75,7 +74,7 @@ const LandingPageNew = () => {
               <CardContent className="p-8 space-y-6">
                 <div className="w-32 h-32 mx-auto mb-6 group-hover:scale-105 transition-transform duration-300">
                   <img 
-                    src={advantageImage2} 
+                    src={imageUrls.advantage2} 
                     alt="Fique tranquilo, Fidelix é realmente descomplicado" 
                     className="w-full h-full object-contain"
                   />
@@ -90,7 +89,7 @@ const LandingPageNew = () => {
               <CardContent className="p-8 space-y-6">
                 <div className="w-32 h-32 mx-auto mb-6 group-hover:scale-105 transition-transform duration-300">
                   <img 
-                    src={advantageImage3} 
+                    src={imageUrls.advantage3} 
                     alt="Sem papel. Sem downloads. Controle tudo pela web" 
                     className="w-full h-full object-contain"
                   />
@@ -181,7 +180,7 @@ const LandingPageNew = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-3">
               <img 
-                src={logoIcon} 
+                src={imageUrls.logoIcon} 
                 alt="Fidelix mascote" 
                 className="w-8 h-8 brightness-0 invert"
               />

@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import logoIcon from "@/assets/logo-icon.png";
-import logoText from "@/assets/logo-text.png";
+import { getFidelixImageUrls } from "@/utils/uploadImages";
 
 const Header = () => {
+  const imageUrls = getFidelixImageUrls();
+  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -20,12 +21,12 @@ const Header = () => {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <img 
-              src={logoIcon} 
+              src={imageUrls.logoIcon} 
               alt="Fidelix mascote" 
               className="w-10 h-10"
             />
             <img 
-              src={logoText} 
+              src={imageUrls.logoText} 
               alt="Fidelix" 
               className="h-8"
             />
