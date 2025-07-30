@@ -9,33 +9,33 @@ All colors MUST be HSL for proper theming.
 @layer base {
   :root {
     /* Base colors */
-    --background: 0 0% 98.5%;
-    --foreground: 220 13% 9%;
+    --background: 0 0% 100%; /* Branco #ffffff */
+    --foreground: 0 0% 3%; /* Preto #080808 */
 
     /* Card components */
     --card: 0 0% 100%;
-    --card-foreground: 220 13% 9%;
+    --card-foreground: 0 0% 3%;
 
     /* Popover components */
     --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 9%;
+    --popover-foreground: 0 0% 3%;
 
     /* Fidelix brand colors */
-    --primary: 244 77% 59%; /* Roxo Principal #4f46e5 */
+    --primary: 261 91% 35%; /* Roxo Principal #480da2 */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 244 77% 70%;
+    --primary-glow: 261 91% 45%;
 
     /* Fidelix accent colors */
-    --accent-yellow: 42 96% 56%; /* Amarelo de Destaque #FBBF24 */
-    --accent-yellow-foreground: 220 13% 9%;
+    --accent-yellow: 40 100% 67%; /* Amarelo de Destaque #ffbd59 */
+    --accent-yellow-foreground: 0 0% 3%;
 
     /* Secondary colors */
-    --secondary: 220 9% 46%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 318 62% 96%; /* Rosa #f7ecfc */
+    --secondary-foreground: 261 91% 25%;
 
     /* Muted colors */
-    --muted: 220 9% 97%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 240 2% 76%; /* Cinza #c2c1c3 */
+    --muted-foreground: 240 2% 46%;
 
     /* Accent colors */
     --accent: 220 9% 97%;
@@ -57,16 +57,16 @@ All colors MUST be HSL for proper theming.
 
     /* Fidelix gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent-yellow)), hsl(42 100% 65%));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent-yellow)), hsl(var(--accent-yellow)));
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 50%, hsl(var(--accent-yellow)) 100%);
-    --gradient-hero-new: linear-gradient(135deg, #E0E7FF, #F3F4F6);
+    --gradient-hero-new: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--background)));
 
     /* Fidelix shadows */
-    --shadow-soft: 0 4px 16px -2px hsl(var(--primary) / 0.1);
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.2);
-    --shadow-card: 0 2px 8px -2px hsl(220 9% 46% / 0.1);
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.15);
-    --shadow-premium: 0 20px 60px -10px hsl(var(--primary) / 0.25);
+    --shadow-soft: 0 4px 16px -2px hsl(var(--primary) / 0.15);
+    --shadow-glow: 0 0 40px hsl(var(--accent-yellow) / 0.5);
+    --shadow-card: 0 2px 8px -2px hsl(var(--muted) / 0.3);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.25);
+    --shadow-premium: 0 20px 60px -10px hsl(var(--primary) / 0.35);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -93,8 +93,8 @@ All colors MUST be HSL for proper theming.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 3%;
+    --foreground: 0 0% 100%;
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;

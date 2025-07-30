@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "./Header";
-import CardGallery from "./CardGallery";
+import ModernCardGallery from "./ModernCardGallery";
 import StarField from "./StarField";
 import { getFidelixImageUrls } from "@/utils/uploadImages";
 
@@ -39,7 +39,7 @@ const LandingPageNew = () => {
               </div>
 
               <div className="relative mt-8 lg:mt-0">
-                <CardGallery />
+                <ModernCardGallery />
               </div>
             </div>
           </div>
@@ -172,9 +172,14 @@ const LandingPageNew = () => {
                 </p>
               </div>
               
-              <Button variant="accent" size="lg" className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto">
-                Criar Minha Primeira Cartela
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button variant="accent" size="lg" className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto">
+                  Criar Minha Primeira Cartela
+                </Button>
+                <Button variant="outline" size="lg" className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto bg-white/10 border-white/30 text-white hover:bg-white/20">
+                  Ver Demonstração
+                </Button>
+              </div>
 
               <div className="flex justify-center items-center gap-2 text-primary-foreground/60 text-sm lg:text-base">
                 <span>✨ Grátis para sempre ✨</span>
