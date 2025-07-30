@@ -31,7 +31,10 @@ export const CardPreview = () => {
       seals.push(
         <div
           key={i}
-          className="relative flex items-center justify-center w-10 h-10 border-2 rounded transition-all hover:scale-110"
+          className={cn(
+            "relative flex items-center justify-center border-2 rounded-lg transition-all hover:scale-110 shadow-sm",
+            state.rewardConfig.sealCount <= 10 ? "w-8 h-8" : state.rewardConfig.sealCount <= 15 ? "w-7 h-7" : "w-6 h-6"
+          )}
           style={{
             borderColor: state.customization.primaryColor,
             backgroundColor: isFirstSeal ? state.customization.primaryColor : 'transparent',
@@ -41,17 +44,25 @@ export const CardPreview = () => {
             <img
               src={state.businessData.logoUrl}
               alt="Logo"
-              className="w-6 h-6 object-contain rounded"
+              className={cn(
+                "object-cover rounded",
+                state.rewardConfig.sealCount <= 10 ? "w-5 h-5" : state.rewardConfig.sealCount <= 15 ? "w-4 h-4" : "w-3 h-3"
+              )}
             />
           ) : (
             <>
               <SealIcon 
-                className="w-5 h-5" 
+                className={cn(
+                  state.rewardConfig.sealCount <= 10 ? "w-4 h-4" : state.rewardConfig.sealCount <= 15 ? "w-3 h-3" : "w-2 h-2"
+                )}
                 style={{ color: isFirstSeal ? 'white' : state.customization.primaryColor }}
                 fill={isFirstSeal ? 'white' : 'none'}
               />
               <span 
-                className="absolute -bottom-1 -right-1 text-xs font-bold bg-background rounded-full w-4 h-4 flex items-center justify-center border"
+                className={cn(
+                  "absolute -bottom-1 -right-1 font-bold bg-background rounded-full flex items-center justify-center border",
+                  state.rewardConfig.sealCount <= 10 ? "text-xs w-4 h-4" : "text-[10px] w-3 h-3"
+                )}
                 style={{ color: state.customization.primaryColor }}
               >
                 {i + 1}
@@ -97,7 +108,7 @@ export const CardPreview = () => {
   return (
     <div className="flex justify-center">
       <div
-        className="relative w-80 h-80 cursor-pointer perspective-1000"
+        className="relative w-72 h-72 sm:w-80 sm:h-80 cursor-pointer perspective-1000 hover:scale-105 transition-transform duration-300"
         onClick={() => setIsFlipped(!isFlipped)}
       >
         <div
@@ -108,39 +119,48 @@ export const CardPreview = () => {
         >
           {/* Face Frontal */}
           <div
-            className="absolute inset-0 w-full h-full backface-hidden rounded-2xl shadow-lg border p-4 flex flex-col"
+            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl shadow-elegant border-2 p-6 flex flex-col"
             style={{
               backgroundColor: state.customization.backgroundColor,
+              borderColor: `${state.customization.primaryColor}20`,
               ...getBackgroundPattern(),
             }}
           >
             {/* Header com Logo e Nome */}
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="flex items-center space-x-4 mb-6">
               {state.businessData.logoUrl && (
-                <img
-                  src={state.businessData.logoUrl}
-                  alt="Logo"
-                  className="w-12 h-12 object-contain rounded-lg"
-                />
+                <div className="w-14 h-14 rounded-xl overflow-hidden border-2 shadow-sm" style={{ borderColor: state.customization.primaryColor }}>
+                  <img
+                    src={state.businessData.logoUrl}
+                    alt="Logo"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               )}
-              <div>
-                <h3 className="font-bold text-lg text-foreground">
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-foreground leading-tight">
                   {state.businessData.name || "Seu Negócio"}
                 </h3>
               </div>
             </div>
 
             {/* Prêmio */}
-            <div className="bg-background/80 rounded-lg p-3 mb-4">
-              <p className="text-sm font-medium text-center" style={{ color: state.customization.primaryColor }}>
-                {state.rewardConfig.rewardDescription || "Seu prêmio aqui"}
+            <div 
+              className="rounded-xl p-4 mb-6 border-2 shadow-sm"
+              style={{ 
+                backgroundColor: `${state.customization.primaryColor}10`,
+                borderColor: `${state.customization.primaryColor}30`
+              }}
+            >
+              <p className="text-sm font-semibold text-center" style={{ color: state.customization.primaryColor }}>
+                🎁 {state.rewardConfig.rewardDescription || "Seu prêmio aqui"}
               </p>
             </div>
 
             {/* Grid de Selos */}
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center py-2">
               <div 
-                className="grid gap-2 justify-items-center"
+                className="grid gap-3 justify-items-center w-full max-w-[200px]"
                 style={{
                   gridTemplateColumns: `repeat(${Math.min(5, state.rewardConfig.sealCount)}, 1fr)`,
                 }}
@@ -150,76 +170,115 @@ export const CardPreview = () => {
             </div>
 
             {/* Rodapé */}
-            <div className="flex items-center justify-between text-xs text-muted-foreground mt-4">
+            <div className="flex items-center justify-between text-xs text-muted-foreground mt-4 pt-4 border-t border-muted">
               <div className="flex items-center space-x-2">
                 <span>Criado com</span>
                 <a 
                   href="https://www.fidelix.app" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="font-semibold hover:underline"
+                  className="font-semibold hover:underline transition-colors"
                   style={{ color: state.customization.primaryColor }}
                 >
                   Fidelix
                 </a>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-muted rounded border"></div>
-                <span className="font-mono">#12345</span>
+                <div 
+                  className="w-6 h-6 rounded border-2"
+                  style={{ 
+                    backgroundColor: state.customization.backgroundColor,
+                    borderColor: state.customization.primaryColor 
+                  }}
+                ></div>
+                <span className="font-mono font-semibold">#12345</span>
               </div>
             </div>
           </div>
 
           {/* Face Traseira */}
           <div
-            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-2xl shadow-lg border p-4 flex flex-col"
-            style={{ backgroundColor: state.customization.backgroundColor }}
+            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl shadow-elegant border-2 p-6 flex flex-col"
+            style={{ 
+              backgroundColor: state.customization.backgroundColor,
+              borderColor: `${state.customization.primaryColor}20`
+            }}
           >
             {/* Logo Grande */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-6">
               {state.businessData.logoUrl ? (
-                <img
-                  src={state.businessData.logoUrl}
-                  alt="Logo"
-                  className="w-20 h-20 object-contain rounded-lg"
-                />
+                <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 shadow-md" style={{ borderColor: state.customization.primaryColor }}>
+                  <img
+                    src={state.businessData.logoUrl}
+                    alt="Logo"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ) : (
-                <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
-                  <span className="text-muted-foreground text-xs">Logo</span>
+                <div 
+                  className="w-24 h-24 rounded-2xl flex items-center justify-center border-2 shadow-md"
+                  style={{ 
+                    backgroundColor: `${state.customization.primaryColor}10`,
+                    borderColor: state.customization.primaryColor 
+                  }}
+                >
+                  <span className="text-muted-foreground text-xs font-medium">Logo</span>
                 </div>
               )}
             </div>
 
             {/* Nome do Negócio */}
-            <h2 className="text-xl font-bold text-center text-foreground mb-4">
+            <h2 className="text-xl font-bold text-center text-foreground mb-6">
               {state.businessData.name || "Seu Negócio"}
             </h2>
 
             {/* QR Code Grande */}
-            <div className="flex justify-center mb-4">
-              <div className="w-24 h-24 bg-muted rounded border flex items-center justify-center">
-                <span className="text-xs text-muted-foreground">QR Code</span>
+            <div className="flex justify-center mb-6">
+              <div 
+                className="w-20 h-20 rounded-xl border-2 flex items-center justify-center shadow-md"
+                style={{ 
+                  backgroundColor: state.customization.backgroundColor,
+                  borderColor: state.customization.primaryColor 
+                }}
+              >
+                <span className="text-xs font-medium" style={{ color: state.customization.primaryColor }}>QR Code</span>
               </div>
             </div>
 
             {/* Código */}
-            <div className="text-center mb-4">
+            <div className="text-center mb-6">
               <span className="font-mono text-lg font-bold" style={{ color: state.customization.primaryColor }}>
                 #12345
               </span>
             </div>
 
-            {/* Informações do Negócio */}
-            <div className="space-y-2 text-sm text-center text-muted-foreground">
-              {state.businessData.phone && <p>{state.businessData.phone}</p>}
-              {state.businessData.email && <p>{state.businessData.email}</p>}
-              {state.businessData.address && <p>{state.businessData.address}</p>}
+            {/* Informações do Negócio Condensadas */}
+            <div className="space-y-2 text-sm text-center">
+              {(state.businessData.phone || state.businessData.email || state.businessData.address) && (
+                <div 
+                  className="rounded-xl p-3 border"
+                  style={{ 
+                    backgroundColor: `${state.customization.primaryColor}05`,
+                    borderColor: `${state.customization.primaryColor}20`
+                  }}
+                >
+                  {state.businessData.phone && (
+                    <p className="text-muted-foreground">📞 {state.businessData.phone}</p>
+                  )}
+                  {state.businessData.email && (
+                    <p className="text-muted-foreground">📧 {state.businessData.email}</p>
+                  )}
+                  {state.businessData.address && (
+                    <p className="text-muted-foreground">📍 {state.businessData.address}</p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Rodapé */}
-            <div className="flex items-end justify-between mt-auto text-xs text-muted-foreground">
-              <span>João Silva</span>
-              <MapPin className="w-4 h-4" />
+            <div className="flex items-end justify-between mt-auto pt-4 border-t border-muted">
+              <span className="text-xs text-muted-foreground font-medium">João Silva</span>
+              <MapPin className="w-4 h-4 text-muted-foreground" />
             </div>
           </div>
         </div>
