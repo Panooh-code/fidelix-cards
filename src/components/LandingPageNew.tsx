@@ -4,9 +4,11 @@ import Header from "./Header";
 import ModernCardGallery from "./ModernCardGallery";
 import StarField from "./StarField";
 import { getFidelixImageUrls } from "@/utils/uploadImages";
+import { useNavigate } from "react-router-dom";
 
 const LandingPageNew = () => {
   const imageUrls = getFidelixImageUrls();
+  const navigate = useNavigate();
   
   return (
     <div className="min-h-screen bg-background relative">
@@ -33,7 +35,12 @@ const LandingPageNew = () => {
                   </p>
                 </div>
 
-                <Button variant="hero" size="lg" className="text-base lg:text-lg px-6 lg:px-8 w-full sm:w-auto">
+                <Button 
+                  variant="hero" 
+                  size="lg" 
+                  className="text-base lg:text-lg px-6 lg:px-8 w-full sm:w-auto"
+                  onClick={() => navigate('/wizard')}
+                >
                   Crie a sua cartela em 1 minuto
                 </Button>
               </div>
@@ -173,10 +180,20 @@ const LandingPageNew = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button variant="accent" size="lg" className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto">
+                <Button 
+                  variant="accent" 
+                  size="lg" 
+                  className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto"
+                  onClick={() => navigate('/wizard')}
+                >
                   Criar Minha Primeira Cartela
                 </Button>
-                <Button variant="outline" size="lg" className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto bg-white/10 border-white/30 text-white hover:bg-white/20">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="text-base lg:text-lg px-8 lg:px-12 w-full sm:w-auto bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  onClick={() => navigate('/wizard')}
+                >
                   Ver Demonstração
                 </Button>
               </div>
