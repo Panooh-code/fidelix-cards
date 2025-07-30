@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { WizardSteps } from "@/components/wizard/WizardSteps";
 import { Step1BusinessData } from "@/components/wizard/Step1BusinessData";
 import { Step2Customize } from "@/components/wizard/Step2Customize";
 import { Step3SetupRewards } from "@/components/wizard/Step3SetupRewards";
@@ -25,74 +24,46 @@ const WizardPage = () => {
 
   return (
     <WizardProvider>
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+      <div className="min-h-screen bg-gradient-subtle">
         {/* Mobile Layout */}
         <div className="lg:hidden">
-          <div className="container mx-auto px-4 py-6">
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                Criar Cartela de Fidelidade
-              </h1>
-              <p className="text-muted-foreground text-sm">
-                Configure sua cartela em 3 passos simples
-              </p>
-            </div>
-
-            {/* Steps Navigation */}
-            <WizardSteps currentStep={currentStep} />
-
+          <div className="min-h-screen flex flex-col">
             {/* Fixed Card Preview */}
-            <div className="sticky top-4 z-10 mb-6">
-              <Card className="p-4 shadow-soft bg-background/95 backdrop-blur-sm border-2">
-                <div className="flex justify-center">
-                  <div className="scale-75">
-                    <CardPreview />
-                  </div>
+            <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 p-4">
+              <div className="flex justify-center">
+                <div className="scale-90">
+                  <CardPreview />
                 </div>
-              </Card>
+              </div>
             </div>
 
             {/* Form Section */}
-            <Card className="p-6 shadow-soft">
-              {renderStep()}
-            </Card>
+            <div className="flex-1 p-4">
+              <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm">
+                {renderStep()}
+              </Card>
+            </div>
           </div>
         </div>
 
         {/* Desktop Layout */}
         <div className="hidden lg:block">
-          <div className="container mx-auto px-4 py-8">
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                Criar Cartela de Fidelidade
-              </h1>
-              <p className="text-muted-foreground text-lg">
-                Configure sua cartela em 3 passos simples e veja o resultado em tempo real
-              </p>
-            </div>
-
-            {/* Steps Navigation */}
-            <WizardSteps currentStep={currentStep} />
-
-            {/* Main Content */}
-            <div className="grid lg:grid-cols-2 gap-8 mt-8">
-              {/* Form Section */}
-              <div className="space-y-6">
-                <Card className="p-6 shadow-soft">
-                  {renderStep()}
-                </Card>
+          <div className="min-h-screen">
+            <div className="grid lg:grid-cols-2 gap-0 min-h-screen">
+              {/* Preview Section */}
+              <div className="bg-gradient-to-br from-muted/30 to-muted/10 flex items-center justify-center p-8 sticky top-0">
+                <div className="scale-110">
+                  <CardPreview />
+                </div>
               </div>
 
-              {/* Preview Section */}
-              <div className="space-y-6">
-                <Card className="p-6 shadow-soft bg-muted/30 sticky top-8">
-                  <h3 className="text-xl font-semibold mb-4 text-foreground">
-                    Preview da Cartela
-                  </h3>
-                  <CardPreview />
-                </Card>
+              {/* Form Section */}
+              <div className="bg-background flex items-start justify-center p-8">
+                <div className="w-full max-w-lg">
+                  <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm">
+                    {renderStep()}
+                  </Card>
+                </div>
               </div>
             </div>
           </div>

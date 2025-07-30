@@ -16,7 +16,7 @@ export interface CustomizationData {
 }
 
 export interface RewardConfig {
-  sealShape: 'star' | 'circle' | 'square';
+  sealShape: 'star' | 'circle' | 'square' | 'heart';
   sealCount: number;
   rewardDescription: string;
   instructions: string;

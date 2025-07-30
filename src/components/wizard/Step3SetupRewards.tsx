@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { useWizard } from "./WizardContext";
 import { cn } from "@/lib/utils";
-import { Star, Circle, Square } from "lucide-react";
+import { Star, Circle, Square, Heart } from "lucide-react";
 import { toast } from "sonner";
 
 interface Step3Props {
@@ -19,6 +19,7 @@ export const Step3SetupRewards = ({ onBack }: Step3Props) => {
     { name: "Estrela", value: 'star' as const, icon: Star },
     { name: "Círculo", value: 'circle' as const, icon: Circle },
     { name: "Quadrado", value: 'square' as const, icon: Square },
+    { name: "Coração", value: 'heart' as const, icon: Heart },
   ];
 
   const handlePublish = () => {
@@ -32,13 +33,14 @@ export const Step3SetupRewards = ({ onBack }: Step3Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
-          Configure os Selos e Prêmio
+    <div className="space-y-6 p-6">
+      {/* Step Header */}
+      <div className="text-center pb-6 border-b border-border/20 mb-6">
+        <h2 className="text-xl font-semibold text-foreground mb-1">
+          Passo 3: Definir Prêmio e Regras
         </h2>
-        <p className="text-muted-foreground">
-          Defina como os clientes ganharão selos e qual será o prêmio
+        <p className="text-sm text-muted-foreground">
+          Configure as recompensas e quantidade de selos
         </p>
       </div>
 

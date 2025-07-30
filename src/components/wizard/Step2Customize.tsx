@@ -93,13 +93,14 @@ export const Step2Customize = ({ onNext, onBack }: Step2Props) => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
-          Personalize sua Cartela
+    <div className="space-y-6 p-6">
+      {/* Step Header */}
+      <div className="text-center pb-6 border-b border-border/20 mb-6">
+        <h2 className="text-xl font-semibold text-foreground mb-1">
+          Passo 2: Design da Cartela
         </h2>
-        <p className="text-muted-foreground">
-          Escolha as cores e padrões que combinam com sua marca
+        <p className="text-sm text-muted-foreground">
+          Personalize as cores e padrões da sua cartela
         </p>
       </div>
 

@@ -42,13 +42,14 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
-          Dados do seu Negócio
+    <div className="space-y-6 p-6">
+      {/* Step Header */}
+      <div className="text-center pb-6 border-b border-border/20 mb-6">
+        <h2 className="text-xl font-semibold text-foreground mb-1">
+          Passo 1: Dados do Negócio
         </h2>
-        <p className="text-muted-foreground">
-          Preencha as informações básicas do seu estabelecimento
+        <p className="text-sm text-muted-foreground">
+          Informe os dados básicos da sua empresa
         </p>
       </div>
 
