@@ -46,9 +46,9 @@ const LandingPageNew = () => {
         </section>
 
         {/* Vantagens Section */}
-        <section id="vantagens" className="py-12 sm:py-16 lg:py-20 bg-background">
+        <section id="vantagens" className="py-8 sm:py-12 lg:py-16 bg-background">
           <div className="container mx-auto px-4">
-            <div className="text-center space-y-3 lg:space-y-4 mb-12 lg:mb-16">
+            <div className="text-center space-y-3 lg:space-y-4 mb-8 lg:mb-12">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-bold text-foreground">
                 Vantagens do Fidelix
               </h2>
@@ -113,9 +113,9 @@ const LandingPageNew = () => {
         </section>
 
         {/* Como Funciona Section */}
-        <section id="como-funciona" className="py-12 sm:py-16 lg:py-20 bg-muted/30">
+        <section id="como-funciona" className="py-8 sm:py-12 lg:py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <div className="text-center space-y-3 lg:space-y-4 mb-12 lg:mb-16">
+            <div className="text-center space-y-3 lg:space-y-4 mb-8 lg:mb-12">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-poppins font-bold text-foreground">
                 Como Funciona
               </h2>
@@ -159,7 +159,7 @@ const LandingPageNew = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-12 sm:py-16 lg:py-20">
+        <section className="py-8 sm:py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <div className="bg-gradient-primary rounded-2xl lg:rounded-3xl p-6 sm:p-8 lg:p-12 text-center space-y-6 lg:space-y-8 shadow-glow">
               <div className="space-y-3 lg:space-y-4">
@@ -184,65 +184,101 @@ const LandingPageNew = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-muted border-t border-border py-12 lg:py-16">
+        <footer className="bg-gradient-to-b from-muted/50 to-muted border-t border-border/50 py-12 lg:py-16">
           <div className="container mx-auto px-4">
             <div className="grid gap-8 lg:gap-12">
               {/* Main Footer Content */}
-              <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
-                {/* Logo */}
-                <a 
-                  href="https://www.fidelix.app" 
-                  className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
-                >
-                  <img 
-                    src={imageUrls.logoIcon} 
-                    alt="Fidelix mascote" 
-                    className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <img 
-                    src={imageUrls.logoText} 
-                    alt="Fidelix" 
-                    className="h-8"
-                  />
-                </a>
-                
-                {/* Navigation Links */}
-                <nav className="flex flex-wrap items-center gap-6 lg:gap-8 text-center">
-                  <button 
-                    onClick={() => {
-                      const element = document.getElementById('vantagens');
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-                  >
-                    Vantagens
-                  </button>
-                  <button 
-                    onClick={() => {
-                      const element = document.getElementById('como-funciona');
-                      if (element) element.scrollIntoView({ behavior: 'smooth' });
-                    }}
-                    className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-                  >
-                    Como Funciona
-                  </button>
+              <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+                {/* Company Info */}
+                <div className="space-y-4">
                   <a 
                     href="https://www.fidelix.app" 
-                    className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity group w-fit"
                   >
-                    Suporte
+                    <img 
+                      src={imageUrls.logoIcon} 
+                      alt="Fidelix mascote" 
+                      className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <img 
+                      src={imageUrls.logoText} 
+                      alt="Fidelix" 
+                      className="h-8"
+                    />
                   </a>
-                </nav>
+                  <p className="text-sm text-muted-foreground max-w-xs">
+                    A plataforma definitiva para criar cartelas de fidelidade digitais e conquistar clientes.
+                  </p>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>🇧🇷 Feito com amor no Brasil</span>
+                  </div>
+                </div>
+                
+                {/* Navigation Links */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-foreground">Navegação</h4>
+                  <nav className="flex flex-col gap-3">
+                    <button 
+                      onClick={() => {
+                        const element = document.getElementById('vantagens');
+                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="text-muted-foreground hover:text-primary transition-colors text-left w-fit"
+                    >
+                      Vantagens
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const element = document.getElementById('como-funciona');
+                        if (element) element.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="text-muted-foreground hover:text-primary transition-colors text-left w-fit"
+                    >
+                      Como Funciona
+                    </button>
+                    <a 
+                      href="#"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      Blog
+                    </a>
+                  </nav>
+                </div>
+                
+                {/* Support & Contact */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-foreground">Suporte</h4>
+                  <div className="flex flex-col gap-3">
+                    <a 
+                      href="https://www.fidelix.app" 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      Central de Ajuda
+                    </a>
+                    <a 
+                      href="https://www.fidelix.app" 
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      Contato
+                    </a>
+                    <div className="pt-2">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                        ✨ Grátis para sempre
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               {/* Bottom Bar */}
-              <div className="pt-8 border-t border-border">
+              <div className="pt-8 border-t border-border/50">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <span>🇧🇷 Feito com amor no Brasil</span>
+                  <div className="flex items-center gap-4">
+                    <span>© 2025 Fidelix. Todos os direitos reservados.</span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span>© 2024 Fidelix. Todos os direitos reservados.</span>
+                    <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
+                    <a href="#" className="hover:text-primary transition-colors">Termos</a>
                   </div>
                 </div>
               </div>
