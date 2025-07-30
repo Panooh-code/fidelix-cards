@@ -109,8 +109,9 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'float': 'float 3s ease-in-out infinite',
-				'fade-in': 'fade-in 0.6s ease-out'
+				'float': 'float 6s ease-in-out infinite',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
@@ -121,7 +122,9 @@ export default {
 			boxShadow: {
 				'soft': 'var(--shadow-soft)',
 				'glow': 'var(--shadow-glow)',
-				'card': 'var(--shadow-card)'
+				'card': 'var(--shadow-card)',
+				'elegant': 'var(--shadow-elegant)',
+				'premium': 'var(--shadow-premium)'
 			},
 			transitionProperty: {
 				'smooth': 'var(--transition-smooth)'

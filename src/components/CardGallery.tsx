@@ -53,65 +53,66 @@ const CardGallery = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-4 lg:gap-6">
       {/* Galeria de cartões em leque */}
-      <div className="relative w-full max-w-md h-64 mx-auto">
+      <div className="relative w-full max-w-xs sm:max-w-md h-48 sm:h-64 mx-auto overflow-hidden">
         {cardData.map((card, index) => (
           <Card
             key={card.id}
-            className={`absolute w-48 h-32 cursor-pointer transition-all duration-500 hover:scale-105 ${
+            className={`absolute w-36 h-24 sm:w-48 sm:h-32 cursor-pointer transition-all duration-500 hover:scale-105 shadow-elegant hover:shadow-premium ${
               flippedCard === card.id ? 'z-20 scale-110' : ''
             }`}
             style={{
-              left: `${index * 15}px`,
-              top: `${index * 8}px`,
+              left: `${index * (window.innerWidth < 640 ? 12 : 15)}px`,
+              top: `${index * (window.innerWidth < 640 ? 6 : 8)}px`,
               transform: `rotate(${(index - 2) * 5}deg) ${flippedCard === card.id ? 'rotateY(180deg)' : ''}`,
               transformStyle: 'preserve-3d',
               zIndex: flippedCard === card.id ? 20 : 5 - index
             }}
             onClick={() => handleCardClick(card.id)}
           >
-            <CardContent className="p-4 h-full relative overflow-hidden" style={{ backfaceVisibility: 'hidden' }}>
+            <CardContent className="p-3 sm:p-4 h-full relative overflow-hidden" style={{ backfaceVisibility: 'hidden' }}>
               {/* Frente do cartão */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${card.color} rounded-lg`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-br ${card.color} rounded-lg opacity-95`}></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/10 rounded-lg"></div>
               <div className="relative z-10 text-white h-full flex flex-col justify-between">
                 <div>
-                  <h3 className="font-poppins font-bold text-sm">{card.business}</h3>
-                  <p className="text-xs opacity-90">{card.description}</p>
+                  <h3 className="font-poppins font-bold text-xs sm:text-sm leading-tight">{card.business}</h3>
+                  <p className="text-[10px] sm:text-xs opacity-90 mt-1">{card.description}</p>
                 </div>
                 <div className="flex justify-between items-end">
-                  <div className="text-xs">
+                  <div className="text-[10px] sm:text-xs">
                     {typeof card.stamps === 'number' && card.stamps < 20 ? (
-                      <div className="flex gap-1">
+                      <div className="flex gap-0.5 sm:gap-1">
                         {Array.from({ length: card.totalStamps }, (_, i) => (
                           <div
                             key={i}
-                            className={`w-2 h-2 rounded-full ${
-                              i < card.stamps ? 'bg-accent-yellow' : 'bg-white/30'
+                            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${
+                              i < card.stamps ? 'bg-accent-yellow shadow-sm' : 'bg-white/30'
                             }`}
                           />
                         ))}
                       </div>
                     ) : (
-                      <span>{card.stamps}/{card.totalStamps}</span>
+                      <span className="font-medium">{card.stamps}/{card.totalStamps}</span>
                     )}
                   </div>
-                  <div className="text-xs opacity-75">Fidelix</div>
+                  <div className="text-[10px] sm:text-xs opacity-75 font-medium">Fidelix</div>
                 </div>
               </div>
             </CardContent>
             
             {/* Verso do cartão */}
             <CardContent 
-              className="absolute inset-0 p-4 h-full bg-gradient-to-br from-primary to-primary-glow rounded-lg text-white flex items-center justify-center"
+              className="absolute inset-0 p-3 sm:p-4 h-full bg-gradient-to-br from-primary to-primary-glow rounded-lg text-white flex items-center justify-center shadow-glow"
               style={{ 
                 backfaceVisibility: 'hidden',
                 transform: 'rotateY(180deg)'
               }}
             >
               <div className="text-center">
-                <div className="text-6xl mb-2">🐱</div>
-                <p className="text-xs font-medium">Escaneie o QR Code na loja para ganhar selos!</p>
+                <div className="text-4xl sm:text-6xl mb-1 sm:mb-2">🐱</div>
+                <p className="text-[10px] sm:text-xs font-medium leading-tight">Escaneie o QR Code na loja para ganhar selos!</p>
               </div>
             </CardContent>
           </Card>
@@ -119,7 +120,7 @@ const CardGallery = () => {
       </div>
 
       {/* Texto instrucional */}
-      <p className="text-muted-foreground text-sm font-medium animate-pulse">
+      <p className="text-muted-foreground text-xs sm:text-sm font-medium animate-pulse text-center">
         Clique e gire a cartela
       </p>
     </div>
