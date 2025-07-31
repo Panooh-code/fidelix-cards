@@ -42,26 +42,44 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [isFlipped, setIsFlipped] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-  const [lastTap, setLastTap] = useState(0);
+  const [tapTimeout, setTapTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar se é mobile
+  useState(() => {
+    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+  });
 
   // Função para flip do card
   const handleFlip = useCallback(() => {
     setIsFlipped(!isFlipped);
   }, [isFlipped]);
 
-  // Função para double-tap no mobile
-  const handleDoubleTap = useCallback((e: React.TouchEvent) => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      e.preventDefault();
+  // Sistema robusto de double-tap para mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    if (tapTimeout) {
+      // Double tap detectado
+      clearTimeout(tapTimeout);
+      setTapTimeout(null);
       handleFlip();
+      return;
     }
-    setLastTap(now);
-  }, [lastTap, handleFlip]);
+    
+    // Primeiro tap - aguardar segundo tap
+    const timeout = setTimeout(() => {
+      setTapTimeout(null);
+      // Single tap no mobile não faz nada para evitar conflitos
+    }, 300);
+    
+    setTapTimeout(timeout);
+  }, [tapTimeout, handleFlip]);
 
-  // QR Code clicável na face frontal
-  const handleQrClick = useCallback((e: React.MouseEvent) => {
+  // QR Code clicável na face frontal - funciona sempre
+  const handleQrClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     handleFlip();
   }, [handleFlip]);
 
@@ -213,8 +231,8 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             currentSize.height,
             isFlipped ? 'rotate-y-180' : ''
           )}
-          onClick={handleFlip}
-          onTouchEnd={handleDoubleTap}
+          onClick={!isMobile ? handleFlip : undefined}
+          onTouchStart={isMobile ? handleTouchStart : undefined}
         >
           {/* Front Face - Face dos Selos */}
           <div 
@@ -279,7 +297,9 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleQrClick}
-                    className="w-6 h-6 bg-white/80 rounded border flex items-center justify-center hover:bg-white transition-colors"
+                    onTouchEnd={isMobile ? handleQrClick : undefined}
+                    className="w-6 h-6 bg-white/80 rounded border flex items-center justify-center hover:bg-white transition-colors cursor-pointer touch-manipulation"
+                    title="Clique para virar o cartão"
                   >
                     <QrCode className="w-4 h-4 text-gray-800" />
                   </button>
