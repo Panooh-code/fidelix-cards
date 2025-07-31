@@ -261,7 +261,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         >
           {/* Front Face - Face dos Selos */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft paper-texture"
+            className={cn(
+              "absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft",
+              cardData.pattern !== 'none' ? "paper-texture" : ""
+            )}
             style={{ 
               background: `linear-gradient(135deg, ${cardData.backgroundColor}, ${cardData.primary_color}20)`,
               ...getBackgroundPattern()
