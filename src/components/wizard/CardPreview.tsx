@@ -340,7 +340,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
               </h3>
 
               {/* Área Principal - QR Code com Ícones ao Lado */}
-              <div className="flex-1 flex items-center justify-start pl-8 -mt-4">
+              <div className="flex-1 flex items-center justify-start pl-4 -mt-6">
                   <div className="flex items-center gap-4">
                     {/* Coluna de Ícones à Esquerda */}
                     <div className="flex flex-col gap-3">
