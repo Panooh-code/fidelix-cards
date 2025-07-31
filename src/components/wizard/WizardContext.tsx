@@ -3,14 +3,12 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 export interface BusinessData {
   name: string;
   phone: string;
-  phoneCountryCode: string;
-  phoneIsWhatsapp: boolean;
   email: string;
   address: string;
+  whatsapp?: string;        // Campo WhatsApp Business (opcional)
   socialNetwork?: string;   // Campo Rede Social Principal (opcional)
   logoFile: File | null;
   logoUrl: string;
-  clientCode: string;       // Código único FI + iniciais + números
 }
 
 export interface CustomizationData {
@@ -43,24 +41,16 @@ interface WizardContextType {
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
-const generateClientCode = (businessName: string): string => {
-  const initials = businessName.replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase() || 'XX';
-  const numbers = Math.floor(1000 + Math.random() * 9000);
-  return `FI${initials}${numbers}`;
-};
-
 const initialState: WizardState = {
   businessData: {
     name: "",
     phone: "",
-    phoneCountryCode: "+55",
-    phoneIsWhatsapp: false,
     email: "",
     address: "",
+    whatsapp: "",
     socialNetwork: "",
     logoFile: null,
     logoUrl: "",
-    clientCode: "",
   },
   customization: {
     primaryColor: "#480da2",
@@ -80,19 +70,10 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<WizardState>(initialState);
 
   const updateBusinessData = (data: Partial<BusinessData>) => {
-    setState(prev => {
-      const updatedData = { ...prev.businessData, ...data };
-      
-      // Gerar código único quando o nome for alterado
-      if (data.name && data.name !== prev.businessData.name) {
-        updatedData.clientCode = generateClientCode(data.name);
-      }
-      
-      return {
-        ...prev,
-        businessData: updatedData
-      };
-    });
+    setState(prev => ({
+      ...prev,
+      businessData: { ...prev.businessData, ...data }
+    }));
   };
 
   const updateCustomization = (data: Partial<CustomizationData>) => {

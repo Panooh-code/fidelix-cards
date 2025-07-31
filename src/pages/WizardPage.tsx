@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import Step1BusinessData from "@/components/wizard/Step1BusinessData";
+import { Step1BusinessData } from "@/components/wizard/Step1BusinessData";
 import { Step2Customize } from "@/components/wizard/Step2Customize";
 import { Step3SetupRewards } from "@/components/wizard/Step3SetupRewards";
 import { CardPreviewWizard } from "@/components/wizard/CardPreview";
