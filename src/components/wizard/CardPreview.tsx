@@ -40,9 +40,11 @@ const isLightColor = (color: string) => {
 
 export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-  const [tapTimeout, setTapTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [clickCount, setClickCount] = useState(0);
+  const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   // Detectar se é mobile
@@ -50,38 +52,35 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
     setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
   });
 
-  // Função para flip do card
-  const handleFlip = useCallback(() => {
-    setIsFlipped(!isFlipped);
-  }, [isFlipped]);
-
-  // Sistema robusto de double-tap para mobile
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    
-    if (tapTimeout) {
-      // Double tap detectado
-      clearTimeout(tapTimeout);
-      setTapTimeout(null);
-      handleFlip();
-      return;
+  // Sistema unificado de double click/tap com travamento
+  const handleDoubleClick = useCallback(() => {
+    if (clickTimer) {
+      // Double click/tap detectado
+      clearTimeout(clickTimer);
+      setClickTimer(null);
+      setClickCount(0);
+      
+      // Virar e travar o card
+      setIsFlipped(!isFlipped);
+      setIsLocked(true);
+    } else {
+      // Primeiro click/tap
+      setClickCount(1);
+      const timer = setTimeout(() => {
+        setClickCount(0);
+        setClickTimer(null);
+      }, 300); // 300ms para detectar double click
+      
+      setClickTimer(timer);
     }
-    
-    // Primeiro tap - aguardar segundo tap
-    const timeout = setTimeout(() => {
-      setTapTimeout(null);
-      // Single tap no mobile não faz nada para evitar conflitos
-    }, 300);
-    
-    setTapTimeout(timeout);
-  }, [tapTimeout, handleFlip]);
+  }, [isFlipped, clickTimer]);
 
   // QR Code clicável na face frontal - funciona sempre
   const handleQrClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    handleFlip();
-  }, [handleFlip]);
+    setIsFlipped(!isFlipped);
+  }, [isFlipped]);
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -229,10 +228,11 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             "relative transition-transform duration-700 transform-style-preserve-3d group-hover:scale-105",
             currentSize.width,
             currentSize.height,
-            isFlipped ? 'rotate-y-180' : ''
+            isFlipped ? 'rotate-y-180' : '',
+            isLocked && "ring-2 ring-white/30 shadow-xl"
           )}
-          onClick={!isMobile ? handleFlip : undefined}
-          onTouchStart={isMobile ? handleTouchStart : undefined}
+          onDoubleClick={!isMobile ? handleDoubleClick : undefined}
+          onTouchStart={isMobile ? handleDoubleClick : undefined}
         >
           {/* Front Face - Face dos Selos */}
           <div 
