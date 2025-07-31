@@ -302,11 +302,11 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 {cardData.business_name}
               </h3>
 
-              {/* Layout Principal: Duas Colunas */}
-              <div className="flex-1 grid grid-cols-3 gap-4 items-center">
+              {/* Layout Principal: QR Code Centralizado */}
+              <div className="flex-1 relative flex items-center justify-center">
                 
-                {/* Coluna Esquerda: Ícones de Contato */}
-                <div className="flex flex-col gap-3 justify-center">
+                {/* Ícones de Contato - Posicionados Absolutamente à Esquerda */}
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-3">
                   {cardData.address && (
                     <button
                       onClick={(e) => {
@@ -347,8 +347,8 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                   )}
                 </div>
 
-                {/* Coluna Direita: QR Code + Código do Cliente */}
-                <div className="col-span-2 flex flex-col items-center gap-2">
+                {/* QR Code + Código do Cliente - Centro Absoluto */}
+                <div className="flex flex-col items-center gap-2">
                   <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
                     <img 
                       src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
