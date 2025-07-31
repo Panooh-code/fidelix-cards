@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X } from "lucide-react";
+import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
 import { useWizard } from "./WizardContext";
 
 export interface CardData {
@@ -40,46 +40,8 @@ const isLightColor = (color: string) => {
 
 export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-  const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
-
-  // Sistema unificado de clicks/taps para todas as ações
-  const handleCardInteraction = useCallback(() => {
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
-    
-    if (clickTimer) {
-      clearTimeout(clickTimer);
-    }
-    
-    const timer = setTimeout(() => {
-      if (newCount === 3 && isLocked) {
-        // Triple click/tap: destravar
-        setIsLocked(false);
-      } else if (newCount === 2 && !isLocked) {
-        // Double click/tap: flipar e travar
-        setIsFlipped(!isFlipped);
-        setIsLocked(true);
-      }
-      
-      setClickCount(0);
-    }, 400); // 400ms para melhor detecção
-    
-    setClickTimer(timer);
-  }, [clickCount, clickTimer, isFlipped, isLocked]);
-
-  // QR Code só funciona se não estiver travado
-  const handleQrClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    
-    if (isLocked) return; // Respeitar travamento
-    
-    setIsFlipped(!isFlipped);
-  }, [isFlipped, isLocked]);
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -228,17 +190,14 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
   return (
     <>
-      <div className={cn("perspective-1000 cursor-pointer group", className)}>
+      <div className={cn("perspective-1000", className)}>
         <div 
           className={cn(
-            "relative transition-transform duration-700 transform-style-preserve-3d group-hover:scale-105",
+            "relative transition-transform duration-700 transform-style-preserve-3d",
             currentSize.width,
             currentSize.height,
-            isFlipped ? 'rotate-y-180' : '',
-            isLocked ? "shadow-2xl" : "hover:ring-2 hover:ring-white/20"
+            isFlipped ? 'rotate-y-180' : ''
           )}
-          onClick={handleCardInteraction}
-          onTouchEnd={handleCardInteraction}
         >
           {/* Front Face - Face dos Selos */}
           <div 
@@ -302,19 +261,9 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                   <Star className="w-3 h-3 fill-current" />
                 </a>
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleQrClick}
-                    className={cn(
-                      "w-6 h-6 rounded border flex items-center justify-center transition-colors touch-manipulation",
-                      isLocked 
-                        ? "bg-gray-400/50 cursor-not-allowed opacity-50" 
-                        : "bg-white/80 hover:bg-white cursor-pointer"
-                    )}
-                    title={isLocked ? "Cartão travado - clique 3x para destravar" : "Clique para virar o cartão"}
-                    disabled={isLocked}
-                  >
+                  <div className="w-6 h-6 rounded border flex items-center justify-center bg-white/80">
                     <QrCode className="w-4 h-4 text-gray-800" />
-                  </button>
+                  </div>
                   <span className={cn("font-mono text-xs font-medium", isLight ? 'text-gray-700' : 'text-white/90')}>
                     {cardData.clientCode}
                   </span>
@@ -426,6 +375,17 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Botão Discreto para Girar */}
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => setIsFlipped(!isFlipped)}
+          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full transition-colors shadow-sm"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Girar cartela
+        </button>
       </div>
 
       {/* Popup de Contato */}
