@@ -5,8 +5,6 @@ export interface BusinessData {
   phone: string;
   email: string;
   address: string;
-  whatsapp?: string;
-  socialNetwork?: string;
   logoFile: File | null;
   logoUrl: string;
 }
