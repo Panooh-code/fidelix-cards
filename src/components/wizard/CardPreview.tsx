@@ -339,36 +339,17 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 {cardData.business_name}
               </h3>
 
-              {/* QR Code Grande e Centralizado */}
-              <div className="flex justify-center mb-4">
-                <div className="w-32 h-32 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square">
-                  <QrCode className="w-24 h-24 text-gray-800" />
-                </div>
-              </div>
-
-              {/* Código do Cliente */}
-              <p className="text-white/90 text-center mb-6 font-mono text-lg font-bold tracking-widest drop-shadow-md">
-                {cardData.clientCode}
-              </p>
-
-              {/* Footer com Nome do Cliente e Ícones de Contato */}
-              <div className="mt-auto flex justify-between items-center">
-                {/* Nome do Cliente */}
-                {cardData.clientName && (
-                  <span className="font-inter text-sm text-white/80">
-                    {cardData.clientName}
-                  </span>
-                )}
-                
-                {/* Ícones de Contato */}
-                <div className="flex items-center gap-2">
+              {/* Área Principal - QR Code com Ícones ao Lado */}
+              <div className="flex items-center justify-center gap-6 mb-6">
+                {/* Coluna de Ícones à Esquerda */}
+                <div className="flex flex-col gap-3">
                   {cardData.address && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowContactPopup(true);
                       }}
-                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm"
+                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                       title="Ver informações de contato"
                     >
                       <MapPin className="w-5 h-5 text-white" />
@@ -381,7 +362,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm"
+                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                       title="Chamar no WhatsApp"
                     >
                       <MessageCircle className="w-5 h-5 text-white" />
@@ -394,13 +375,36 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm"
+                      className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                       title="Visitar rede social"
                     >
                       <Globe className="w-5 h-5 text-white" />
                     </a>
                   )}
                 </div>
+
+                {/* QR Code Real Menor */}
+                <div className="w-28 h-28 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-3">
+                  <img 
+                    src="/lovable-uploads/f5f14685-bb74-48bd-b8c6-e144a35cf403.png" 
+                    alt="QR Code" 
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Código do Cliente */}
+              <p className="text-white/90 text-center mb-4 font-mono text-lg font-bold tracking-widest drop-shadow-md">
+                {cardData.clientCode}
+              </p>
+
+              {/* Footer com Nome do Cliente */}
+              <div className="mt-auto flex justify-center">
+                {cardData.clientName && (
+                  <span className="font-inter text-sm text-white/80">
+                    {cardData.clientName}
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -551,7 +555,7 @@ export const CardPreviewWizard = () => {
     primary_color: state.customization.primaryColor,
     backgroundColor: state.customization.backgroundColor,
     pattern: state.customization.backgroundPattern,
-    clientCode: '#00001',
+    clientCode: state.businessData.clientCode || 'FI0001',
     clientName: undefined,
     phone: state.businessData.phone,
     email: state.businessData.email,

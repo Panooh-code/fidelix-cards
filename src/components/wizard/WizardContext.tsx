@@ -9,6 +9,7 @@ export interface BusinessData {
   socialNetwork?: string;   // Campo Rede Social Principal (opcional)
   logoFile: File | null;
   logoUrl: string;
+  clientCode?: string;      // Código único FI gerado
 }
 
 export interface CustomizationData {
@@ -51,6 +52,7 @@ const initialState: WizardState = {
     socialNetwork: "",
     logoFile: null,
     logoUrl: "",
+    clientCode: "",
   },
   customization: {
     primaryColor: "#480da2",
@@ -69,7 +71,17 @@ const initialState: WizardState = {
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<WizardState>(initialState);
 
+  const generateClientCode = (businessName: string): string => {
+    const letters = businessName.replace(/[^a-zA-Z]/g, '');
+    const initials = letters.substring(0, 2).toUpperCase().padEnd(2, 'X');
+    const numbers = Math.floor(1000 + Math.random() * 9000);
+    return `FI${initials}${numbers}`;
+  };
+
   const updateBusinessData = (data: Partial<BusinessData>) => {
+    if (data.name && !data.clientCode) {
+      data.clientCode = generateClientCode(data.name);
+    }
     setState(prev => ({
       ...prev,
       businessData: { ...prev.businessData, ...data }
