@@ -194,29 +194,36 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
     const { pattern, primary_color, backgroundColor } = cardData;
     const isLight = isLightColor(backgroundColor);
     const patternOpacity = isLight ? '0.03' : '0.08';
+    
+    // Textura de papel base
+    const paperTexture = `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`;
 
     switch (pattern) {
       case 'dots':
         return { 
-          backgroundImage: `radial-gradient(circle, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
-          backgroundSize: '20px 20px' 
+          backgroundImage: `${paperTexture}, radial-gradient(circle, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
+          backgroundSize: '8px 8px, 20px 20px' 
         };
       case 'lines':
         return { 
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 11px)` 
+          backgroundImage: `${paperTexture}, repeating-linear-gradient(45deg, transparent, transparent 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 11px)`,
+          backgroundSize: '8px 8px, auto' 
         };
       case 'waves':
         return { 
-          backgroundImage: `radial-gradient(ellipse at top, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')}, transparent 70%)`,
-          backgroundSize: '30px 20px' 
+          backgroundImage: `${paperTexture}, radial-gradient(ellipse at top, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')}, transparent 70%)`,
+          backgroundSize: '8px 8px, 30px 20px' 
         };
       case 'grid':
         return { 
-          backgroundImage: `linear-gradient(${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px), linear-gradient(90deg, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
-          backgroundSize: '20px 20px' 
+          backgroundImage: `${paperTexture}, linear-gradient(${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px), linear-gradient(90deg, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
+          backgroundSize: '8px 8px, 20px 20px, 20px 20px' 
         };
       default:
-        return {};
+        return { 
+          backgroundImage: paperTexture,
+          backgroundSize: '8px 8px' 
+        };
     }
   };
 
@@ -261,10 +268,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         >
           {/* Front Face - Face dos Selos */}
           <div 
-            className={cn(
-              "absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft",
-              cardData.pattern !== 'none' ? "paper-texture" : ""
-            )}
+            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft"
             style={{ 
               background: `linear-gradient(135deg, ${cardData.backgroundColor}, ${cardData.primary_color}20)`,
               ...getBackgroundPattern()
@@ -341,9 +345,11 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
           {/* Back Face - Face QR Redesenhada */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-craft paper-texture"
+            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-craft"
             style={{ 
-              background: `linear-gradient(135deg, ${cardData.primary_color}, ${cardData.backgroundColor}40)`
+              background: `linear-gradient(135deg, ${cardData.primary_color}, ${cardData.backgroundColor}40)`,
+              backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`,
+              backgroundSize: '8px 8px'
             }}
           >
             <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
