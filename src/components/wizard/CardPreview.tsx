@@ -270,8 +270,9 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
           <div 
             className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft"
             style={{ 
-              background: `linear-gradient(135deg, ${cardData.backgroundColor}, ${cardData.primary_color}20)`,
-              ...getBackgroundPattern()
+              backgroundColor: cardData.backgroundColor,
+              backgroundImage: `linear-gradient(135deg, transparent, ${cardData.primary_color}20), ${getBackgroundPattern().backgroundImage || ''}`,
+              backgroundSize: getBackgroundPattern().backgroundSize || 'auto'
             }}
           >
             <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
@@ -347,8 +348,8 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
           <div 
             className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-craft"
             style={{ 
-              background: `linear-gradient(135deg, ${cardData.primary_color}, ${cardData.backgroundColor}40)`,
-              backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`,
+              backgroundColor: cardData.primary_color,
+              backgroundImage: `linear-gradient(135deg, transparent, ${cardData.backgroundColor}40), radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`,
               backgroundSize: '8px 8px'
             }}
           >
