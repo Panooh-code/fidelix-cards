@@ -39,7 +39,7 @@ export const Question7PrimaryColor = ({ onNext, onPrev, canSkip }: QuestionProps
   const handleColorSelect = (color: string) => {
     updateCustomization({ primaryColor: color });
     setCustomColor(color);
-    setTimeout(onNext, 300); // Auto-advance after selection
+    // Don't auto-advance - user needs to click "Avançar"
   };
 
   const handleCustomColorChange = (color: string) => {
@@ -48,32 +48,15 @@ export const Question7PrimaryColor = ({ onNext, onPrev, canSkip }: QuestionProps
   };
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Question Header */}
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-          <Palette className="w-8 h-8 text-primary" />
-        </div>
-        <h2 className="text-2xl font-bold text-foreground">
-          Escolha a cor principal da sua cartela
+    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-foreground mb-3">
+          Cor principal *
         </h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          Esta cor aparecerá no verso da cartela (lado do QR Code)
-        </p>
       </div>
 
-      {/* Color Preview */}
-      <div className="flex justify-center">
-        <div 
-          className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
-          style={{ backgroundColor: state.customization.primaryColor }}
-        />
-      </div>
-
-      {/* Preset Colors */}
-      <div className="space-y-4 max-w-lg mx-auto">
-        <Label className="text-base font-medium">Cores Populares</Label>
-        <div className="grid grid-cols-5 gap-3">
+      <div className="space-y-3 max-w-sm mx-auto">
+        <div className="grid grid-cols-5 gap-2">
           {presetColors.map((preset) => {
             const isSelected = state.customization.primaryColor === preset.color;
             
@@ -82,48 +65,33 @@ export const Question7PrimaryColor = ({ onNext, onPrev, canSkip }: QuestionProps
                 key={preset.color}
                 onClick={() => handleColorSelect(preset.color)}
                 className={cn(
-                  "relative w-12 h-12 rounded-full border-2 transition-all hover:scale-110",
+                  "w-8 h-8 rounded-full border-2 transition-all",
                   isSelected 
-                    ? "border-foreground shadow-lg" 
-                    : "border-white shadow-md hover:shadow-lg"
+                    ? "border-foreground" 
+                    : "border-white hover:border-muted-foreground"
                 )}
                 style={{ backgroundColor: preset.color }}
                 title={preset.name}
-              >
-                {isSelected && (
-                  <div className="absolute inset-0 rounded-full border-2 border-foreground bg-white/20 flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-white drop-shadow" />
-                  </div>
-                )}
-              </button>
+              />
             );
           })}
         </div>
-      </div>
-
-      {/* Custom Color */}
-      <div className="space-y-3 max-w-md mx-auto">
-        <Label className="text-base font-medium">Cor Personalizada</Label>
-        <div className="flex gap-3">
+        
+        <div className="flex gap-2">
           <Input
             type="color"
             value={customColor}
             onChange={(e) => handleCustomColorChange(e.target.value)}
-            className="w-16 h-12 p-1 border rounded-lg cursor-pointer"
+            className="w-12 h-8 p-1 border rounded cursor-pointer"
           />
           <Input
             type="text"
             value={customColor}
             onChange={(e) => handleCustomColorChange(e.target.value)}
             placeholder="#480da2"
-            className="flex-1 h-12 text-base font-mono"
+            className="flex-1 h-8 text-xs font-mono"
           />
         </div>
-      </div>
-
-      {/* Tip */}
-      <div className="text-center text-sm text-muted-foreground max-w-sm mx-auto">
-        💡 Observe como a cor fica na cartela ao lado
       </div>
     </div>
   );

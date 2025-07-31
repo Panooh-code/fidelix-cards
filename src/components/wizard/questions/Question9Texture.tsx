@@ -52,7 +52,7 @@ export const Question9Texture = ({ onNext, onPrev, canSkip }: QuestionProps) => 
 
   const handleSelect = (pattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none') => {
     updateCustomization({ backgroundPattern: pattern });
-    setTimeout(onNext, 200); // Auto-advance after selection
+    // Don't auto-advance - user needs to click "Avançar"
   };
 
   return (

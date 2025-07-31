@@ -108,49 +108,41 @@ export const QuestionWizard = () => {
   };
 
   return (
-    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden">
+    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden max-h-[300px] flex flex-col">
       {/* Progress Bar */}
-      <div className="p-4 border-b border-border/20">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-muted-foreground">
-            Pergunta {state.currentQuestion} de {TOTAL_QUESTIONS}
-          </span>
-          <span className="text-sm font-medium text-primary">
-            {Math.round(progress)}%
-          </span>
-        </div>
-        <Progress value={progress} className="h-2" />
+      <div className="p-2 border-b border-border/20 flex-shrink-0">
+        <Progress value={progress} className="h-1" />
       </div>
 
       {/* Question Content */}
       <div className={cn(
-        "transition-all duration-300",
+        "flex-1 transition-all duration-300 overflow-hidden",
         isTransitioning ? "opacity-50 transform translate-x-2" : "opacity-100 transform translate-x-0"
       )}>
         {renderQuestion()}
       </div>
 
       {/* Navigation Buttons */}
-      <div className="p-6 border-t border-border/20 bg-muted/30">
+      <div className="p-3 border-t border-border/20 bg-muted/30 flex-shrink-0">
         <div className="flex justify-between items-center">
           <Button
             onClick={handlePrev}
             variant="outline"
-            size="lg"
+            size="sm"
             disabled={state.currentQuestion === 1}
-            className="flex items-center gap-2"
+            className="h-8 px-3"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3 h-3 mr-1" />
             Voltar
           </Button>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {canSkip() && (
               <Button
                 onClick={handleNext}
                 variant="ghost"
-                size="lg"
-                className="text-muted-foreground"
+                size="sm"
+                className="text-muted-foreground h-8 px-3"
               >
                 Pular
               </Button>
@@ -159,12 +151,12 @@ export const QuestionWizard = () => {
             <Button
               onClick={handleNext}
               variant="hero"
-              size="lg"
+              size="sm"
               disabled={!canAdvance() && !canSkip()}
-              className="flex items-center gap-2"
+              className="h-8 px-3"
             >
               {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </div>
         </div>

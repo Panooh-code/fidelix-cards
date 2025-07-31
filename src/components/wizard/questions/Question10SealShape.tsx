@@ -45,7 +45,7 @@ export const Question10SealShape = ({ onNext, onPrev, canSkip }: QuestionProps) 
 
   const handleSelect = (shape: 'star' | 'circle' | 'square' | 'heart') => {
     updateRewardConfig({ sealShape: shape });
-    setTimeout(onNext, 200); // Auto-advance after selection
+    // Don't auto-advance - user needs to click "Avançar"
   };
 
   return (
