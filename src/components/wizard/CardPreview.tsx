@@ -47,6 +47,15 @@ const isLightColor = (color: string) => {
   return brightness > 128;
 };
 
+// Função para ajustar brilho da cor
+const adjustBrightness = (color: string, factor: number) => {
+  const hex = color.replace('#', '');
+  const r = Math.round(parseInt(hex.substr(0, 2), 16) * factor);
+  const g = Math.round(parseInt(hex.substr(2, 2), 16) * factor);
+  const b = Math.round(parseInt(hex.substr(4, 2), 16) * factor);
+  return `#${Math.max(0, Math.min(255, r)).toString(16).padStart(2, '0')}${Math.max(0, Math.min(255, g)).toString(16).padStart(2, '0')}${Math.max(0, Math.min(255, b)).toString(16).padStart(2, '0')}`;
+};
+
 export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
@@ -222,7 +231,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       <div className={cn("perspective-1000 cursor-pointer group", className)}>
         <div 
           className={cn(
-            "relative transition-transform duration-700 transform-style-preserve-3d group-hover:scale-105",
+            "relative transition-transform duration-700 transform-style-preserve-3d group-hover:scale-[1.02] hover:shadow-premium shadow-card-elegant paper-texture",
             currentSize.width,
             currentSize.height,
             isFlipped ? 'rotate-y-180' : ''
@@ -233,24 +242,26 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
           {/* Front Face - Face dos Selos */}
           <div 
             className={cn(
-              "absolute inset-0 backface-hidden rounded-3xl",
-              backgroundClass,
+              "absolute inset-0 backface-hidden rounded-3xl border border-white/20 paper-texture shadow-paper-craft",
               textColor
             )}
-            style={{ ...backgroundPattern }}
+            style={{ 
+              background: `linear-gradient(135deg, ${cardData.backgroundColor} 0%, ${adjustBrightness(cardData.backgroundColor, 0.95)} 100%)`,
+              ...backgroundPattern 
+            }}
           >
             <div className={cn("h-full flex flex-col", currentSize.padding)}>
               {/* Header com logo e nome */}
               <div className="flex items-center gap-3 mb-4">
-                {cardData.logoUrl && (
-                  <div className="w-12 h-12 rounded-full overflow-hidden bg-white/90 p-1 shadow-sm">
-                    <img 
-                      src={cardData.logoUrl} 
-                      alt="Logo" 
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                )}
+                 {cardData.logoUrl && (
+                   <div className="w-12 h-12 rounded-full overflow-hidden bg-white/95 p-1 shadow-lg border border-white/30">
+                     <img 
+                       src={cardData.logoUrl} 
+                       alt="Logo" 
+                       className="w-full h-full object-contain"
+                     />
+                   </div>
+                 )}
                 <div className="flex-1">
                   <h3 className={cn("font-bold leading-tight", currentSize.textSizes.title)}>
                     {cardData.name}
@@ -291,30 +302,32 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
           {/* Back Face - QR Code */}
           <div 
             className={cn(
-              "absolute inset-0 backface-hidden rotate-y-180 rounded-3xl",
+              "absolute inset-0 backface-hidden rotate-y-180 rounded-3xl border border-white/20 paper-texture shadow-paper-craft",
               "p-4 text-center flex flex-col items-center justify-between",
-              backgroundClass,
               textColor
             )}
-            style={{ ...backgroundPattern }}
+            style={{ 
+              background: `linear-gradient(135deg, ${cardData.backgroundColor} 0%, ${adjustBrightness(cardData.backgroundColor, 0.95)} 100%)`,
+              ...backgroundPattern 
+            }}
           >
             {/* Header com Logo e Nome */}
             <div className="flex flex-col items-center space-y-2">
-              {cardData.logoUrl && (
-                <div className="w-20 h-20 rounded-full overflow-hidden bg-white/90 p-2 shadow-sm">
-                  <img 
-                    src={cardData.logoUrl} 
-                    alt="Logo" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              )}
+               {cardData.logoUrl && (
+                 <div className="w-20 h-20 rounded-full overflow-hidden bg-white/95 p-2 shadow-lg border border-white/30">
+                   <img 
+                     src={cardData.logoUrl} 
+                     alt="Logo" 
+                     className="w-full h-full object-contain"
+                   />
+                 </div>
+               )}
               <h2 className="text-base font-bold leading-tight">{cardData.name}</h2>
             </div>
 
             {/* QR Code Central */}
             <div className="flex-1 flex items-center justify-center">
-              <div className="w-28 h-28 bg-white rounded-lg p-2 shadow-sm flex items-center justify-center">
+              <div className="w-40 h-40 bg-white rounded-xl p-3 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center justify-center">
                 <img 
                   src={defaultQrImage} 
                   alt="QR Code" 
@@ -344,10 +357,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 )}
               </div>
 
-              {/* Código Único - direita */}
-              <div className="bg-white/90 rounded-lg px-3 py-1">
-                <span className="text-gray-800 font-mono text-sm font-bold">{cardData.clientCode}</span>
-              </div>
+               {/* Código Único - direita */}
+               <div className="bg-white/95 rounded-lg px-3 py-1 shadow-md border border-white/30">
+                 <span className="text-gray-800 font-mono text-sm font-bold">{cardData.clientCode}</span>
+               </div>
             </div>
           </div>
         </div>
