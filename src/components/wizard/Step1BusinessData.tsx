@@ -145,8 +145,8 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
             id="whatsapp"
             type="tel"
             placeholder="5511999999999 (só números)"
-            value={state.businessData.whatsapp || ""}
-            onChange={(e) => updateBusinessData({ whatsapp: e.target.value })}
+            value={state.businessData.phone}
+            onChange={(e) => updateBusinessData({ phone: e.target.value })}
             className="mt-1"
           />
           <p className="text-xs text-muted-foreground mt-1">

@@ -1,26 +1,8 @@
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Step1BusinessData } from "@/components/wizard/Step1BusinessData";
-import { Step2Customize } from "@/components/wizard/Step2Customize";
-import { Step3SetupRewards } from "@/components/wizard/Step3SetupRewards";
+import { QuestionWizard } from "@/components/wizard/QuestionWizard";
 import { CardPreviewWizard } from "@/components/wizard/CardPreview";
 import { WizardProvider } from "@/components/wizard/WizardContext";
 
 const WizardPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <Step1BusinessData onNext={() => setCurrentStep(2)} />;
-      case 2:
-        return <Step2Customize onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />;
-      case 3:
-        return <Step3SetupRewards onBack={() => setCurrentStep(2)} />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <WizardProvider>
@@ -39,9 +21,7 @@ const WizardPage = () => {
 
             {/* Form Section */}
             <div className="flex-1 p-4">
-              <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm">
-                {renderStep()}
-              </Card>
+              <QuestionWizard />
             </div>
           </div>
         </div>
@@ -60,9 +40,7 @@ const WizardPage = () => {
               {/* Form Section */}
               <div className="bg-background flex items-start justify-center p-8">
                 <div className="w-full max-w-lg">
-                  <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm">
-                    {renderStep()}
-                  </Card>
+                  <QuestionWizard />
                 </div>
               </div>
             </div>

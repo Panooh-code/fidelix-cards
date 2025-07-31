@@ -536,7 +536,7 @@ export const CardPreviewWizard = () => {
     phone: state.businessData.phone,
     email: state.businessData.email,
     address: state.businessData.address,
-    whatsapp: state.businessData.whatsapp,
+    whatsapp: state.businessData.isWhatsApp ? state.businessData.phone : undefined,
     socialNetwork: state.businessData.socialNetwork,
     sealCount: state.rewardConfig.sealCount,
     sealShape: state.rewardConfig.sealShape,

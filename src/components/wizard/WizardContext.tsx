@@ -2,14 +2,16 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export interface BusinessData {
   name: string;
+  segment: string;
   phone: string;
+  country: 'BR' | 'PT';
+  isWhatsApp: boolean;
   email: string;
   address: string;
-  whatsapp?: string;        // Campo WhatsApp Business (opcional)
-  socialNetwork?: string;   // Campo Rede Social Principal (opcional)
+  socialNetwork?: string;
   logoFile: File | null;
   logoUrl: string;
-  clientCode?: string;      // Código único FI gerado
+  clientCode?: string;
 }
 
 export interface CustomizationData {
@@ -21,14 +23,17 @@ export interface CustomizationData {
 export interface RewardConfig {
   sealShape: 'star' | 'circle' | 'square' | 'heart';
   sealCount: number;
+  maxCards?: number;
   rewardDescription: string;
   instructions: string;
+  expirationDate?: Date;
 }
 
 export interface WizardState {
   businessData: BusinessData;
   customization: CustomizationData;
   rewardConfig: RewardConfig;
+  currentQuestion: number;
   isComplete: boolean;
 }
 
@@ -37,6 +42,9 @@ interface WizardContextType {
   updateBusinessData: (data: Partial<BusinessData>) => void;
   updateCustomization: (data: Partial<CustomizationData>) => void;
   updateRewardConfig: (data: Partial<RewardConfig>) => void;
+  setCurrentQuestion: (question: number) => void;
+  nextQuestion: () => void;
+  prevQuestion: () => void;
   setComplete: (complete: boolean) => void;
 }
 
@@ -45,10 +53,12 @@ const WizardContext = createContext<WizardContextType | undefined>(undefined);
 const initialState: WizardState = {
   businessData: {
     name: "",
+    segment: "",
     phone: "",
+    country: 'BR',
+    isWhatsApp: false,
     email: "",
     address: "",
-    whatsapp: "",
     socialNetwork: "",
     logoFile: null,
     logoUrl: "",
@@ -60,11 +70,12 @@ const initialState: WizardState = {
     backgroundPattern: 'none',
   },
   rewardConfig: {
-    sealShape: 'circle',
-    sealCount: 10,
-    rewardDescription: "",
-    instructions: "",
+    sealShape: 'star',
+    sealCount: 9,
+    rewardDescription: "Complete a cartela e ganhe um café grátis*",
+    instructions: "A cada compra acima de $100 você ganha um selo",
   },
+  currentQuestion: 1,
   isComplete: false,
 };
 
@@ -102,6 +113,18 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const setCurrentQuestion = (question: number) => {
+    setState(prev => ({ ...prev, currentQuestion: question }));
+  };
+
+  const nextQuestion = () => {
+    setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
+  };
+
+  const prevQuestion = () => {
+    setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
+  };
+
   const setComplete = (complete: boolean) => {
     setState(prev => ({ ...prev, isComplete: complete }));
   };
@@ -113,6 +136,9 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
         updateBusinessData,
         updateCustomization,
         updateRewardConfig,
+        setCurrentQuestion,
+        nextQuestion,
+        prevQuestion,
         setComplete,
       }}
     >
