@@ -55,7 +55,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   // Sistema unificado de double click/tap com travamento
   const handleDoubleClick = useCallback(() => {
     if (clickTimer) {
-      // Double click/tap detectado
+      // Double click detectado
       clearTimeout(clickTimer);
       setClickTimer(null);
       setClickCount(0);
@@ -64,12 +64,37 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       setIsFlipped(!isFlipped);
       setIsLocked(true);
     } else {
-      // Primeiro click/tap
+      // Primeiro click
       setClickCount(1);
       const timer = setTimeout(() => {
         setClickCount(0);
         setClickTimer(null);
       }, 300); // 300ms para detectar double click
+      
+      setClickTimer(timer);
+    }
+  }, [isFlipped, clickTimer]);
+
+  // Sistema de double-tap para mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    
+    if (clickTimer) {
+      // Double tap detectado
+      clearTimeout(clickTimer);
+      setClickTimer(null);
+      setClickCount(0);
+      
+      // Virar e travar o card
+      setIsFlipped(!isFlipped);
+      setIsLocked(true);
+    } else {
+      // Primeiro tap
+      setClickCount(1);
+      const timer = setTimeout(() => {
+        setClickCount(0);
+        setClickTimer(null);
+      }, 300);
       
       setClickTimer(timer);
     }
@@ -232,7 +257,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             isLocked && "ring-2 ring-white/30 shadow-xl"
           )}
           onDoubleClick={!isMobile ? handleDoubleClick : undefined}
-          onTouchStart={isMobile ? handleDoubleClick : undefined}
+          onTouchStart={isMobile ? handleTouchStart : undefined}
         >
           {/* Front Face - Face dos Selos */}
           <div 
