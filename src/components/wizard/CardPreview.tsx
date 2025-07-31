@@ -45,67 +45,44 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [clickTimer, setClickTimer] = useState<NodeJS.Timeout | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detectar se é mobile
-  useState(() => {
-    setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-  });
-
-  // Sistema unificado de double click/tap com travamento
-  const handleDoubleClick = useCallback(() => {
-    if (clickTimer) {
-      // Double click detectado
-      clearTimeout(clickTimer);
-      setClickTimer(null);
-      setClickCount(0);
-      
-      // Virar e travar o card
-      setIsFlipped(!isFlipped);
-      setIsLocked(true);
-    } else {
-      // Primeiro click
-      setClickCount(1);
-      const timer = setTimeout(() => {
-        setClickCount(0);
-        setClickTimer(null);
-      }, 300); // 300ms para detectar double click
-      
-      setClickTimer(timer);
-    }
-  }, [isFlipped, clickTimer]);
-
-  // Sistema de double-tap para mobile
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
+  // Sistema unificado de clicks/taps para todas as ações
+  const handleCardInteraction = useCallback(() => {
+    setClickCount(prev => prev + 1);
     
     if (clickTimer) {
-      // Double tap detectado
       clearTimeout(clickTimer);
-      setClickTimer(null);
-      setClickCount(0);
-      
-      // Virar e travar o card
-      setIsFlipped(!isFlipped);
-      setIsLocked(true);
-    } else {
-      // Primeiro tap
-      setClickCount(1);
-      const timer = setTimeout(() => {
-        setClickCount(0);
-        setClickTimer(null);
-      }, 300);
-      
-      setClickTimer(timer);
     }
-  }, [isFlipped, clickTimer]);
+    
+    const timer = setTimeout(() => {
+      if (clickCount === 2 && isLocked) {
+        // Triple click/tap: destravar
+        setIsLocked(false);
+        setClickCount(0);
+        return;
+      }
+      
+      if (clickCount === 1 && !isLocked) {
+        // Double click/tap: flipar e travar
+        setIsFlipped(!isFlipped);
+        setIsLocked(true);
+      }
+      
+      setClickCount(0);
+    }, 400); // 400ms para melhor detecção
+    
+    setClickTimer(timer);
+  }, [clickCount, clickTimer, isFlipped, isLocked]);
 
-  // QR Code clicável na face frontal - funciona sempre
+  // QR Code só funciona se não estiver travado
   const handleQrClick = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    
+    if (isLocked) return; // Respeitar travamento
+    
     setIsFlipped(!isFlipped);
-  }, [isFlipped]);
+  }, [isFlipped, isLocked]);
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -261,10 +238,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             currentSize.width,
             currentSize.height,
             isFlipped ? 'rotate-y-180' : '',
-            isLocked && "ring-2 ring-white/30 shadow-xl"
+            isLocked ? "ring-4 ring-yellow-400/60 shadow-2xl" : "hover:ring-2 hover:ring-white/20"
           )}
-          onDoubleClick={!isMobile ? handleDoubleClick : undefined}
-          onTouchStart={isMobile ? handleTouchStart : undefined}
+          onClick={handleCardInteraction}
+          onTouchEnd={handleCardInteraction}
         >
           {/* Front Face - Face dos Selos */}
           <div 
@@ -330,9 +307,14 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleQrClick}
-                    onTouchEnd={isMobile ? handleQrClick : undefined}
-                    className="w-6 h-6 bg-white/80 rounded border flex items-center justify-center hover:bg-white transition-colors cursor-pointer touch-manipulation"
-                    title="Clique para virar o cartão"
+                    className={cn(
+                      "w-6 h-6 rounded border flex items-center justify-center transition-colors touch-manipulation",
+                      isLocked 
+                        ? "bg-gray-400/50 cursor-not-allowed opacity-50" 
+                        : "bg-white/80 hover:bg-white cursor-pointer"
+                    )}
+                    title={isLocked ? "Cartão travado - clique 3x para destravar" : "Clique para virar o cartão"}
+                    disabled={isLocked}
                   >
                     <QrCode className="w-4 h-4 text-gray-800" />
                   </button>
