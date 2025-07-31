@@ -335,12 +335,12 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
               </div>
 
               {/* Nome do Negócio */}
-              <h3 className={cn("font-poppins font-bold text-center mb-4 drop-shadow-md text-white", currentSize.textSizes.title)}>
+              <h3 className={cn("font-poppins font-bold text-center mb-2 drop-shadow-md text-white", currentSize.textSizes.title)}>
                 {cardData.business_name}
               </h3>
 
               {/* Área Principal - QR Code com Ícones ao Lado */}
-              <div className="flex-1 flex items-start justify-center pt-2">
+              <div className="flex-1 flex items-center justify-center -mt-4">
                   <div className="flex items-center gap-6">
                     {/* Coluna de Ícones à Esquerda */}
                     <div className="flex flex-col gap-3">
