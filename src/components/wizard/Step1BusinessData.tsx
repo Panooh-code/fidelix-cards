@@ -22,7 +22,7 @@ const countries = [
   { code: '+33', name: 'França', flag: '🇫🇷' },
 ];
 
-export const Step1BusinessData = ({ onNext }: Step1Props) => {
+export default function Step1BusinessData({ onNext }: Step1Props) {
   const { state, updateBusinessData } = useWizard();
   const [logoPreview, setLogoPreview] = useState<string>("");
 
