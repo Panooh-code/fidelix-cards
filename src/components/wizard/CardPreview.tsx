@@ -353,65 +353,67 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 {cardData.business_name}
               </h3>
 
-              {/* QR Code Centralizado */}
-              <div className="flex-1 flex items-center justify-center">
-                <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
-                  <img 
-                    src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
-                    alt="QR Code" 
-                    className="w-full h-full object-contain rounded-lg"
-                  />
+              {/* Layout Principal: Duas Colunas */}
+              <div className="flex-1 grid grid-cols-3 gap-4 items-center">
+                
+                {/* Coluna Esquerda: Ícones de Contato */}
+                <div className="flex flex-col gap-3 justify-center">
+                  {cardData.address && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowContactPopup(true);
+                      }}
+                      className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg w-fit"
+                      title="Ver informações de contato"
+                    >
+                      <MapPin className="w-5 h-5 text-white" />
+                    </button>
+                  )}
+                  
+                  {cardData.whatsapp && (
+                    <a
+                      href={createActionLink('whatsapp', cardData.whatsapp)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg w-fit"
+                      title="Chamar no WhatsApp"
+                    >
+                      <MessageCircle className="w-5 h-5 text-white" />
+                    </a>
+                  )}
+                  
+                  {cardData.socialNetwork && (
+                    <a
+                      href={createActionLink('social', cardData.socialNetwork)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg w-fit"
+                      title="Visitar rede social"
+                    >
+                      <Globe className="w-5 h-5 text-white" />
+                    </a>
+                  )}
                 </div>
-              </div>
 
-              {/* Ícones de Contato */}
-              <div className="flex justify-center gap-4 mb-2">
-                {cardData.address && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowContactPopup(true);
-                    }}
-                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                    title="Ver informações de contato"
-                  >
-                    <MapPin className="w-5 h-5 text-white" />
-                  </button>
-                )}
-                
-                {cardData.whatsapp && (
-                  <a
-                    href={createActionLink('whatsapp', cardData.whatsapp)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                    title="Chamar no WhatsApp"
-                  >
-                    <MessageCircle className="w-5 h-5 text-white" />
-                  </a>
-                )}
-                
-                {cardData.socialNetwork && (
-                  <a
-                    href={createActionLink('social', cardData.socialNetwork)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                    title="Visitar rede social"
-                  >
-                    <Globe className="w-5 h-5 text-white" />
-                  </a>
-                )}
-              </div>
-
-                {/* Código do Cliente */}
-                <div className="text-center -mt-1">
+                {/* Coluna Direita: QR Code + Código do Cliente */}
+                <div className="col-span-2 flex flex-col items-center gap-2">
+                  <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
+                    <img 
+                      src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
+                      alt="QR Code" 
+                      className="w-full h-full object-contain rounded-lg"
+                    />
+                  </div>
+                  
+                  {/* Código do Cliente - Imediatamente Abaixo do QR */}
                   <p className="text-white/90 font-mono text-lg font-bold tracking-widest drop-shadow-md">
                     {cardData.clientCode}
                   </p>
                 </div>
+              </div>
 
               {/* Footer com Nome do Cliente */}
               <div className="mt-auto flex justify-center">
