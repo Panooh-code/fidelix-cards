@@ -1,17 +1,28 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Upload, Image } from "lucide-react";
+import React, { useState } from "react";
 import { useWizard } from "./WizardContext";
-import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Upload, X, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+
 
 interface Step1Props {
   onNext: () => void;
 }
 
-export const Step1BusinessData = ({ onNext }: Step1Props) => {
+const countries = [
+  { code: '+55', name: 'Brasil', flag: '🇧🇷' },
+  { code: '+351', name: 'Portugal', flag: '🇵🇹' },
+  { code: '+1', name: 'Estados Unidos', flag: '🇺🇸' },
+  { code: '+44', name: 'Reino Unido', flag: '🇬🇧' },
+  { code: '+34', name: 'Espanha', flag: '🇪🇸' },
+  { code: '+33', name: 'França', flag: '🇫🇷' },
+];
+
+export default function Step1BusinessData({ onNext }: Step1Props) {
   const { state, updateBusinessData } = useWizard();
   const [logoPreview, setLogoPreview] = useState<string>("");
 
@@ -19,7 +30,7 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Arquivo muito grande. Máximo 5MB.");
+        alert("Arquivo muito grande. Máximo 5MB.");
         return;
       }
 
@@ -35,7 +46,7 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
 
   const handleNext = () => {
     if (!state.businessData.name || !state.businessData.phone || !state.businessData.email) {
-      toast.error("Preencha os campos obrigatórios");
+      alert("Preencha os campos obrigatórios: Nome, Telefone e Email");
       return;
     }
     onNext();
@@ -99,17 +110,46 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
           </div>
         </div>
 
-        {/* Telefone */}
-        <div>
-          <Label htmlFor="phone">Telefone *</Label>
-          <Input
-            id="phone"
-            type="tel"
-            placeholder="(11) 99999-9999"
-            value={state.businessData.phone}
-            onChange={(e) => updateBusinessData({ phone: e.target.value })}
-            className="mt-1"
-          />
+        {/* Telefone com código do país */}
+        <div className="space-y-2">
+          <Label htmlFor="phone">Telefone Principal *</Label>
+          <div className="flex gap-2">
+            <Select 
+              value={state.businessData.phoneCountryCode} 
+              onValueChange={(value) => updateBusinessData({ phoneCountryCode: value })}
+            >
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map((country) => (
+                  <SelectItem key={country.code} value={country.code}>
+                    {country.flag} {country.code}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="(xx) xxxxx-xxxx"
+              value={state.businessData.phone}
+              onChange={(e) => updateBusinessData({ phone: e.target.value })}
+              className="flex-1"
+            />
+          </div>
+          
+          {/* Checkbox WhatsApp */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="whatsapp-check"
+              checked={state.businessData.phoneIsWhatsapp}
+              onCheckedChange={(checked) => updateBusinessData({ phoneIsWhatsapp: !!checked })}
+            />
+            <Label htmlFor="whatsapp-check" className="text-sm text-muted-foreground">
+              Este número é WhatsApp Business
+            </Label>
+          </div>
         </div>
 
         {/* Email */}
@@ -138,36 +178,17 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
           />
         </div>
 
-        {/* WhatsApp Business */}
+        {/* Website ou Rede Social */}
         <div>
-          <Label htmlFor="whatsapp">WhatsApp Business (opcional)</Label>
+          <Label htmlFor="social">Website ou Rede Social (opcional)</Label>
           <Input
-            id="whatsapp"
-            type="tel"
-            placeholder="5511999999999 (só números)"
-            value={state.businessData.whatsapp || ""}
-            onChange={(e) => updateBusinessData({ whatsapp: e.target.value })}
-            className="mt-1"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            Formato: código do país + DDD + número (exemplo: 5511999999999)
-          </p>
-        </div>
-
-        {/* Rede Social Principal */}
-        <div>
-          <Label htmlFor="socialNetwork">Principal Rede Social ou Site (opcional)</Label>
-          <Input
-            id="socialNetwork"
+            id="social"
             type="url"
-            placeholder="https://instagram.com/seunegocios ou https://seusite.com"
+            placeholder="@instagram ou https://website.com"
             value={state.businessData.socialNetwork || ""}
             onChange={(e) => updateBusinessData({ socialNetwork: e.target.value })}
             className="mt-1"
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            Instagram, Facebook, LinkedIn ou site da empresa
-          </p>
         </div>
       </div>
 
@@ -178,4 +199,4 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
       </div>
     </div>
   );
-};
+}
