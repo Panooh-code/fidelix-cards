@@ -137,6 +137,38 @@ export const Step1BusinessData = ({ onNext }: Step1Props) => {
             rows={3}
           />
         </div>
+
+        {/* WhatsApp Business */}
+        <div>
+          <Label htmlFor="whatsapp">WhatsApp Business (opcional)</Label>
+          <Input
+            id="whatsapp"
+            type="tel"
+            placeholder="5511999999999 (só números)"
+            value={state.businessData.whatsapp || ""}
+            onChange={(e) => updateBusinessData({ whatsapp: e.target.value })}
+            className="mt-1"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Formato: código do país + DDD + número (exemplo: 5511999999999)
+          </p>
+        </div>
+
+        {/* Rede Social Principal */}
+        <div>
+          <Label htmlFor="socialNetwork">Principal Rede Social ou Site (opcional)</Label>
+          <Input
+            id="socialNetwork"
+            type="url"
+            placeholder="https://instagram.com/seunegocios ou https://seusite.com"
+            value={state.businessData.socialNetwork || ""}
+            onChange={(e) => updateBusinessData({ socialNetwork: e.target.value })}
+            className="mt-1"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Instagram, Facebook, LinkedIn ou site da empresa
+          </p>
+        </div>
       </div>
 
       <div className="flex justify-end">

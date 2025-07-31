@@ -5,6 +5,8 @@ export interface BusinessData {
   phone: string;
   email: string;
   address: string;
+  whatsapp?: string;        // Campo WhatsApp Business (opcional)
+  socialNetwork?: string;   // Campo Rede Social Principal (opcional)
   logoFile: File | null;
   logoUrl: string;
 }
@@ -45,6 +47,8 @@ const initialState: WizardState = {
     phone: "",
     email: "",
     address: "",
+    whatsapp: "",
+    socialNetwork: "",
     logoFile: null,
     logoUrl: "",
   },
