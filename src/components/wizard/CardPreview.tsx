@@ -77,7 +77,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             className={cn(
               sealSize,
               "relative rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg",
-              "shadow-card-elegant backdrop-blur-sm",
+              "paper-seal-effect backdrop-blur-sm",
               isFirst 
                 ? "border-current bg-white/95 shadow-lg" 
                 : "border-white/30 bg-white/20 cursor-pointer"
@@ -201,7 +201,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         >
           {/* Front Face - Face dos Selos */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-craft"
+            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-front-texture"
             style={{ 
               backgroundColor: cardData.backgroundColor,
               backgroundImage: `linear-gradient(135deg, transparent, ${cardData.primary_color}20), ${getBackgroundPattern().backgroundImage || ''}`,
@@ -274,11 +274,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
           {/* Back Face - Face QR Redesenhada */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-craft"
+            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-back-texture"
             style={{ 
               backgroundColor: cardData.primary_color,
-              backgroundImage: `linear-gradient(135deg, transparent, ${cardData.backgroundColor}40), radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`,
-              backgroundSize: '8px 8px'
+              backgroundImage: `linear-gradient(135deg, transparent, ${cardData.backgroundColor}40)`,
             }}
           >
             <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
@@ -349,7 +348,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
                 {/* QR Code + Código do Cliente - Centro Absoluto */}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
+                  <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center paper-qr-effect backdrop-blur-sm aspect-square p-2">
                     <img 
                       src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
                       alt="QR Code" 
