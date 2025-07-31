@@ -48,21 +48,18 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
   // Sistema unificado de clicks/taps para todas as ações
   const handleCardInteraction = useCallback(() => {
-    setClickCount(prev => prev + 1);
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
     
     if (clickTimer) {
       clearTimeout(clickTimer);
     }
     
     const timer = setTimeout(() => {
-      if (clickCount === 2 && isLocked) {
+      if (newCount === 3 && isLocked) {
         // Triple click/tap: destravar
         setIsLocked(false);
-        setClickCount(0);
-        return;
-      }
-      
-      if (clickCount === 1 && !isLocked) {
+      } else if (newCount === 2 && !isLocked) {
         // Double click/tap: flipar e travar
         setIsFlipped(!isFlipped);
         setIsLocked(true);
@@ -238,7 +235,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
             currentSize.width,
             currentSize.height,
             isFlipped ? 'rotate-y-180' : '',
-            isLocked ? "ring-4 ring-yellow-400/60 shadow-2xl" : "hover:ring-2 hover:ring-white/20"
+            isLocked ? "shadow-2xl" : "hover:ring-2 hover:ring-white/20"
           )}
           onClick={handleCardInteraction}
           onTouchEnd={handleCardInteraction}
@@ -356,61 +353,58 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 {cardData.business_name}
               </h3>
 
-              {/* Área Principal - QR Code com Ícones ao Lado */}
-              <div className="flex-1 flex items-center justify-start pl-4 -mt-4">
-                  <div className="flex items-center gap-6">
-                    {/* Coluna de Ícones à Esquerda */}
-                    <div className="flex flex-col gap-3">
-                      {cardData.address && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowContactPopup(true);
-                          }}
-                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                          title="Ver informações de contato"
-                        >
-                          <MapPin className="w-5 h-5 text-white" />
-                        </button>
-                      )}
-                      
-                      {cardData.whatsapp && (
-                        <a
-                          href={createActionLink('whatsapp', cardData.whatsapp)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                          title="Chamar no WhatsApp"
-                        >
-                          <MessageCircle className="w-5 h-5 text-white" />
-                        </a>
-                      )}
-                      
-                      {cardData.socialNetwork && (
-                        <a
-                          href={createActionLink('social', cardData.socialNetwork)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
-                          title="Visitar rede social"
-                        >
-                          <Globe className="w-5 h-5 text-white" />
-                        </a>
-                      )}
-                    </div>
-
-                    {/* QR Code Real Menor */}
-                    <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
-                      <img 
-                        src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
-                        alt="QR Code" 
-                        className="w-full h-full object-contain rounded-lg"
-                      />
-                    </div>
-                  </div>
+              {/* QR Code Centralizado */}
+              <div className="flex-1 flex items-center justify-center">
+                <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
+                  <img 
+                    src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
+                    alt="QR Code" 
+                    className="w-full h-full object-contain rounded-lg"
+                  />
                 </div>
+              </div>
+
+              {/* Ícones de Contato */}
+              <div className="flex justify-center gap-4 mb-2">
+                {cardData.address && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowContactPopup(true);
+                    }}
+                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                    title="Ver informações de contato"
+                  >
+                    <MapPin className="w-5 h-5 text-white" />
+                  </button>
+                )}
+                
+                {cardData.whatsapp && (
+                  <a
+                    href={createActionLink('whatsapp', cardData.whatsapp)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                    title="Chamar no WhatsApp"
+                  >
+                    <MessageCircle className="w-5 h-5 text-white" />
+                  </a>
+                )}
+                
+                {cardData.socialNetwork && (
+                  <a
+                    href={createActionLink('social', cardData.socialNetwork)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                    title="Visitar rede social"
+                  >
+                    <Globe className="w-5 h-5 text-white" />
+                  </a>
+                )}
+              </div>
 
                 {/* Código do Cliente */}
                 <div className="text-center -mt-1">
