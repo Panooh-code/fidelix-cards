@@ -340,8 +340,8 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
               </h3>
 
               {/* Área Principal - QR Code com Ícones ao Lado */}
-              <div className="flex-1 flex items-center justify-center -mt-4">
-                  <div className="flex items-center gap-6">
+              <div className="flex-1 flex items-center justify-start pl-8 -mt-4">
+                  <div className="flex items-center gap-4">
                     {/* Coluna de Ícones à Esquerda */}
                     <div className="flex flex-col gap-3">
                       {cardData.address && (
@@ -350,7 +350,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                             e.stopPropagation();
                             setShowContactPopup(true);
                           }}
-                          className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                           title="Ver informações de contato"
                         >
                           <MapPin className="w-5 h-5 text-white" />
@@ -363,7 +363,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                           title="Chamar no WhatsApp"
                         >
                           <MessageCircle className="w-5 h-5 text-white" />
@@ -376,7 +376,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
+                          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm shadow-lg"
                           title="Visitar rede social"
                         >
                           <Globe className="w-5 h-5 text-white" />
@@ -385,9 +385,9 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                     </div>
 
                     {/* QR Code Real Menor */}
-                    <div className="w-28 h-28 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-3">
+                    <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center shadow-card-elegant backdrop-blur-sm aspect-square p-2">
                       <img 
-                        src="/lovable-uploads/f7c509a0-9499-4b54-b6c3-f898db1a7f46.png" 
+                        src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
                         alt="QR Code" 
                         className="w-full h-full object-contain rounded-lg"
                       />
