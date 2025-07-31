@@ -396,7 +396,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 </div>
 
                 {/* Código do Cliente */}
-                <div className="text-center mt-1">
+                <div className="text-center -mt-1">
                   <p className="text-white/90 font-mono text-lg font-bold tracking-widest drop-shadow-md">
                     {cardData.clientCode}
                   </p>
