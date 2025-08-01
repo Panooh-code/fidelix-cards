@@ -53,59 +53,59 @@ export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Logo ou ícone *
-        </h2>
-      </div>
-
-      <div className="max-w-sm mx-auto">
-        <div
-          onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
-          onDragEnter={() => setIsDragging(true)}
-          onDragLeave={() => setIsDragging(false)}
-          className={`relative border-2 border-dashed rounded-lg transition-all cursor-pointer
-            ${isDragging 
-              ? 'border-primary bg-primary/5' 
-              : logoPreview 
-                ? 'border-primary/50 bg-primary/5' 
-                : 'border-muted hover:border-primary/50'
-            }`}
-        >
-          <label className="flex flex-col items-center justify-center w-full h-32 cursor-pointer">
-            <div className="flex flex-col items-center justify-center p-2">
-              {logoPreview ? (
-                <div className="text-center">
-                  <img
-                    src={logoPreview}
-                    alt="Logo preview"
-                    className="w-16 h-16 object-cover rounded-lg mx-auto mb-1"
-                  />
-                  <p className="text-xs text-primary font-medium">
-                    ✅ Carregado!
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <Upload className={`w-6 h-6 mb-1 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <p className="text-sm font-medium text-foreground text-center">
-                    Clique ou arraste uma imagem
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    PNG, JPG (máx 5MB)
-                  </p>
-                </>
-              )}
-            </div>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileSelect}
-            />
-          </label>
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Logo ou ícone *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <div
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            onDragEnter={() => setIsDragging(true)}
+            onDragLeave={() => setIsDragging(false)}
+            className={`relative border-2 border-dashed rounded-lg transition-all cursor-pointer
+              ${isDragging 
+                ? 'border-primary bg-primary/5' 
+                : logoPreview 
+                  ? 'border-primary/50 bg-primary/5' 
+                  : 'border-muted hover:border-primary/50'
+              }`}
+          >
+            <label className="flex flex-col items-center justify-center w-full h-32 cursor-pointer">
+              <div className="flex flex-col items-center justify-center p-2">
+                {logoPreview ? (
+                  <div className="text-center">
+                    <img
+                      src={logoPreview}
+                      alt="Logo preview"
+                      className="w-16 h-16 object-cover rounded-lg mx-auto mb-1"
+                    />
+                    <p className="text-xs text-primary font-medium">
+                      ✅ Carregado!
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <Upload className={`w-6 h-6 mb-1 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <p className="text-sm font-medium text-foreground text-center">
+                      Clique ou arraste uma imagem
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      PNG, JPG (máx 5MB)
+                    </p>
+                  </>
+                )}
+              </div>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileSelect}
+              />
+            </label>
+          </div>
         </div>
       </div>
     </div>

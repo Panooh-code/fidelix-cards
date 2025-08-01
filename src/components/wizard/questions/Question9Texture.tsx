@@ -48,26 +48,26 @@ export const Question9Texture = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Textura da cartela
-        </h2>
-      </div>
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Textura da cartela
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center space-y-3">
+        <div className="mx-auto w-full max-w-xs">
+          <CompactSelect
+            options={patterns}
+            value={state.customization.backgroundPattern || 'none'}
+            onValueChange={handleSelect}
+            placeholder="Escolha a textura"
+            showIcons={true}
+            showDescriptions={true}
+          />
+        </div>
 
-      <div className="max-w-sm mx-auto">
-        <CompactSelect
-          options={patterns}
-          value={state.customization.backgroundPattern || 'none'}
-          onValueChange={handleSelect}
-          placeholder="Escolha a textura"
-          showIcons={true}
-          showDescriptions={true}
-        />
-      </div>
-
-      <div className="text-center text-xs text-muted-foreground max-w-sm mx-auto">
-        O padrão aparece de forma sutil como marca d'água
+        <div className="text-center text-xs text-muted-foreground">
+          O padrão aparece de forma sutil como marca d'água
+        </div>
       </div>
     </div>
   );

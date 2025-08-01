@@ -43,29 +43,29 @@ export const Question6Social = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Rede social ou site (opcional)
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <Input
-          id="socialNetwork"
-          type="url"
-          placeholder="instagram.com/seunegocio"
-          value={state.businessData.socialNetwork || ""}
-          onChange={(e) => handleUrlChange(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="h-10 text-sm"
-        />
-        
-        {state.businessData.socialNetwork && (
-          <div className="text-xs text-primary font-medium">
-            {getUrlPreview()}
-          </div>
-        )}
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Rede social ou site (opcional)
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <Input
+            id="socialNetwork"
+            type="url"
+            placeholder="instagram.com/seunegocio"
+            value={state.businessData.socialNetwork || ""}
+            onChange={(e) => handleUrlChange(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="h-10 text-sm"
+          />
+          
+          {state.businessData.socialNetwork && (
+            <div className="text-center text-xs text-primary font-medium mt-2">
+              {getUrlPreview()}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

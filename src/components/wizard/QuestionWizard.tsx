@@ -108,27 +108,27 @@ export const QuestionWizard = () => {
   };
 
   return (
-    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden h-[300px] flex flex-col">
-      {/* Progress Bar - Fixed 8px */}
-      <div className="h-[8px] px-4 pt-1 flex-shrink-0">
-        <Progress value={progress} className="h-0.5" />
+    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden h-[320px] flex flex-col">
+      {/* Progress Bar - Fixed 12px */}
+      <div className="h-[12px] px-4 pt-2 pb-0 flex-shrink-0">
+        <Progress value={progress} className="h-1" />
       </div>
 
-      {/* Fidelix Tip - Fixed 20px */}
-      <div className="h-[20px] px-4 flex items-center flex-shrink-0">
+      {/* Fidelix Tip - Fixed 24px */}
+      <div className="h-[24px] px-4 py-1 flex items-center justify-center flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* Question Content - Fixed 232px */}
+      {/* Question Content - Fixed 244px */}
       <div className={cn(
-        "h-[232px] transition-all duration-200 overflow-hidden flex-shrink-0",
+        "h-[244px] transition-all duration-200 overflow-hidden flex-shrink-0",
         isTransitioning ? "opacity-0 transform -translate-x-full" : "opacity-100 transform translate-x-0"
       )}>
         {renderQuestion()}
       </div>
 
       {/* Navigation - Fixed 40px */}
-      <div className="h-[40px] px-4 border-t border-border/20 bg-muted/20 flex items-center justify-between flex-shrink-0">
+      <div className="h-[40px] px-4 py-2 border-t border-border/20 bg-muted/20 flex items-center justify-between flex-shrink-0">
         <Button
           onClick={handlePrev}
           variant="ghost"

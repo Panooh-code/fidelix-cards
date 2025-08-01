@@ -26,36 +26,36 @@ export const Question12CardLimit = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Nº de cartões
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <Input
-          id="cardLimit"
-          type="number"
-          placeholder="Deixe vazio para ilimitado"
-          value={state.rewardConfig.maxCards || ''}
-          onChange={(e) => handleLimitChange(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="h-10 text-sm text-center"
-        />
-        
-        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1">
-          {state.rewardConfig.maxCards ? (
-            <>
-              <Users className="w-3 h-3" />
-              <span>Limite: {state.rewardConfig.maxCards} cartões</span>
-            </>
-          ) : (
-            <>
-              <Infinity className="w-3 h-3" />
-              <span>Ilimitados</span>
-            </>
-          )}
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Nº de cartões
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <Input
+            id="cardLimit"
+            type="number"
+            placeholder="Deixe vazio para ilimitado"
+            value={state.rewardConfig.maxCards || ''}
+            onChange={(e) => handleLimitChange(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="h-10 text-sm text-center"
+          />
+          
+          <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1 mt-2">
+            {state.rewardConfig.maxCards ? (
+              <>
+                <Users className="w-3 h-3" />
+                <span>Limite: {state.rewardConfig.maxCards} cartões</span>
+              </>
+            ) : (
+              <>
+                <Infinity className="w-3 h-3" />
+                <span>Ilimitados</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

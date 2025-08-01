@@ -35,25 +35,25 @@ export const Question14Rules = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Como ganha os selos? *
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <Textarea
-          id="rules"
-          placeholder="Ex: A cada compra acima de R$ 50,00 você ganha um selo"
-          value={state.rewardConfig.instructions}
-          onChange={(e) => handleRulesChange(e.target.value)}
-          onKeyPress={handleKeyPress}
-          className="min-h-[60px] text-sm resize-none"
-        />
-        
-        <div className="text-right text-xs text-muted-foreground">
-          {state.rewardConfig.instructions.length} caracteres
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Como ganha os selos? *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <Textarea
+            id="rules"
+            placeholder="Ex: A cada compra acima de R$ 50,00 você ganha um selo"
+            value={state.rewardConfig.instructions}
+            onChange={(e) => handleRulesChange(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="min-h-[60px] text-sm resize-none"
+          />
+          
+          <div className="text-right text-xs text-muted-foreground mt-2">
+            {state.rewardConfig.instructions.length} caracteres
+          </div>
         </div>
       </div>
     </div>

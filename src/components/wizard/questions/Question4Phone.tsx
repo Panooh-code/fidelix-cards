@@ -53,61 +53,62 @@ export const Question4Phone = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Telefone *
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <div className="flex gap-2">
-          <Select 
-            value={state.businessData.country} 
-            onValueChange={(value: 'BR' | 'PT') => updateBusinessData({ country: value })}
-          >
-            <SelectTrigger className="h-10 w-20">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.code} value={country.code}>
-                  {country.flag}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <div className="relative flex-1">
-            <Input
-              id="phone"
-              type="tel"
-              placeholder={
-                state.businessData.country === 'BR' 
-                  ? "(11) 99999-9999" 
-                  : "123 456 789"
-              }
-              value={state.businessData.phone}
-              onChange={(e) => handlePhoneChange(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="h-10 pl-12"
-              
-            />
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground">
-              {countries.find(c => c.code === state.businessData.country)?.prefix}
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Telefone *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center space-y-3">
+        <div className="mx-auto w-full max-w-xs">
+          <div className="flex gap-2">
+            <Select 
+              value={state.businessData.country} 
+              onValueChange={(value: 'BR' | 'PT') => updateBusinessData({ country: value })}
+            >
+              <SelectTrigger className="h-10 w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map((country) => (
+                  <SelectItem key={country.code} value={country.code}>
+                    {country.flag}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <div className="relative flex-1">
+              <Input
+                id="phone"
+                type="tel"
+                placeholder={
+                  state.businessData.country === 'BR' 
+                    ? "(11) 99999-9999" 
+                    : "123 456 789"
+                }
+                value={state.businessData.phone}
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="h-10 pl-12"
+              />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground">
+                {countries.find(c => c.code === state.businessData.country)?.prefix}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="isWhatsApp"
-            checked={state.businessData.isWhatsApp}
-            onCheckedChange={(checked) => updateBusinessData({ isWhatsApp: !!checked })}
-          />
-          <Label htmlFor="isWhatsApp" className="text-sm cursor-pointer">
-            É WhatsApp
-          </Label>
+        <div className="mx-auto w-full max-w-xs">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isWhatsApp"
+              checked={state.businessData.isWhatsApp}
+              onCheckedChange={(checked) => updateBusinessData({ isWhatsApp: !!checked })}
+            />
+            <Label htmlFor="isWhatsApp" className="text-sm cursor-pointer">
+              É WhatsApp
+            </Label>
+          </div>
         </div>
       </div>
     </div>

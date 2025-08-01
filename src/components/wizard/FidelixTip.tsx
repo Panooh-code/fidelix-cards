@@ -31,9 +31,9 @@ export const FidelixTip = ({ questionNumber }: FidelixTipProps) => {
   const tip = getTipsByQuestion(questionNumber);
 
   return (
-    <div className="text-xs text-muted-foreground bg-muted/30 rounded-full flex items-center gap-1.5 px-2.5 py-0">
+    <div className="text-xs text-muted-foreground bg-muted/30 rounded-full flex items-center gap-2 px-3 py-1">
       <span className="text-primary">🐱</span>
-      <span>{tip}</span>
+      <span className="truncate">{tip}</span>
     </div>
   );
 };

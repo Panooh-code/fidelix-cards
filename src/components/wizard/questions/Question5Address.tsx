@@ -18,28 +18,28 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Endereço (opcional)
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <Textarea
-          id="address"
-          placeholder="Rua das Flores, 123 - Centro - SP"
-          value={state.businessData.address}
-          onChange={(e) => updateBusinessData({ address: e.target.value })}
-          onKeyPress={handleKeyPress}
-          className="min-h-[80px] text-sm resize-none"
-        />
-        
-        {state.businessData.address && (
-          <div className="text-right text-xs text-muted-foreground">
-            {state.businessData.address.length} caracteres
-          </div>
-        )}
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Endereço (opcional)
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <Textarea
+            id="address"
+            placeholder="Rua das Flores, 123 - Centro - SP"
+            value={state.businessData.address}
+            onChange={(e) => updateBusinessData({ address: e.target.value })}
+            onKeyPress={handleKeyPress}
+            className="min-h-[80px] text-sm resize-none"
+          />
+          
+          {state.businessData.address && (
+            <div className="text-right text-xs text-muted-foreground mt-2">
+              {state.businessData.address.length} caracteres
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

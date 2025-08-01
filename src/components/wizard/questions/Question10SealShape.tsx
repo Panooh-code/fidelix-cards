@@ -47,38 +47,40 @@ export const Question10SealShape = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Qual formato dos selos? *
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-4 gap-2 max-w-sm mx-auto">
-        {shapes.map((shape) => {
-          const IconComponent = shape.icon;
-          const isSelected = state.rewardConfig.sealShape === shape.value;
-          
-          return (
-            <button
-              key={shape.value}
-              onClick={() => handleSelect(shape.value)}
-              className={cn(
-                "h-12 rounded-lg border-2 transition-all flex items-center justify-center",
-                isSelected
-                  ? "border-primary bg-primary/10"
-                  : "border-muted hover:border-primary/50"
-              )}
-            >
-              <IconComponent 
-                className="w-5 h-5"
-                style={{ 
-                  color: isSelected ? state.customization.primaryColor : undefined 
-                }}
-              />
-            </button>
-          );
-        })}
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Qual formato dos selos? *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <div className="grid grid-cols-4 gap-2">
+            {shapes.map((shape) => {
+              const IconComponent = shape.icon;
+              const isSelected = state.rewardConfig.sealShape === shape.value;
+              
+              return (
+                <button
+                  key={shape.value}
+                  onClick={() => handleSelect(shape.value)}
+                  className={cn(
+                    "h-12 rounded-lg border-2 transition-all flex items-center justify-center",
+                    isSelected
+                      ? "border-primary bg-primary/10"
+                      : "border-muted hover:border-primary/50"
+                  )}
+                >
+                  <IconComponent 
+                    className="w-5 h-5"
+                    style={{ 
+                      color: isSelected ? state.customization.primaryColor : undefined 
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

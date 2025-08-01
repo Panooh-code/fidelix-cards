@@ -47,49 +47,49 @@ export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Cor principal *
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <div className="grid grid-cols-5 gap-2">
-          {presetColors.map((preset) => {
-            const isSelected = state.customization.primaryColor === preset.color;
-            
-            return (
-              <button
-                key={preset.color}
-                onClick={() => handleColorSelect(preset.color)}
-                className={cn(
-                  "w-8 h-8 rounded-full border-2 transition-all",
-                  isSelected 
-                    ? "border-foreground" 
-                    : "border-white hover:border-muted-foreground"
-                )}
-                style={{ backgroundColor: preset.color }}
-                title={preset.name}
-              />
-            );
-          })}
-        </div>
-        
-        <div className="flex gap-2">
-          <Input
-            type="color"
-            value={customColor}
-            onChange={(e) => handleCustomColorChange(e.target.value)}
-            className="w-12 h-8 p-1 border rounded cursor-pointer"
-          />
-          <Input
-            type="text"
-            value={customColor}
-            onChange={(e) => handleCustomColorChange(e.target.value)}
-            placeholder="#480da2"
-            className="flex-1 h-8 text-xs font-mono"
-          />
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Cor principal *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center space-y-3">
+        <div className="mx-auto w-full max-w-xs">
+          <div className="grid grid-cols-5 gap-2 mb-3">
+            {presetColors.map((preset) => {
+              const isSelected = state.customization.primaryColor === preset.color;
+              
+              return (
+                <button
+                  key={preset.color}
+                  onClick={() => handleColorSelect(preset.color)}
+                  className={cn(
+                    "w-8 h-8 rounded-full border-2 transition-all",
+                    isSelected 
+                      ? "border-foreground" 
+                      : "border-white hover:border-muted-foreground"
+                  )}
+                  style={{ backgroundColor: preset.color }}
+                  title={preset.name}
+                />
+              );
+            })}
+          </div>
+          
+          <div className="flex gap-2">
+            <Input
+              type="color"
+              value={customColor}
+              onChange={(e) => handleCustomColorChange(e.target.value)}
+              className="w-12 h-8 p-1 border rounded cursor-pointer"
+            />
+            <Input
+              type="text"
+              value={customColor}
+              onChange={(e) => handleCustomColorChange(e.target.value)}
+              placeholder="#480da2"
+              className="flex-1 h-8 text-xs font-mono"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -29,22 +29,22 @@ export const Question2Segment = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Segmento do negócio *
-        </h2>
-      </div>
-
-      <div className="max-w-sm mx-auto">
-        <CompactSelect
-          options={segments}
-          value={state.businessData.segment || ''}
-          onValueChange={handleSelect}
-          placeholder="Escolha seu segmento"
-          showIcons={true}
-          showDescriptions={true}
-        />
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Segmento do negócio *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <CompactSelect
+            options={segments}
+            value={state.businessData.segment || ''}
+            onValueChange={handleSelect}
+            placeholder="Escolha seu segmento"
+            showIcons={true}
+            showDescriptions={true}
+          />
+        </div>
       </div>
     </div>
   );

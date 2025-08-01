@@ -18,21 +18,19 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Nome do negócio *
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Nome do negócio *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
         <Input
           id="businessName"
           placeholder="Ex: Café Central, Loja da Maria..."
           value={state.businessData.name}
           onChange={(e) => updateBusinessData({ name: e.target.value })}
           onKeyPress={handleKeyPress}
-          className="h-10 text-base text-center"
+          className="mx-auto w-full max-w-xs h-10 text-base text-center"
         />
       </div>
     </div>
