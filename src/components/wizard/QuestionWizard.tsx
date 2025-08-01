@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FidelixTip } from "./FidelixTip";
 
-// CORREÇÃO: Importar todos os 15 componentes de pergunta
+// Importar todos os 15 componentes de pergunta
 import { Question1Name } from "./questions/Question1Name";
 import { Question2Segment } from "./questions/Question2Segment";
 import { Question3Logo } from "./questions/Question3Logo";
@@ -84,7 +84,6 @@ export const QuestionWizard = () => {
 
   const renderQuestion = () => {
     const questionProps = { onNext: handleNext, onPrev: handlePrev };
-    // CORREÇÃO: Adicionar um case para cada pergunta
     switch (state.currentQuestion) {
       case 1: return <Question1Name {...questionProps} />;
       case 2: return <Question2Segment {...questionProps} />;
@@ -106,8 +105,10 @@ export const QuestionWizard = () => {
   };
 
   return (
+    // CORREÇÃO: Removida a altura fixa para o layout ser flexível
     <Card className="shadow-elegant border-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm overflow-hidden flex flex-col">
       
+      {/* CORREÇÃO: Adicionado padding (pb-2) para criar espaço abaixo da barra */}
       <div className="px-4 pt-4 pb-2 flex-shrink-0">
         <Progress value={progress} className="h-1.5" />
       </div>
