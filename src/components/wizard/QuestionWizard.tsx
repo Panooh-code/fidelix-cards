@@ -8,9 +8,23 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FidelixTip } from "./FidelixTip";
 
-// Import all question components
+// CORREÇÃO: Importar todos os 15 componentes de pergunta
 import { Question1Name } from "./questions/Question1Name";
-// (Mantenha os imports das outras perguntas aqui)
+import { Question2Segment } from "./questions/Question2Segment";
+import { Question3Logo } from "./questions/Question3Logo";
+import { Question4Phone } from "./questions/Question4Phone";
+import { Question5Address } from "./questions/Question5Address";
+import { Question6Social } from "./questions/Question6Social";
+import { Question7PrimaryColor } from "./questions/Question7PrimaryColor";
+import { Question8SecondaryColor } from "./questions/Question8SecondaryColor";
+import { Question9Texture } from "./questions/Question9Texture";
+import { Question10SealShape } from "./questions/Question10SealShape";
+import { Question11SealCount } from "./questions/Question11SealCount";
+import { Question12CardLimit } from "./questions/Question12CardLimit";
+import { Question13Reward } from "./questions/Question13Reward";
+import { Question14Rules } from "./questions/Question14Rules";
+import { Question15Expiration } from "./questions/Question15Expiration";
+
 
 const TOTAL_QUESTIONS = 15;
 
@@ -46,28 +60,54 @@ export const QuestionWizard = () => {
   };
 
   const canAdvance = () => {
-    // A sua lógica para avançar continua aqui
+    // Lógica de validação para cada passo
     switch (state.currentQuestion) {
       case 1: return !!state.businessData.name;
-      // ... outros casos
+      case 2: return !!state.businessData.segment;
+      case 3: return !!state.businessData.logoFile;
+      case 4: return !!state.businessData.phone;
+      case 7: return !!state.customization.primaryColor;
+      case 8: return !!state.customization.backgroundColor;
+      case 10: return !!state.rewardConfig.sealShape;
+      case 11: return !!state.rewardConfig.sealCount;
+      case 13: return !!state.rewardConfig.rewardDescription;
+      case 14: return !!state.rewardConfig.instructions;
+      // Perguntas opcionais permitem avançar sempre
+      case 5:
+      case 6:
+      case 9:
+      case 12:
+      case 15:
       default: return true;
     }
   };
 
   const renderQuestion = () => {
     const questionProps = { onNext: handleNext, onPrev: handlePrev };
+    // CORREÇÃO: Adicionar um case para cada pergunta
     switch (state.currentQuestion) {
       case 1: return <Question1Name {...questionProps} />;
-      // ... outros casos
-      default: return <Question1Name {...questionProps} />; // Padrão para a primeira pergunta
+      case 2: return <Question2Segment {...questionProps} />;
+      case 3: return <Question3Logo {...questionProps} />;
+      case 4: return <Question4Phone {...questionProps} />;
+      case 5: return <Question5Address {...questionProps} />;
+      case 6: return <Question6Social {...questionProps} />;
+      case 7: return <Question7PrimaryColor {...questionProps} />;
+      case 8: return <Question8SecondaryColor {...questionProps} />;
+      case 9: return <Question9Texture {...questionProps} />;
+      case 10: return <Question10SealShape {...questionProps} />;
+      case 11: return <Question11SealCount {...questionProps} />;
+      case 12: return <Question12CardLimit {...questionProps} />;
+      case 13: return <Question13Reward {...questionProps} />;
+      case 14: return <Question14Rules {...questionProps} />;
+      case 15: return <Question15Expiration {...questionProps} />;
+      default: return <Question1Name {...questionProps} />;
     }
   };
 
   return (
-    // CORREÇÃO: Removida a altura fixa 'h-[320px]' ou 'h-[420px]' para permitir que o conteúdo defina a altura.
     <Card className="shadow-elegant border-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm overflow-hidden flex flex-col">
       
-      {/* CORREÇÃO: Adicionado espaçamento (pb-2) para separar a barra da dica */}
       <div className="px-4 pt-4 pb-2 flex-shrink-0">
         <Progress value={progress} className="h-1.5" />
       </div>
@@ -76,7 +116,6 @@ export const QuestionWizard = () => {
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* CORREÇÃO: 'flex-1' permite que esta área cresça e encolha, e removida a altura fixa */}
       <div className={cn(
         "flex-1 transition-all duration-200 overflow-hidden",
         isTransitioning ? "opacity-0" : "opacity-100"
@@ -84,7 +123,6 @@ export const QuestionWizard = () => {
         {renderQuestion()}
       </div>
 
-      {/* Navegação no rodapé */}
       <div className="px-4 py-3 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
         <Button
           onClick={handlePrev}
