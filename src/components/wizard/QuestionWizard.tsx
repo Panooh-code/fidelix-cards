@@ -109,48 +109,46 @@ export const QuestionWizard = () => {
 
   return (
     <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden h-[300px] flex flex-col">
-      {/* Progress Bar */}
-      <div className="px-4 pt-1 pb-0 flex-shrink-0">
+      {/* Progress Bar - Fixed 8px */}
+      <div className="h-[8px] px-4 pt-1 flex-shrink-0">
         <Progress value={progress} className="h-0.5" />
       </div>
 
-      {/* Fidelix Tip */}
-      <div className="px-4 py-0 flex-shrink-0">
+      {/* Fidelix Tip - Fixed 20px */}
+      <div className="h-[20px] px-4 flex items-center flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* Question Content */}
+      {/* Question Content - Fixed 232px */}
       <div className={cn(
-        "flex-1 transition-all duration-200 overflow-hidden",
+        "h-[232px] transition-all duration-200 overflow-hidden flex-shrink-0",
         isTransitioning ? "opacity-0 transform -translate-x-full" : "opacity-100 transform translate-x-0"
       )}>
         {renderQuestion()}
       </div>
 
-      {/* Compact Navigation */}
-      <div className="px-4 py-1 border-t border-border/20 bg-muted/20 flex-shrink-0">
-        <div className="flex justify-between items-center">
-          <Button
-            onClick={handlePrev}
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2 text-xs"
-          >
-            <ArrowLeft className="w-3 h-3 mr-1" />
-            Voltar
-          </Button>
-            
-          <Button
-            onClick={handleNext}
-            variant="default"
-            size="sm"
-            disabled={!canAdvance()}
-            className="h-7 px-2 text-xs"
-          >
-            {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-            <ArrowRight className="w-3 h-3 ml-1" />
-          </Button>
-        </div>
+      {/* Navigation - Fixed 40px */}
+      <div className="h-[40px] px-4 border-t border-border/20 bg-muted/20 flex items-center justify-between flex-shrink-0">
+        <Button
+          onClick={handlePrev}
+          variant="ghost"
+          size="sm"
+          className="h-7 px-2 text-xs"
+        >
+          <ArrowLeft className="w-3 h-3 mr-1" />
+          Voltar
+        </Button>
+          
+        <Button
+          onClick={handleNext}
+          variant="default"
+          size="sm"
+          disabled={!canAdvance()}
+          className="h-7 px-2 text-xs"
+        >
+          {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
+          <ArrowRight className="w-3 h-3 ml-1" />
+        </Button>
       </div>
     </Card>
   );

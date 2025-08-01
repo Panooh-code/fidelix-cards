@@ -39,15 +39,13 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-2 space-y-1">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-0">
-          Validade (opcional)
-        </h2>
-      </div>
-
-      <div className="space-y-1 max-w-sm mx-auto">
-        <div className="text-center text-sm">
+    <div className="h-full flex flex-col p-3">
+      <h2 className="text-lg font-semibold text-foreground mb-2 text-center">
+        Validade (opcional)
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="text-center text-sm mb-2">
           {state.rewardConfig.expirationDate ? (
             <span className="text-primary font-medium">
               Válida até {format(state.rewardConfig.expirationDate, "dd/MM/yyyy")}
@@ -59,7 +57,7 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-4 gap-1 mb-2">
           {quickDates.map((quick) => (
             <Button
               key={quick.days}

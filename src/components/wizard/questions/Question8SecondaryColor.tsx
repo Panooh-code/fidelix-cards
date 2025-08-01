@@ -47,15 +47,13 @@ export const Question8SecondaryColor = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-3 space-y-2 h-full flex flex-col justify-center">
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
-          Cor de fundo *
-        </h2>
-      </div>
-
-      <div className="space-y-3 max-w-sm mx-auto">
-        <div className="grid grid-cols-5 gap-2">
+    <div className="h-full flex flex-col p-3">
+      <h2 className="text-lg font-semibold text-foreground mb-2 text-center">
+        Cor de fundo *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="grid grid-cols-5 gap-2 mb-3">
           {presetColors.map((preset) => {
             const isSelected = state.customization.backgroundColor === preset.color;
             
