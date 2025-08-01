@@ -7,10 +7,9 @@ import { toast } from "sonner";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question3Logo = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
   const [logoPreview, setLogoPreview] = useState<string>(state.businessData.logoUrl || "");
   const [isDragging, setIsDragging] = useState(false);

@@ -6,7 +6,6 @@ import { FileText, AlertCircle } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const rulesExamples = [
@@ -18,7 +17,7 @@ const rulesExamples = [
   "A cada serviço contratado você ganha um selo",
 ];
 
-export const Question14Rules = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question14Rules = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
 
   const handleRulesChange = (value: string) => {
@@ -39,7 +38,7 @@ export const Question14Rules = ({ onNext, onPrev, canSkip }: QuestionProps) => {
     <div className="p-3 space-y-2">
       <div className="text-center">
         <h2 className="text-lg font-semibold text-foreground">
-          Como ganhar selos? *
+          Como ganha os selos? *
         </h2>
       </div>
 
@@ -51,7 +50,6 @@ export const Question14Rules = ({ onNext, onPrev, canSkip }: QuestionProps) => {
           onChange={(e) => handleRulesChange(e.target.value)}
           onKeyPress={handleKeyPress}
           className="min-h-[60px] text-sm resize-none"
-          autoFocus
         />
         
         <div className="text-right text-xs text-muted-foreground">

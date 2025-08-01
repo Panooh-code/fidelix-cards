@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const shapes = [
@@ -40,7 +39,7 @@ const shapes = [
   },
 ];
 
-export const Question10SealShape = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question10SealShape = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
 
   const handleSelect = (shape: 'star' | 'circle' | 'square' | 'heart') => {

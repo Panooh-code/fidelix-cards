@@ -10,10 +10,9 @@ import { ptBR } from "date-fns/locale";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question15Expiration = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 

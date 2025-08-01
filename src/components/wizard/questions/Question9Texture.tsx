@@ -5,7 +5,6 @@ import { CompactSelect } from "../CompactSelect";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const patterns = [
@@ -41,7 +40,7 @@ const patterns = [
   },
 ];
 
-export const Question9Texture = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question9Texture = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateCustomization } = useWizard();
 
   const handleSelect = (pattern: string) => {

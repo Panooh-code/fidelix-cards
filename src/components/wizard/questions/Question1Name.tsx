@@ -6,10 +6,9 @@ import { Building2 } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question1Name = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -34,7 +33,6 @@ export const Question1Name = ({ onNext, onPrev, canSkip }: QuestionProps) => {
           onChange={(e) => updateBusinessData({ name: e.target.value })}
           onKeyPress={handleKeyPress}
           className="h-10 text-base text-center"
-          autoFocus
         />
       </div>
     </div>

@@ -6,10 +6,9 @@ import { MapPin, AlertCircle } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question5Address = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

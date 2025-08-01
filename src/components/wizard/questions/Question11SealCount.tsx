@@ -6,7 +6,6 @@ import { Target, Star, Circle, Square, Heart } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const getIconByShape = (shape: 'star' | 'circle' | 'square' | 'heart') => {
@@ -19,7 +18,7 @@ const getIconByShape = (shape: 'star' | 'circle' | 'square' | 'heart') => {
   }
 };
 
-export const Question11SealCount = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question11SealCount = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
   
   const handleCountChange = (value: number[]) => {

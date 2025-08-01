@@ -6,10 +6,9 @@ import { Globe, Instagram, Facebook, Linkedin, AlertCircle } from "lucide-react"
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question6Social = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question6Social = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

@@ -6,7 +6,6 @@ import { Gift, AlertCircle } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const rewardExamples = [
@@ -18,7 +17,7 @@ const rewardExamples = [
   "Complete a cartela e ganhe uma consulta grátis*",
 ];
 
-export const Question13Reward = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question13Reward = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
 
   const handleRewardChange = (value: string) => {
@@ -41,7 +40,7 @@ export const Question13Reward = ({ onNext, onPrev, canSkip }: QuestionProps) => 
     <div className="p-3 space-y-2">
       <div className="text-center">
         <h2 className="text-lg font-semibold text-foreground">
-          Prêmio da cartela *
+          Definir recompensa *
         </h2>
       </div>
 
@@ -54,7 +53,6 @@ export const Question13Reward = ({ onNext, onPrev, canSkip }: QuestionProps) => 
           onKeyPress={handleKeyPress}
           className="h-10 text-sm"
           maxLength={45}
-          autoFocus
         />
         
         <div className="text-right text-xs text-muted-foreground">

@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const presetColors = [
@@ -25,7 +24,7 @@ const presetColors = [
   { name: 'Creme', color: '#fffbeb' },
 ];
 
-export const Question8SecondaryColor = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question8SecondaryColor = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateCustomization } = useWizard();
   const [customColor, setCustomColor] = useState(state.customization.backgroundColor);
 

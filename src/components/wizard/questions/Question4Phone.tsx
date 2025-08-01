@@ -9,7 +9,6 @@ import { Phone, MessageCircle } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const countries = [
@@ -17,26 +16,22 @@ const countries = [
   { code: 'PT', name: 'Portugal', flag: '🇵🇹', prefix: '+351', mask: '### ### ###' },
 ];
 
-export const Question4Phone = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question4Phone = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
   
   const formatPhone = (value: string, country: 'BR' | 'PT') => {
-    const numbers = value.replace(/\D/g, '');
+    const digits = value.replace(/\D/g, '');
     
     if (country === 'BR') {
-      // Format: (11) 99999-9999
-      return numbers
-        .substring(0, 11)
-        .replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
-        .replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3')
-        .replace(/(\d{2})(\d{0,5})/, '($1) $2');
+      if (digits.length <= 10) {
+        // Formato: (11) 3333-3333
+        return digits.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+      } else {
+        // Formato: (11) 9 9999-9999
+        return digits.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2 $3-$4');
+      }
     } else {
-      // Format: 123 456 789
-      return numbers
-        .substring(0, 9)
-        .replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3')
-        .replace(/(\d{3})(\d{3})(\d{0,3})/, '$1 $2 $3')
-        .replace(/(\d{3})(\d{0,3})/, '$1 $2');
+      return digits.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
     }
   };
 
@@ -96,7 +91,7 @@ export const Question4Phone = ({ onNext, onPrev, canSkip }: QuestionProps) => {
               onChange={(e) => handlePhoneChange(e.target.value)}
               onKeyPress={handleKeyPress}
               className="h-10 pl-12"
-              autoFocus
+              
             />
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-muted-foreground">
               {countries.find(c => c.code === state.businessData.country)?.prefix}

@@ -5,7 +5,6 @@ import { CompactSelect } from "../CompactSelect";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
 const segments = [
@@ -22,7 +21,7 @@ const segments = [
   { id: 'outros', name: 'Outros', icon: MoreHorizontal, description: 'Outros segmentos' },
 ];
 
-export const Question2Segment = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question2Segment = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateBusinessData } = useWizard();
 
   const handleSelect = (segmentId: string) => {

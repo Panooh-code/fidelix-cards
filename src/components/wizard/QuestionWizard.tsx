@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useWizard } from "./WizardContext";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FidelixTip } from "./FidelixTip";
 
@@ -29,6 +30,7 @@ const TOTAL_QUESTIONS = 15;
 export const QuestionWizard = () => {
   const { state, setCurrentQuestion, nextQuestion, prevQuestion, setComplete } = useWizard();
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const navigate = useNavigate();
 
   const progress = (state.currentQuestion / TOTAL_QUESTIONS) * 100;
 
@@ -46,7 +48,9 @@ export const QuestionWizard = () => {
   };
 
   const handlePrev = () => {
-    if (state.currentQuestion > 1) {
+    if (state.currentQuestion === 1) {
+      navigate('/');
+    } else if (state.currentQuestion > 1) {
       setIsTransitioning(true);
       setTimeout(() => {
         prevQuestion();
@@ -55,10 +59,6 @@ export const QuestionWizard = () => {
     }
   };
 
-  const canSkip = () => {
-    const skippableQuestions = [5, 6, 12, 15]; // Address, Social, Card limit, Expiration
-    return skippableQuestions.includes(state.currentQuestion);
-  };
 
   const canAdvance = () => {
     switch (state.currentQuestion) {
@@ -85,7 +85,6 @@ export const QuestionWizard = () => {
     const questionProps = {
       onNext: handleNext,
       onPrev: handlePrev,
-      canSkip: canSkip(),
     };
 
     switch (state.currentQuestion) {
@@ -111,12 +110,14 @@ export const QuestionWizard = () => {
   return (
     <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden h-[300px] flex flex-col">
       {/* Progress Bar */}
-      <div className="px-4 pt-2 pb-1 flex-shrink-0">
+      <div className="px-4 pt-1 pb-0 flex-shrink-0">
         <Progress value={progress} className="h-0.5" />
       </div>
 
       {/* Fidelix Tip */}
-      <FidelixTip questionNumber={state.currentQuestion} />
+      <div className="px-4 py-1 flex-shrink-0">
+        <FidelixTip questionNumber={state.currentQuestion} />
+      </div>
 
       {/* Question Content */}
       <div className={cn(
@@ -133,37 +134,22 @@ export const QuestionWizard = () => {
             onClick={handlePrev}
             variant="ghost"
             size="sm"
-            disabled={state.currentQuestion === 1}
             className="h-7 px-2 text-xs"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Voltar
           </Button>
-
-          <div className="flex items-center gap-1">
-            {canSkip() && (
-              <Button
-                onClick={handleNext}
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground h-7 px-2 text-xs"
-              >
-                <SkipForward className="w-3 h-3 mr-1" />
-                Pular
-              </Button>
-            )}
             
-            <Button
-              onClick={handleNext}
-              variant="default"
-              size="sm"
-              disabled={!canAdvance() && !canSkip()}
-              className="h-7 px-2 text-xs"
-            >
-              {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-              <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
+          <Button
+            onClick={handleNext}
+            variant="default"
+            size="sm"
+            disabled={!canAdvance()}
+            className="h-7 px-2 text-xs"
+          >
+            {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
+            <ArrowRight className="w-3 h-3 ml-1" />
+          </Button>
         </div>
       </div>
     </Card>

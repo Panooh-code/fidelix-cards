@@ -5,10 +5,9 @@ import { Infinity, Users } from "lucide-react";
 interface QuestionProps {
   onNext: () => void;
   onPrev: () => void;
-  canSkip: boolean;
 }
 
-export const Question12CardLimit = ({ onNext, onPrev, canSkip }: QuestionProps) => {
+export const Question12CardLimit = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
 
   const handleLimitChange = (value: string) => {
@@ -27,43 +26,35 @@ export const Question12CardLimit = ({ onNext, onPrev, canSkip }: QuestionProps) 
   };
 
   return (
-    <div className="p-4 space-y-4 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
-          Limite de cartelas (opcional)
+        <h2 className="text-lg font-semibold text-foreground">
+          Nº de cartões
         </h2>
       </div>
 
-      <div className="space-y-3 max-w-sm mx-auto">
-        <div className="relative">
-          <Input
-            type="number"
-            placeholder="Ex: 1000 (vazio = ilimitado)"
-            value={state.rewardConfig.maxCards || ""}
-            onChange={(e) => handleLimitChange(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="h-10 pr-10"
-            min="1"
-            autoFocus
-          />
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            {state.rewardConfig.maxCards ? (
-              <Users className="w-4 h-4 text-muted-foreground" />
-            ) : (
-              <Infinity className="w-4 h-4 text-muted-foreground" />
-            )}
-          </div>
-        </div>
-
-        <div className="text-center text-sm">
+      <div className="space-y-2 max-w-sm mx-auto">
+        <Input
+          id="cardLimit"
+          type="number"
+          placeholder="Deixe vazio para ilimitado"
+          value={state.rewardConfig.maxCards || ''}
+          onChange={(e) => handleLimitChange(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="h-10 text-sm text-center"
+        />
+        
+        <div className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1">
           {state.rewardConfig.maxCards ? (
-            <span className="text-primary font-medium">
-              Máximo: {state.rewardConfig.maxCards.toLocaleString()} cartelas
-            </span>
+            <>
+              <Users className="w-3 h-3" />
+              <span>Limite: {state.rewardConfig.maxCards} cartões</span>
+            </>
           ) : (
-            <span className="text-green-600 font-medium">
-              Cartelas ilimitadas
-            </span>
+            <>
+              <Infinity className="w-3 h-3" />
+              <span>Ilimitados</span>
+            </>
           )}
         </div>
       </div>
