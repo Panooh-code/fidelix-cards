@@ -1,7 +1,6 @@
-import { Label } from "@/components/ui/label";
 import { useWizard } from "../WizardContext";
 import { Utensils, Shirt, Heart, Calendar, Monitor, GraduationCap, Stethoscope, MapPin, Gamepad2, Wrench, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CompactSelect } from "../CompactSelect";
 
 interface QuestionProps {
   onNext: () => void;
@@ -28,47 +27,25 @@ export const Question2Segment = ({ onNext, onPrev, canSkip }: QuestionProps) => 
 
   const handleSelect = (segmentId: string) => {
     updateBusinessData({ segment: segmentId });
-    // Don't auto-advance - user needs to click "Avançar"
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-4 space-y-4 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
-          Segmento do negócio
+        <h2 className="text-lg font-semibold text-foreground mb-1">
+          Segmento do negócio *
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
-        {segments.map((segment) => {
-          const IconComponent = segment.icon;
-          const isSelected = state.businessData.segment === segment.id;
-          
-          return (
-            <button
-              key={segment.id}
-              onClick={() => handleSelect(segment.id)}
-              className={cn(
-                "p-2 rounded-lg border transition-all text-center",
-                "flex flex-col items-center gap-1",
-                isSelected
-                  ? "border-primary bg-primary/10"
-                  : "border-muted hover:border-primary/50"
-              )}
-            >
-              <IconComponent className={cn(
-                "w-4 h-4",
-                isSelected ? "text-primary" : "text-muted-foreground"
-              )} />
-              <span className={cn(
-                "text-xs font-medium",
-                isSelected ? "text-primary" : "text-foreground"
-              )}>
-                {segment.name}
-              </span>
-            </button>
-          );
-        })}
+      <div className="max-w-sm mx-auto">
+        <CompactSelect
+          options={segments}
+          value={state.businessData.segment || ''}
+          onValueChange={handleSelect}
+          placeholder="Escolha seu segmento"
+          showIcons={true}
+          showDescriptions={true}
+        />
       </div>
     </div>
   );

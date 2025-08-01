@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useWizard } from "./WizardContext";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FidelixTip } from "./FidelixTip";
 
 // Import all question components
 import { Question1Name } from "./questions/Question1Name";
@@ -37,7 +38,7 @@ export const QuestionWizard = () => {
       setTimeout(() => {
         nextQuestion();
         setIsTransitioning(false);
-      }, 150);
+      }, 200);
     } else {
       // Finish wizard
       setComplete(true);
@@ -50,7 +51,7 @@ export const QuestionWizard = () => {
       setTimeout(() => {
         prevQuestion();
         setIsTransitioning(false);
-      }, 150);
+      }, 200);
     }
   };
 
@@ -108,52 +109,56 @@ export const QuestionWizard = () => {
   };
 
   return (
-    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden max-h-[300px] flex flex-col">
+    <Card className="shadow-elegant border-0 bg-card/50 backdrop-blur-sm overflow-hidden h-[300px] flex flex-col">
       {/* Progress Bar */}
-      <div className="p-2 border-b border-border/20 flex-shrink-0">
-        <Progress value={progress} className="h-1" />
+      <div className="px-4 pt-2 pb-1 flex-shrink-0">
+        <Progress value={progress} className="h-0.5" />
       </div>
+
+      {/* Fidelix Tip */}
+      <FidelixTip questionNumber={state.currentQuestion} />
 
       {/* Question Content */}
       <div className={cn(
-        "flex-1 transition-all duration-300 overflow-hidden",
-        isTransitioning ? "opacity-50 transform translate-x-2" : "opacity-100 transform translate-x-0"
+        "flex-1 transition-all duration-200 overflow-hidden",
+        isTransitioning ? "opacity-0 transform -translate-x-full" : "opacity-100 transform translate-x-0"
       )}>
         {renderQuestion()}
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="p-3 border-t border-border/20 bg-muted/30 flex-shrink-0">
+      {/* Compact Navigation */}
+      <div className="px-4 py-2 border-t border-border/20 bg-muted/20 flex-shrink-0">
         <div className="flex justify-between items-center">
           <Button
             onClick={handlePrev}
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={state.currentQuestion === 1}
-            className="h-8 px-3"
+            className="h-7 px-2 text-xs"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Voltar
           </Button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {canSkip() && (
               <Button
                 onClick={handleNext}
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground h-8 px-3"
+                className="text-muted-foreground h-7 px-2 text-xs"
               >
+                <SkipForward className="w-3 h-3 mr-1" />
                 Pular
               </Button>
             )}
             
             <Button
               onClick={handleNext}
-              variant="hero"
+              variant="default"
               size="sm"
               disabled={!canAdvance() && !canSkip()}
-              className="h-8 px-3"
+              className="h-7 px-2 text-xs"
             >
               {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
               <ArrowRight className="w-3 h-3 ml-1" />
