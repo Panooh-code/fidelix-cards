@@ -47,9 +47,9 @@ export const Question8SecondaryColor = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground mb-1">
           Cor de fundo *
         </h2>
       </div>

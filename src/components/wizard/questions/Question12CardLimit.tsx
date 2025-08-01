@@ -28,7 +28,7 @@ export const Question12CardLimit = ({ onNext, onPrev }: QuestionProps) => {
   return (
     <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground">
+        <h2 className="text-lg font-semibold text-foreground mb-1">
           Nº de cartões
         </h2>
       </div>

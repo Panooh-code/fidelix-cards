@@ -39,7 +39,7 @@ export const Question13Reward = ({ onNext, onPrev }: QuestionProps) => {
   return (
     <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground">
+        <h2 className="text-lg font-semibold text-foreground mb-1">
           Definir recompensa *
         </h2>
       </div>

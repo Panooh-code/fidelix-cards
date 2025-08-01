@@ -115,7 +115,7 @@ export const QuestionWizard = () => {
       </div>
 
       {/* Fidelix Tip */}
-      <div className="px-4 py-1 flex-shrink-0">
+      <div className="px-4 py-0.5 flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 

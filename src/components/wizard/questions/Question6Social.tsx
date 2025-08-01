@@ -43,9 +43,9 @@ export const Question6Social = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground mb-1">
           Rede social ou site (opcional)
         </h2>
       </div>
@@ -59,7 +59,6 @@ export const Question6Social = ({ onNext, onPrev }: QuestionProps) => {
           onChange={(e) => handleUrlChange(e.target.value)}
           onKeyPress={handleKeyPress}
           className="h-10 text-sm"
-          autoFocus
         />
         
         {state.businessData.socialNetwork && (

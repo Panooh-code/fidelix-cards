@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
 import { useWizard } from "./WizardContext";
@@ -42,6 +42,20 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [isFlipped, setIsFlipped] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
+
+  // Listen for flip events from wizard questions
+  useEffect(() => {
+    const handleFlipToSeals = () => setIsFlipped(false);
+    const handleFlipToQR = () => setIsFlipped(true);
+    
+    window.addEventListener('flipCardToSeals', handleFlipToSeals);
+    window.addEventListener('flipCardToQR', handleFlipToQR);
+    
+    return () => {
+      window.removeEventListener('flipCardToSeals', handleFlipToSeals);
+      window.removeEventListener('flipCardToQR', handleFlipToQR);
+    };
+  }, []);
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -523,6 +537,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 // Componente Wrapper que usa o contexto (para compatibilidade)
 export const CardPreviewWizard = () => {
   const { state } = useWizard();
+  const [isFlipped, setIsFlipped] = useState(true); // Iniciar com face QR (flipped = true)
   
   const cardData: CardData = {
     logo_url: state.businessData.logoUrl,
