@@ -38,9 +38,9 @@ export const Question13Reward = ({ onNext, onPrev, canSkip }: QuestionProps) => 
   const remainingChars = 45 - state.rewardConfig.rewardDescription.length;
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground">
           Prêmio da cartela *
         </h2>
       </div>

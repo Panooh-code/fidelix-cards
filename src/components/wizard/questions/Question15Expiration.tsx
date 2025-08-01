@@ -40,15 +40,14 @@ export const Question15Expiration = ({ onNext, onPrev, canSkip }: QuestionProps)
   };
 
   return (
-    <div className="p-4 space-y-4 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
+        <h2 className="text-lg font-semibold text-foreground">
           Validade (opcional)
         </h2>
       </div>
 
-      <div className="space-y-3 max-w-sm mx-auto">
-        {/* Current Status */}
+      <div className="space-y-2 max-w-sm mx-auto">
         <div className="text-center text-sm">
           {state.rewardConfig.expirationDate ? (
             <span className="text-primary font-medium">
@@ -61,27 +60,27 @@ export const Question15Expiration = ({ onNext, onPrev, canSkip }: QuestionProps)
           )}
         </div>
 
-        {/* Quick Date Buttons */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-4 gap-1">
           {quickDates.map((quick) => (
             <Button
               key={quick.days}
               variant="outline"
               onClick={() => handleQuickDate(quick.days)}
-              className="h-8 text-xs"
+              className="h-6 text-xs px-1"
             >
-              {quick.label}
+              {quick.label === "30 dias" ? "30d" : 
+               quick.label === "3 meses" ? "3m" :
+               quick.label === "6 meses" ? "6m" : "1a"}
             </Button>
           ))}
         </div>
 
-        {/* Calendar Picker */}
         <div className="flex gap-2">
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className="flex-1 h-10 justify-start text-xs"
+                className="flex-1 h-8 justify-start text-xs"
               >
                 <CalendarIcon className="w-3 h-3 mr-2" />
                 {state.rewardConfig.expirationDate ? (
@@ -106,7 +105,7 @@ export const Question15Expiration = ({ onNext, onPrev, canSkip }: QuestionProps)
             <Button
               variant="outline"
               onClick={clearDate}
-              className="h-10 px-3"
+              className="h-8 px-2"
               title="Remover data"
             >
               <Infinity className="w-3 h-3" />

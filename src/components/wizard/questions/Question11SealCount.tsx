@@ -36,20 +36,17 @@ export const Question11SealCount = ({ onNext, onPrev, canSkip }: QuestionProps) 
   const SealIcon = getIconByShape(state.rewardConfig.sealShape);
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground">
           Quantos selos? *
         </h2>
       </div>
 
-      <div className="space-y-3 max-w-sm mx-auto">
+      <div className="space-y-2 max-w-sm mx-auto">
         <div className="text-center">
-          <div className="text-3xl font-bold text-primary">
+          <div className="text-2xl font-bold text-primary">
             {state.rewardConfig.sealCount}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            selos para o prêmio
           </div>
         </div>
 
@@ -65,21 +62,6 @@ export const Question11SealCount = ({ onNext, onPrev, canSkip }: QuestionProps) 
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>1</span>
           <span>20</span>
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-1">
-          {[...Array(Math.min(state.rewardConfig.sealCount, 8))].map((_, i) => (
-            <SealIcon 
-              key={i}
-              className="w-3 h-3" 
-              style={{ color: state.customization.primaryColor }}
-            />
-          ))}
-          {state.rewardConfig.sealCount > 8 && (
-            <span className="text-xs text-muted-foreground self-center">
-              +{state.rewardConfig.sealCount - 8}
-            </span>
-          )}
         </div>
       </div>
     </div>

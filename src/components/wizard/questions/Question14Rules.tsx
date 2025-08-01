@@ -36,9 +36,9 @@ export const Question14Rules = ({ onNext, onPrev, canSkip }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-3 space-y-2">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground">
           Como ganhar selos? *
         </h2>
       </div>
@@ -50,7 +50,7 @@ export const Question14Rules = ({ onNext, onPrev, canSkip }: QuestionProps) => {
           value={state.rewardConfig.instructions}
           onChange={(e) => handleRulesChange(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="min-h-[80px] text-sm resize-none"
+          className="min-h-[60px] text-sm resize-none"
           autoFocus
         />
         
