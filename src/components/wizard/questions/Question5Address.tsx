@@ -18,14 +18,14 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-3 space-y-2 h-full flex flex-col justify-center">
+    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Endereço (opcional)
         </h2>
       </div>
 
-      <div className="space-y-2 max-w-sm mx-auto">
+      <div className="space-y-1 max-w-sm mx-auto">
         <Textarea
           id="address"
           placeholder="Rua das Flores, 123 - Centro - SP"

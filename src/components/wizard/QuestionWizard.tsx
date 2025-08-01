@@ -115,7 +115,7 @@ export const QuestionWizard = () => {
       </div>
 
       {/* Fidelix Tip */}
-      <div className="px-4 py-0.5 flex-shrink-0">
+      <div className="px-4 py-0 flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
@@ -128,7 +128,7 @@ export const QuestionWizard = () => {
       </div>
 
       {/* Compact Navigation */}
-      <div className="px-4 py-2 border-t border-border/20 bg-muted/20 flex-shrink-0">
+      <div className="px-4 py-1 border-t border-border/20 bg-muted/20 flex-shrink-0">
         <div className="flex justify-between items-center">
           <Button
             onClick={handlePrev}

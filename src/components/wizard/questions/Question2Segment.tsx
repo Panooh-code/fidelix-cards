@@ -29,9 +29,9 @@ export const Question2Segment = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-4 h-full flex flex-col justify-center">
+    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Segmento do negócio *
         </h2>
       </div>

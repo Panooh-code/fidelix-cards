@@ -53,14 +53,14 @@ export const Question4Phone = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Telefone *
         </h2>
       </div>
 
-      <div className="space-y-3 max-w-sm mx-auto">
+      <div className="space-y-1 max-w-sm mx-auto">
         <div className="flex gap-2">
           <Select 
             value={state.businessData.country} 

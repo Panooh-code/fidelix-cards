@@ -37,14 +37,14 @@ export const Question13Reward = ({ onNext, onPrev }: QuestionProps) => {
   const remainingChars = 45 - state.rewardConfig.rewardDescription.length;
 
   return (
-    <div className="p-3 space-y-2">
+    <div className="p-2 space-y-1">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Definir recompensa *
         </h2>
       </div>
 
-      <div className="space-y-2 max-w-sm mx-auto">
+      <div className="space-y-1 max-w-sm mx-auto">
         <Input
           id="reward"
           placeholder="Ex: Complete a cartela e ganhe um café grátis*"

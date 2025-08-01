@@ -47,14 +47,14 @@ export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-4 space-y-3 h-full flex flex-col justify-center">
+    <div className="p-2 space-y-1 h-full flex flex-col justify-center">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-3">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Cor principal *
         </h2>
       </div>
 
-      <div className="space-y-3 max-w-sm mx-auto">
+      <div className="space-y-1 max-w-sm mx-auto">
         <div className="grid grid-cols-5 gap-2">
           {presetColors.map((preset) => {
             const isSelected = state.customization.primaryColor === preset.color;

@@ -47,9 +47,9 @@ export const Question10SealShape = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="p-3 space-y-2">
+    <div className="p-2 space-y-1">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Qual formato dos selos? *
         </h2>
       </div>

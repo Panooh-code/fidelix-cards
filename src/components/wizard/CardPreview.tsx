@@ -39,7 +39,7 @@ const isLightColor = (color: string) => {
 };
 
 export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(true);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
 

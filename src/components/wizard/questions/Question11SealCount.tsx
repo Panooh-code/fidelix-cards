@@ -35,14 +35,14 @@ export const Question11SealCount = ({ onNext, onPrev }: QuestionProps) => {
   const SealIcon = getIconByShape(state.rewardConfig.sealShape);
 
   return (
-    <div className="p-3 space-y-2">
+    <div className="p-2 space-y-1">
       <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground">
+        <h2 className="text-lg font-semibold text-foreground mb-0">
           Quantos selos? *
         </h2>
       </div>
 
-      <div className="space-y-2 max-w-sm mx-auto">
+      <div className="space-y-1 max-w-sm mx-auto">
         <div className="text-center">
           <div className="text-2xl font-bold text-primary">
             {state.rewardConfig.sealCount}
