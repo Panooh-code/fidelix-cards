@@ -47,7 +47,6 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
               onChange={(e) => updateBusinessData({ name: e.target.value })}
               onKeyPress={handleKeyPress}
               className="h-12 text-base text-center pl-10 pr-4 bg-white border-2 border-slate-200 focus:border-primary focus:ring-primary rounded-lg"
-              autoFocus
             />
           </div>
 
