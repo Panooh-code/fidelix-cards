@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      loyalty_cards: {
+        Row: {
+          background_color: string
+          background_pattern: string
+          business_address: string | null
+          business_country: string
+          business_email: string
+          business_name: string
+          business_phone: string
+          business_segment: string
+          client_code: string
+          created_at: string
+          expiration_date: string | null
+          id: string
+          instructions: string
+          is_active: boolean
+          is_published: boolean
+          is_whatsapp: boolean
+          logo_url: string
+          max_cards: number | null
+          primary_color: string
+          reward_description: string
+          seal_count: number
+          seal_shape: string
+          social_network: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          background_color?: string
+          background_pattern?: string
+          business_address?: string | null
+          business_country?: string
+          business_email: string
+          business_name: string
+          business_phone: string
+          business_segment: string
+          client_code: string
+          created_at?: string
+          expiration_date?: string | null
+          id?: string
+          instructions: string
+          is_active?: boolean
+          is_published?: boolean
+          is_whatsapp?: boolean
+          logo_url: string
+          max_cards?: number | null
+          primary_color?: string
+          reward_description: string
+          seal_count?: number
+          seal_shape?: string
+          social_network?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          background_color?: string
+          background_pattern?: string
+          business_address?: string | null
+          business_country?: string
+          business_email?: string
+          business_name?: string
+          business_phone?: string
+          business_segment?: string
+          client_code?: string
+          created_at?: string
+          expiration_date?: string | null
+          id?: string
+          instructions?: string
+          is_active?: boolean
+          is_published?: boolean
+          is_whatsapp?: boolean
+          logo_url?: string
+          max_cards?: number | null
+          primary_color?: string
+          reward_description?: string
+          seal_count?: number
+          seal_shape?: string
+          social_network?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
