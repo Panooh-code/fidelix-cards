@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useWizard } from "../WizardContext";
-import { Calendar as CalendarIcon, Infinity } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useLoyaltyCardSave } from "@/hooks/useLoyaltyCardSave";
+import { Calendar as CalendarIcon, Infinity, Upload, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -14,7 +17,11 @@ interface QuestionProps {
 
 export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateRewardConfig } = useWizard();
+  const { user } = useAuth();
+  const { saveCard, saving } = useLoyaltyCardSave();
+  const navigate = useNavigate();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [published, setPublished] = useState(false);
 
   const handleDateSelect = (date: Date | undefined) => {
     updateRewardConfig({ expirationDate: date });
@@ -36,6 +43,22 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
     const date = new Date();
     date.setDate(date.getDate() + days);
     updateRewardConfig({ expirationDate: date });
+  };
+
+  const handlePublish = async () => {
+    if (!user) {
+      // Redirect to auth with current location as redirect target
+      navigate('/auth?redirect=/wizard');
+      return;
+    }
+
+    const { success } = await saveCard(state);
+    if (success) {
+      setPublished(true);
+      setTimeout(() => {
+        navigate('/my-cards');
+      }, 2000);
+    }
   };
 
   return (
@@ -107,6 +130,48 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
                 title="Remover data"
               >
                 <Infinity className="w-3 h-3" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Publish Section */}
+        <div className="border-t pt-4 mt-4">
+          <div className="text-center space-y-3">
+            <h3 className="font-semibold text-primary">
+              Tudo pronto! 🎉
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {user ? 
+                'Clique em "Publicar" para salvar seu cartão de fidelidade' :
+                'Faça login para publicar seu cartão'
+              }
+            </p>
+            
+            {published ? (
+              <div className="flex items-center justify-center gap-2 text-green-600">
+                <CheckCircle className="w-5 h-5" />
+                <span className="font-medium">Cartão publicado com sucesso!</span>
+              </div>
+            ) : (
+              <Button
+                onClick={handlePublish}
+                disabled={saving}
+                className="w-full"
+                variant="hero"
+                size="lg"
+              >
+                {saving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                    Publicando...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {user ? 'Publicar Cartão' : 'Fazer Login e Publicar'}
+                  </>
+                )}
               </Button>
             )}
           </div>

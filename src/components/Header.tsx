@@ -1,14 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { getFidelixImageUrls } from "@/utils/uploadImages";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { User, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const imageUrls = getFidelixImageUrls();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -49,9 +65,43 @@ const Header = () => {
           </nav>
 
           {/* CTA */}
-          <Button variant="hero" size="default">
-            Criar Cartão Grátis
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="default">
+                  <User className="w-4 h-4 mr-2" />
+                  Minha Conta
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate('/my-cards')}>
+                  <User className="w-4 h-4 mr-2" />
+                  Meus Cartões
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="default"
+                onClick={() => navigate('/auth')}
+              >
+                Entrar
+              </Button>
+              <Button 
+                variant="hero" 
+                size="default"
+                onClick={() => navigate('/wizard')}
+              >
+                Criar Cartão Grátis
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
