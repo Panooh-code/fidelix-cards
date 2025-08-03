@@ -3,11 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, RotateCcw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { CardPreview, CardData } from '@/components/wizard/CardPreview';
 import { getFidelixImageUrls } from '@/utils/uploadImages';
 import { toast } from 'sonner';
+import { useTranslations } from '@/hooks/useTranslations';
 
 interface LoyaltyCard {
   id: string;
@@ -20,6 +21,8 @@ interface LoyaltyCard {
   is_whatsapp: boolean;
   logo_url: string;
   client_code: string;
+  public_code?: string;
+  qr_code_url?: string;
   primary_color: string;
   background_color: string;
   background_pattern: string;
@@ -37,7 +40,9 @@ const PublicCardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
   const imageUrls = getFidelixImageUrls();
+  const { t } = useTranslations(card?.business_name);
 
   useEffect(() => {
     if (publicCode) {
@@ -56,14 +61,14 @@ const PublicCardPage = () => {
 
       if (error) {
         console.error('Error fetching card:', error);
-        setError('Cartão não encontrado ou inativo');
+        setError(t('cardNotFound'));
         return;
       }
 
       setCard(data);
     } catch (error) {
       console.error('Error fetching card:', error);
-      setError('Erro ao carregar cartão');
+      setError(t('cardNotFound'));
     } finally {
       setLoading(false);
     }
@@ -71,7 +76,7 @@ const PublicCardPage = () => {
 
   const handleParticipate = () => {
     if (!agreedToTerms) {
-      toast.error('Você deve concordar com os termos para participar');
+      toast.error(t('agreeToTermsError'));
       return;
     }
     navigate(`/card/${publicCode}/signup`);
@@ -82,7 +87,7 @@ const PublicCardPage = () => {
       <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Carregando cartão...</p>
+          <p className="text-muted-foreground">{t('loading')}</p>
         </div>
       </div>
     );
@@ -94,12 +99,12 @@ const PublicCardPage = () => {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-destructive">
-              Cartão não encontrado
+              {t('cardNotFound')}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             <p className="text-muted-foreground">
-              {error || 'Este cartão não existe ou não está mais ativo.'}
+              {error || t('cardNotFoundMessage')}
             </p>
             <Button 
               variant="outline" 
@@ -107,7 +112,7 @@ const PublicCardPage = () => {
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar ao início
+              {t('backToHome')}
             </Button>
           </CardContent>
         </Card>
@@ -144,7 +149,7 @@ const PublicCardPage = () => {
               className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar
+              {t('back')}
             </Button>
             <div className="flex items-center gap-3">
               <img 
@@ -168,30 +173,78 @@ const PublicCardPage = () => {
           {/* Title */}
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-foreground">
-              Cartão de Fidelidade
+              {t('title')}
             </h1>
-            <p className="text-lg text-muted-foreground">
-              {card.business_name}
-            </p>
             <p className="text-muted-foreground">
-              Quer participar do nosso cartão de fidelidade para colecionar selos e conquistar recompensas incríveis?
+              {t('subtitle')}
             </p>
           </div>
 
-          {/* Card Preview */}
-          <div className="flex justify-center">
-            <CardPreview 
-              cardData={cardData} 
-              size="lg"
-              className="max-w-sm"
-            />
+          {/* Card Preview with Flip */}
+          <div className="flex flex-col items-center space-y-4">
+            <div className="relative perspective-1000">
+              <div 
+                className={`relative w-80 h-48 transition-transform duration-700 transform-style-preserve-3d ${
+                  isFlipped ? 'rotate-y-180' : ''
+                }`}
+              >
+                {/* Front of card */}
+                <div className="absolute inset-0 backface-hidden">
+                  <CardPreview 
+                    cardData={cardData} 
+                    size="lg"
+                    className="w-full h-full"
+                  />
+                </div>
+                
+                {/* Back of card */}
+                <div className="absolute inset-0 backface-hidden rotate-y-180">
+                  <Card className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20">
+                    <CardContent className="p-6 h-full flex flex-col justify-center items-center text-center space-y-4">
+                      <div className="text-sm font-medium text-muted-foreground">
+                        {t('loyaltyCard')}
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-xs text-muted-foreground">Código Público:</div>
+                        <div className="text-lg font-bold text-primary font-mono">
+                          {card.public_code}
+                        </div>
+                      </div>
+                      {card.qr_code_url && (
+                        <div className="space-y-2">
+                          <div className="text-xs text-muted-foreground">QR Code:</div>
+                          <img 
+                            src={card.qr_code_url} 
+                            alt="QR Code" 
+                            className="w-16 h-16 mx-auto"
+                          />
+                        </div>
+                      )}
+                      <div className="text-xs text-muted-foreground">
+                        {card.business_phone}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
+            
+            {/* Flip Button */}
+            <Button
+              variant="outline"
+              onClick={() => setIsFlipped(!isFlipped)}
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              {t('flipButton')}
+            </Button>
           </div>
 
           {/* Participation Form */}
           <Card className="max-w-md mx-auto">
             <CardHeader>
               <CardTitle className="text-center">
-                Participe agora!
+                {t('ctaIntermediate')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -207,7 +260,7 @@ const PublicCardPage = () => {
                     htmlFor="terms" 
                     className="text-sm leading-relaxed cursor-pointer"
                   >
-                    Concordo em participar da promoção e fazer parte do clube/cartão de fidelidade <strong>{card.business_name}</strong> e receber comunicação referente ao programa.
+                    {t('terms')}
                   </label>
                 </div>
               </div>
@@ -220,7 +273,7 @@ const PublicCardPage = () => {
                   size="lg"
                   className="w-full"
                 >
-                  Quero Participar!
+                  {t('ctaPrimary')}
                 </Button>
                 
                 <Button 
@@ -228,7 +281,7 @@ const PublicCardPage = () => {
                   onClick={() => navigate('/')}
                   className="w-full text-muted-foreground"
                 >
-                  Não, obrigado
+                  {t('decline')}
                 </Button>
               </div>
             </CardContent>
