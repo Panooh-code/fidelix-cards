@@ -121,6 +121,9 @@ const PublicCardPage = () => {
     );
   }
 
+  // Debug: Log dos dados do cartão
+  console.log('Card data from DB:', card);
+  
   const cardData: CardData = {
     logo_url: card.logo_url,
     business_name: card.business_name,
@@ -133,10 +136,14 @@ const PublicCardPage = () => {
     email: card.business_email,
     address: card.business_address,
     socialNetwork: card.social_network,
+    whatsapp: card.is_whatsapp ? card.business_phone : undefined,
     sealCount: card.seal_count,
     sealShape: card.seal_shape as any,
     instructions: card.instructions,
   };
+  
+  // Debug: Log dos dados mapeados
+  console.log('Mapped cardData:', cardData);
 
   return (
     <div className="min-h-screen bg-gradient-hero-new">
@@ -185,11 +192,22 @@ const PublicCardPage = () => {
           {/* Card Display */}
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="hover:scale-105 transition-transform duration-300">
-              <PublicCardPreview 
-                cardData={cardData} 
-                size="lg"
-                className="shadow-elegant"
-              />
+              {/* Container com dimensões fixas para garantir visibilidade */}
+              <div 
+                className="w-96 h-96 flex items-center justify-center bg-white/10 backdrop-blur rounded-3xl border border-white/20"
+                style={{ 
+                  minWidth: '384px', 
+                  minHeight: '384px',
+                  // Debug visual temporário
+                  boxShadow: '0 0 0 2px red'
+                }}
+              >
+                <PublicCardPreview 
+                  cardData={cardData} 
+                  size="lg"
+                  className="shadow-elegant"
+                />
+              </div>
             </div>
           </div>
 

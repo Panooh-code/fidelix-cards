@@ -25,6 +25,9 @@ export const PublicCardPreview = ({ cardData, className = "", size = "md" }: Pub
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const { t } = useTranslations(cardData.business_name);
+  
+  // Debug: Log do componente
+  console.log('PublicCardPreview rendering with:', { cardData, size, className });
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -179,8 +182,15 @@ export const PublicCardPreview = ({ cardData, className = "", size = "md" }: Pub
             "relative transition-transform duration-700 transform-style-preserve-3d",
             currentSize.width,
             currentSize.height,
-            isFlipped ? 'rotate-y-180' : ''
+            isFlipped ? 'rotate-y-180' : '',
+            // Debug visual temporário
+            "border-2 border-blue-500"
           )}
+          style={{
+            // Forçar dimensões mínimas
+            minWidth: '288px',
+            minHeight: '288px'
+          }}
         >
           {/* Front Face - Face dos Selos */}
           <div 
