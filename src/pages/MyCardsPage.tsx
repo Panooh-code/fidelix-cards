@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Eye, Edit, Trash2, ArrowLeft } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, ArrowLeft, Share2, Copy, QrCode, ExternalLink, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,6 +14,9 @@ interface LoyaltyCard {
   business_name: string;
   business_segment: string;
   client_code: string;
+  public_code: string;
+  public_url: string;
+  qr_code_url: string;
   primary_color: string;
   seal_shape: string;
   seal_count: number;
@@ -27,6 +30,7 @@ const MyCardsPage = () => {
   const navigate = useNavigate();
   const [cards, setCards] = useState<LoyaltyCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
   const imageUrls = getFidelixImageUrls();
 
   useEffect(() => {
@@ -44,7 +48,7 @@ const MyCardsPage = () => {
     try {
       const { data, error } = await supabase
         .from('loyalty_cards')
-        .select('*')
+        .select('id, business_name, business_segment, client_code, public_code, public_url, qr_code_url, primary_color, seal_shape, seal_count, reward_description, is_active, created_at')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -87,6 +91,17 @@ const MyCardsPage = () => {
       console.error('Error deleting card:', error);
       toast.error('Erro ao excluir cartão');
     }
+  };
+
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${type} copiado!`);
+  };
+
+  const shareViaWhatsApp = (card: LoyaltyCard) => {
+    const text = `Confira o cartão de fidelidade da ${card.business_name}! ${card.public_url}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   if (authLoading || loading) {
@@ -214,7 +229,7 @@ const MyCardsPage = () => {
                         variant="outline"
                         size="sm"
                         className="flex-1"
-                        onClick={() => navigate(`/card/${card.client_code}`)}
+                        onClick={() => card.public_code ? navigate(`/card/${card.public_code}`) : toast.error('Cartão ainda não publicado')}
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         Ver
@@ -229,11 +244,87 @@ const MyCardsPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => setExpandedCard(expandedCard === card.id ? null : card.id)}
+                      >
+                        <Share2 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => deleteCard(card.id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
+
+                    {/* Expanded sharing options */}
+                    {expandedCard === card.id && card.public_code && (
+                      <div className="mt-4 p-4 bg-muted/50 rounded-lg space-y-3">
+                        <h4 className="text-sm font-medium">Compartilhar Cartão</h4>
+                        
+                        {/* QR Code */}
+                        {card.qr_code_url && (
+                          <div className="text-center space-y-2">
+                            <img 
+                              src={card.qr_code_url} 
+                              alt="QR Code do cartão"
+                              className="w-24 h-24 mx-auto border rounded"
+                            />
+                            <p className="text-xs text-muted-foreground">QR Code público</p>
+                          </div>
+                        )}
+                        
+                        {/* Share options */}
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => copyToClipboard(card.public_url, 'Link')}
+                            >
+                              <Copy className="w-4 h-4 mr-1" />
+                              Copiar Link
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => shareViaWhatsApp(card)}
+                            >
+                              <MessageCircle className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(card.public_url, '_blank')}
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          
+                          <div className="text-xs text-muted-foreground">
+                            <span>Código público: </span>
+                            <span className="font-mono">{card.public_code}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="ml-1 h-auto p-1"
+                              onClick={() => copyToClipboard(card.public_code, 'Código')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {expandedCard === card.id && !card.public_code && (
+                      <div className="mt-4 p-4 bg-muted/50 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground">
+                          Este cartão ainda não foi publicado. Edite-o para gerar os códigos de compartilhamento.
+                        </p>
+                      </div>
+                    )}
 
                     <div className="text-xs text-muted-foreground">
                       Criado em {new Date(card.created_at).toLocaleDateString('pt-BR')}
