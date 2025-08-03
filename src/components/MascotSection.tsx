@@ -5,12 +5,14 @@ const MascotSection: React.FC = () => {
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
-          <img
-            loading="lazy"
-            src="https://i.imgur.com/EY1zGPQ.png"
-            alt="Mascote Gato Roxo Fidelix com expressão travessa e charmosa"
-            className="mx-auto w-64 lg:w-80"
-          />
+          <div className="relative mascot-glow">
+            <img
+              loading="lazy"
+              src="https://i.imgur.com/EY1zGPQ.png"
+              alt="Mascote Gato Roxo Fidelix com expressão travessa e charmosa"
+              className="mx-auto w-64 lg:w-80 relative z-10"
+            />
+          </div>
           <h2 className="mt-8 text-3xl font-poppins font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
             Conheça o Fidelix
           </h2>

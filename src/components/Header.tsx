@@ -110,6 +110,7 @@ const Header = () => {
                 <Button 
                   variant="hero" 
                   size="default"
+                  className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                   onClick={() => navigate('/wizard')}
                 >
                   Criar Cartão Grátis
@@ -124,7 +125,7 @@ const Header = () => {
               variant="hero" 
               size="sm"
               onClick={() => navigate('/wizard')}
-              className="text-xs px-3 py-2"
+              className="text-xs px-3 py-2 bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple text-white font-semibold shadow-lg"
             >
               Criar Cartão
             </Button>
