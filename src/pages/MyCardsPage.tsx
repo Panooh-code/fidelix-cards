@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Eye, Edit, Trash2, ArrowLeft, Share2, Copy, QrCode, ExternalLink, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Eye, Edit, Trash2, ArrowLeft, Share2, Copy, QrCode, ExternalLink, MessageCircle, ChevronDown, ChevronUp, Users } from 'lucide-react';
+import { CardPreviewThumbnail } from '@/components/CardPreviewThumbnail';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -18,9 +19,17 @@ interface LoyaltyCard {
   public_url: string;
   qr_code_url: string;
   primary_color: string;
+  background_color: string;
+  background_pattern: string;
   seal_shape: string;
   seal_count: number;
   reward_description: string;
+  logo_url: string;
+  business_phone: string;
+  business_email: string;
+  business_address: string;
+  social_network: string;
+  instructions: string;
   is_active: boolean;
   created_at: string;
 }
@@ -48,7 +57,12 @@ const MyCardsPage = () => {
     try {
       const { data, error } = await supabase
         .from('loyalty_cards')
-        .select('id, business_name, business_segment, client_code, public_code, public_url, qr_code_url, primary_color, seal_shape, seal_count, reward_description, is_active, created_at')
+        .select(`
+          id, business_name, business_segment, client_code, public_code, public_url, qr_code_url, 
+          primary_color, background_color, background_pattern, seal_shape, seal_count, reward_description, 
+          logo_url, business_phone, business_email, business_address, social_network, instructions, 
+          is_active, created_at
+        `)
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -160,7 +174,7 @@ const MyCardsPage = () => {
         <div className="space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-foreground">
-              Meus Cartões de Fidelidade
+              Cartões de fidelidade do Meu Negócio
             </h1>
             <p className="text-muted-foreground">
               Gerencie todos os seus cartões criados
@@ -193,9 +207,16 @@ const MyCardsPage = () => {
                 <Card key={card.id} className="group hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-3 w-full">
+                    <div className="flex-shrink-0">
+                      <CardPreviewThumbnail card={card} />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <CardTitle className="text-lg leading-tight">
                         {card.business_name}
                       </CardTitle>
+                    </div>
+                  </div>
                       <Badge 
                         variant={card.is_active ? "default" : "secondary"}
                         className="ml-2"
@@ -212,7 +233,7 @@ const MyCardsPage = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Código:</span>
-                        <span className="font-mono">{card.client_code}</span>
+                        <span className="font-mono">{card.public_code || 'Não publicado'}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Selos:</span>
@@ -224,11 +245,10 @@ const MyCardsPage = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-2">
+                    <div className="grid grid-cols-2 gap-2 pt-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
                         onClick={() => card.public_code ? navigate(`/card/${card.public_code}`) : toast.error('Cartão ainda não publicado')}
                       >
                         <Eye className="w-4 h-4 mr-1" />
@@ -239,21 +259,36 @@ const MyCardsPage = () => {
                         size="sm"
                         onClick={() => navigate(`/wizard?edit=${card.id}`)}
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-4 h-4 mr-1" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/my-cards/${card.id}/customers`)}
+                      >
+                        <Users className="w-4 h-4 mr-1" />
+                        Clientes
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setExpandedCard(expandedCard === card.id ? null : card.id)}
                       >
-                        <Share2 className="w-4 h-4" />
+                        <Share2 className="w-4 h-4 mr-1" />
+                        Partilhar
                       </Button>
+                    </div>
+                    
+                    <div className="flex gap-2 pt-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => deleteCard(card.id)}
+                        className="flex-1"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4 mr-1" />
+                        Excluir
                       </Button>
                     </div>
 

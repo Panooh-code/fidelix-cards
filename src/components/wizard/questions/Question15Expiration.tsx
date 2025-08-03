@@ -57,9 +57,8 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
       setPublished(true);
       // Limpar estado salvo após publicação bem-sucedida
       clearSavedState();
-      setTimeout(() => {
-        navigate('/my-cards');
-      }, 2000);
+      // Redirecionar imediatamente para área de cartões do lojista
+      navigate('/my-cards');
     }
   };
 

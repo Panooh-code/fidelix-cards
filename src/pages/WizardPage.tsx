@@ -1,12 +1,22 @@
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { QuestionWizard } from "@/components/wizard/QuestionWizard";
 import { CardPreviewWizard } from "@/components/wizard/CardPreview";
-import { WizardProvider } from "@/components/wizard/WizardContext";
+import { WizardProvider, useWizard } from "@/components/wizard/WizardContext";
 
-const WizardPage = () => {
+const WizardPageContent = () => {
+  const [searchParams] = useSearchParams();
+  const { loadExistingCard, isEditMode } = useWizard();
+  const editId = searchParams.get('edit');
+
+  useEffect(() => {
+    if (editId && !isEditMode) {
+      loadExistingCard(editId);
+    }
+  }, [editId, loadExistingCard, isEditMode]);
 
   return (
-    <WizardProvider>
-      <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle">
         {/* Mobile Layout */}
         <div className="lg:hidden">
           <div className="min-h-screen flex flex-col">
@@ -47,6 +57,13 @@ const WizardPage = () => {
           </div>
         </div>
       </div>
+    );
+};
+
+const WizardPage = () => {
+  return (
+    <WizardProvider>
+      <WizardPageContent />
     </WizardProvider>
   );
 };

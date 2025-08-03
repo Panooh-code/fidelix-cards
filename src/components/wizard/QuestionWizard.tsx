@@ -29,7 +29,7 @@ import { Question15Expiration } from "./questions/Question15Expiration";
 const TOTAL_QUESTIONS = 15;
 
 export const QuestionWizard = () => {
-  const { state, nextQuestion, prevQuestion, setComplete } = useWizard();
+  const { state, nextQuestion, prevQuestion, setComplete, isEditMode } = useWizard();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
 
@@ -64,7 +64,7 @@ export const QuestionWizard = () => {
     switch (state.currentQuestion) {
       case 1: return !!state.businessData.name;
       case 2: return !!state.businessData.segment;
-      case 3: return !!state.businessData.logoFile;
+      case 3: return !!state.businessData.logoFile || !!state.businessData.logoUrl;
       case 4: return !!state.businessData.phone;
       case 7: return !!state.customization.primaryColor;
       case 8: return !!state.customization.backgroundColor;

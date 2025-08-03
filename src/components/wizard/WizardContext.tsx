@@ -47,6 +47,9 @@ interface WizardContextType {
   prevQuestion: () => void;
   setComplete: (complete: boolean) => void;
   clearSavedState: () => void;
+  loadExistingCard: (cardId: string) => Promise<void>;
+  isEditMode: boolean;
+  editingCardId: string | null;
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
@@ -118,6 +121,8 @@ const getInitialState = (): WizardState => {
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<WizardState>(getInitialState);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Função para salvar estado no localStorage
   const saveToStorage = (newState: WizardState) => {
@@ -212,6 +217,61 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     setState(prev => ({ ...prev, isComplete: complete }));
   };
 
+  const loadExistingCard = async (cardId: string) => {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data, error } = await supabase
+        .from('loyalty_cards')
+        .select('*')
+        .eq('id', cardId)
+        .single();
+
+      if (error) {
+        console.error('Erro ao carregar cartão:', error);
+        return;
+      }
+
+      if (data) {
+        setEditingCardId(cardId);
+        setIsEditMode(true);
+        
+        // Mapear dados do banco para o estado do wizard
+        setState({
+          businessData: {
+            name: data.business_name,
+            segment: data.business_segment,
+            phone: data.business_phone,
+            country: data.business_country as 'BR' | 'PT',
+            isWhatsApp: data.is_whatsapp,
+            email: data.business_email,
+            address: data.business_address || '',
+            socialNetwork: data.social_network || '',
+            logoFile: null,
+            logoUrl: data.logo_url,
+            clientCode: data.client_code,
+          },
+          customization: {
+            primaryColor: data.primary_color,
+            backgroundColor: data.background_color,
+            backgroundPattern: data.background_pattern as any,
+          },
+          rewardConfig: {
+            sealShape: data.seal_shape as any,
+            sealCount: data.seal_count,
+            maxCards: data.max_cards || undefined,
+            rewardDescription: data.reward_description,
+            instructions: data.instructions,
+            expirationDate: data.expiration_date ? new Date(data.expiration_date) : undefined,
+          },
+          currentQuestion: 1,
+          isComplete: true,
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar cartão:', error);
+    }
+  };
+
   return (
     <WizardContext.Provider
       value={{
@@ -224,6 +284,9 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
         prevQuestion,
         setComplete,
         clearSavedState,
+        loadExistingCard,
+        isEditMode,
+        editingCardId,
       }}
     >
       {children}

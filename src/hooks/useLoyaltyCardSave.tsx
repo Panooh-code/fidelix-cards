@@ -2,11 +2,12 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { WizardState } from '@/components/wizard/WizardContext';
+import { WizardState, useWizard } from '@/components/wizard/WizardContext';
 import { toast } from 'sonner';
 
 export const useLoyaltyCardSave = () => {
   const [saving, setSaving] = useState(false);
+  const { isEditMode, editingCardId } = useWizard();
   const { user } = useAuth();
 
   const saveCard = async (wizardState: WizardState): Promise<{ success: boolean; cardId?: string }> => {
@@ -69,40 +70,66 @@ export const useLoyaltyCardSave = () => {
           : null,
       };
 
-      const { data, error } = await supabase
-        .from('loyalty_cards')
-        .insert(cardData)
-        .select()
-        .single();
+      let data;
+      
+      if (isEditMode && editingCardId) {
+        // Modo de edição - atualizar cartão existente
+        const { data: updateData, error } = await supabase
+          .from('loyalty_cards')
+          .update(cardData)
+          .eq('id', editingCardId)
+          .eq('user_id', user.id)
+          .select()
+          .single();
 
-      if (error) {
-        console.error('Error saving card:', error);
-        throw new Error('Erro ao salvar cartão');
-      }
+        if (error) {
+          console.error('Error updating card:', error);
+          throw new Error('Erro ao atualizar cartão');
+        }
+        
+        data = updateData;
+        console.log('Cartão atualizado:', data.id);
+        toast.success('Cartão atualizado com sucesso!');
+      } else {
+        // Modo de criação - inserir novo cartão
+        const { data: insertData, error } = await supabase
+          .from('loyalty_cards')
+          .insert(cardData)
+          .select()
+          .single();
 
-      // Generate public code and QR code using Edge Function
-      const { data: codesData, error: codesError } = await supabase.functions
-        .invoke('generate-loyalty-card-codes', {
-          body: { cardId: data.id }
+        if (error) {
+          console.error('Error saving card:', error);
+          throw new Error('Erro ao salvar cartão');
+        }
+
+        data = insertData;
+
+        // Generate public code and QR code using Edge Function apenas para novos cartões
+        const { data: codesData, error: codesError } = await supabase.functions
+          .invoke('generate-loyalty-card-codes', {
+            body: { cardId: data.id }
+          });
+
+        if (codesError) {
+          console.error('Error generating codes:', codesError);
+          throw new Error('Erro ao gerar códigos do cartão');
+        }
+
+        if (!codesData.success) {
+          throw new Error(codesData.error || 'Erro ao gerar códigos do cartão');
+        }
+
+        console.log('Cartão criado com códigos:', {
+          cardId: data.id,
+          publicCode: codesData.publicCode,
+          qrCodeUrl: codesData.qrCodeUrl,
+          publicUrl: codesData.publicUrl
         });
 
-      if (codesError) {
-        console.error('Error generating codes:', codesError);
-        throw new Error('Erro ao gerar códigos do cartão');
+        toast.success('Cartão publicado com sucesso!');
       }
 
-      if (!codesData.success) {
-        throw new Error(codesData.error || 'Erro ao gerar códigos do cartão');
-      }
-
-      console.log('Cartão criado com códigos:', {
-        cardId: data.id,
-        publicCode: codesData.publicCode,
-        qrCodeUrl: codesData.qrCodeUrl,
-        publicUrl: codesData.publicUrl
-      });
-
-      toast.success('Cartão publicado com sucesso!');
       return { success: true, cardId: data.id };
     } catch (error: any) {
       console.error('Error in saveCard:', error);
