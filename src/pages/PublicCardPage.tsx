@@ -138,154 +138,112 @@ const PublicCardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-hero-new">
+      {/* Header Redesigned */}
+      <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-border/20 shadow-elegant">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between max-w-4xl mx-auto">
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeft className="h-4 w-4" />
               {t('back')}
             </Button>
-            <div className="flex items-center gap-3">
-              <img 
-                src={imageUrls.logoIcon} 
-                alt="Fidelix mascote" 
-                className="w-8 h-8"
-              />
+            
+            <div 
+              className="cursor-pointer transition-transform hover:scale-105"
+              onClick={() => navigate('/')}
+            >
               <img 
                 src={imageUrls.logoText} 
                 alt="Fidelix" 
-                className="h-6"
+                className="h-10"
               />
             </div>
+            
+            <div className="w-16" /> {/* Spacer for balance */}
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto space-y-8">
-          {/* Title */}
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-foreground">
+      <main className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* Title Section */}
+          <div className="text-center space-y-6 animate-fade-in">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg leading-tight">
               {t('title')}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
               {t('subtitle')}
             </p>
           </div>
 
-          {/* Card Preview with Flip */}
-          <div className="flex flex-col items-center space-y-4">
-            <div className="relative perspective-1000">
-              <div 
-                className={`relative w-80 h-48 transition-transform duration-700 transform-style-preserve-3d ${
-                  isFlipped ? 'rotate-y-180' : ''
-                }`}
-              >
-                {/* Front of card */}
-                <div className="absolute inset-0 backface-hidden">
-                  <CardPreview 
-                    cardData={cardData} 
-                    size="lg"
-                    className="w-full h-full"
-                  />
-                </div>
-                
-                {/* Back of card */}
-                <div className="absolute inset-0 backface-hidden rotate-y-180">
-                  <Card className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/20">
-                    <CardContent className="p-6 h-full flex flex-col justify-center items-center text-center space-y-4">
-                      <div className="text-sm font-medium text-muted-foreground">
-                        {t('loyaltyCard')}
-                      </div>
-                      <div className="space-y-2">
-                        <div className="text-xs text-muted-foreground">Código Público:</div>
-                        <div className="text-lg font-bold text-primary font-mono">
-                          {card.public_code}
-                        </div>
-                      </div>
-                      {card.qr_code_url && (
-                        <div className="space-y-2">
-                          <div className="text-xs text-muted-foreground">QR Code:</div>
-                          <img 
-                            src={card.qr_code_url} 
-                            alt="QR Code" 
-                            className="w-16 h-16 mx-auto"
-                          />
-                        </div>
-                      )}
-                      <div className="text-xs text-muted-foreground">
-                        {card.business_phone}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+          {/* Card Display */}
+          <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="hover:scale-105 transition-transform duration-300">
+              <CardPreview 
+                cardData={cardData} 
+                size="lg"
+                className="shadow-elegant"
+              />
             </div>
-            
-            {/* Flip Button */}
-            <Button
-              variant="outline"
-              onClick={() => setIsFlipped(!isFlipped)}
-              className="flex items-center gap-2"
-            >
-              <RotateCcw className="w-4 h-4" />
-              {t('flipButton')}
-            </Button>
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
+              {t('ctaIntermediate')}
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-fidelix-yellow to-accent mx-auto rounded-full shadow-glow"></div>
           </div>
 
           {/* Participation Form */}
-          <Card className="max-w-md mx-auto">
-            <CardHeader>
-              <CardTitle className="text-center">
-                {t('ctaIntermediate')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
+          <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <Card className="w-full max-w-lg bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-0 shadow-elegant rounded-3xl">
+              <CardContent className="p-8 space-y-8">
+                {/* Terms Checkbox */}
+                <div className="flex items-start space-x-4">
                   <Checkbox 
                     id="terms" 
                     checked={agreedToTerms}
                     onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                    className="mt-1"
+                    className="mt-1 border-2 border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                   />
                   <label 
                     htmlFor="terms" 
-                    className="text-sm leading-relaxed cursor-pointer"
+                    className="text-sm text-foreground leading-relaxed cursor-pointer font-medium"
                   >
                     {t('terms')}
                   </label>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                <Button 
-                  onClick={handleParticipate}
-                  disabled={!agreedToTerms}
-                  variant="hero"
-                  size="lg"
-                  className="w-full"
-                >
-                  {t('ctaPrimary')}
-                </Button>
-                
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/')}
-                  className="w-full text-muted-foreground"
-                >
-                  {t('decline')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                {/* Action Buttons */}
+                <div className="space-y-4">
+                  <Button 
+                    onClick={handleParticipate}
+                    disabled={!agreedToTerms}
+                    variant="hero"
+                    size="lg"
+                    className="w-full h-14 text-lg font-bold shadow-glow disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {t('ctaPrimary')}
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/')}
+                    className="w-full h-12 border-2 hover:bg-muted/50"
+                    size="lg"
+                  >
+                    {t('decline')}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>
