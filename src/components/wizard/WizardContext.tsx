@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export interface BusinessData {
   name: string;
@@ -46,6 +46,7 @@ interface WizardContextType {
   nextQuestion: () => void;
   prevQuestion: () => void;
   setComplete: (complete: boolean) => void;
+  clearSavedState: () => void;
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
@@ -79,8 +80,70 @@ const initialState: WizardState = {
   isComplete: false,
 };
 
+const STORAGE_KEY = 'wizard-loyalty-card-state';
+
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<WizardState>(initialState);
+
+  // Função para salvar estado no localStorage
+  const saveToStorage = (newState: WizardState) => {
+    try {
+      const stateToSave = {
+        ...newState,
+        businessData: {
+          ...newState.businessData,
+          // Não salvar o arquivo diretamente, apenas a URL se existir
+          logoFile: null
+        }
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    } catch (error) {
+      console.warn('Erro ao salvar estado no localStorage:', error);
+    }
+  };
+
+  // Função para carregar estado do localStorage
+  const loadFromStorage = (): WizardState | null => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsedState = JSON.parse(saved);
+        // Converter data de string para Date se existir
+        if (parsedState.rewardConfig?.expirationDate) {
+          parsedState.rewardConfig.expirationDate = new Date(parsedState.rewardConfig.expirationDate);
+        }
+        return parsedState;
+      }
+    } catch (error) {
+      console.warn('Erro ao carregar estado do localStorage:', error);
+    }
+    return null;
+  };
+
+  // Função para limpar estado salvo
+  const clearSavedState = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.warn('Erro ao limpar estado do localStorage:', error);
+    }
+  };
+
+  // Carregar estado salvo na inicialização
+  useEffect(() => {
+    const savedState = loadFromStorage();
+    if (savedState) {
+      setState(savedState);
+    }
+  }, []);
+
+  // Salvar estado sempre que houver mudanças
+  useEffect(() => {
+    // Só salvar se não for o estado inicial (evitar salvar o estado vazio)
+    if (state.businessData.name || state.currentQuestion > 1) {
+      saveToStorage(state);
+    }
+  }, [state]);
 
   const generateClientCode = (businessName: string): string => {
     const letters = businessName.replace(/[^a-zA-Z]/g, '');
@@ -140,6 +203,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
         nextQuestion,
         prevQuestion,
         setComplete,
+        clearSavedState,
       }}
     >
       {children}

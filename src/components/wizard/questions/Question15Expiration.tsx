@@ -55,6 +55,10 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
     const { success } = await saveCard(state);
     if (success) {
       setPublished(true);
+      // Limpar estado salvo após publicação bem-sucedida
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('wizard-loyalty-card-state');
+      }
       setTimeout(() => {
         navigate('/my-cards');
       }, 2000);
@@ -144,7 +148,7 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
             <p className="text-sm text-muted-foreground">
               {user ? 
                 'Clique em "Publicar" para salvar seu cartão de fidelidade' :
-                'Faça login para publicar seu cartão'
+                'Faça login para publicar seu cartão. Seu progresso será salvo automaticamente.'
               }
             </p>
             
