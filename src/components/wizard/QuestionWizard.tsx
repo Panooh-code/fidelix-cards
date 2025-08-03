@@ -105,46 +105,63 @@ export const QuestionWizard = () => {
   };
 
   return (
-    // CORREÇÃO: Removida a altura fixa para o layout ser flexível
-    <Card className="shadow-elegant border-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm overflow-hidden flex flex-col">
+    <div className="border-0 overflow-hidden flex flex-col h-full">
       
-      {/* CORREÇÃO: Adicionado padding (pb-2) para criar espaço abaixo da barra */}
-      <div className="px-4 pt-4 pb-2 flex-shrink-0">
-        <Progress value={progress} className="h-1.5" />
+      {/* iOS Style Progress Bar */}
+      <div className="px-6 pt-6 pb-3 flex-shrink-0">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-fidelix-purple">
+            Pergunta {state.currentQuestion} de {TOTAL_QUESTIONS}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {Math.round(progress)}%
+          </span>
+        </div>
+        <Progress value={progress} className="h-1 bg-fidelix-purple/10 [&>div]:bg-gradient-to-r [&>div]:from-fidelix-purple [&>div]:to-fidelix-purple-light" />
       </div>
 
-      <div className="px-4 py-1 flex items-center justify-center flex-shrink-0">
-        <FidelixTip questionNumber={state.currentQuestion} />
+      {/* Fidelix Tip - iOS Style */}
+      <div className="px-6 py-2 flex items-center justify-center flex-shrink-0">
+        <div className="bg-fidelix-purple/5 rounded-full px-4 py-2 border border-fidelix-purple/10">
+          <FidelixTip questionNumber={state.currentQuestion} />
+        </div>
       </div>
 
+      {/* Question Content - iOS Style */}
       <div className={cn(
-        "flex-1 transition-all duration-200 overflow-hidden",
-        isTransitioning ? "opacity-0" : "opacity-100"
+        "flex-1 transition-all duration-300 overflow-hidden px-6",
+        isTransitioning ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
       )}>
-        {renderQuestion()}
+        <div className="h-full flex items-center justify-center">
+          <div className="w-full max-w-sm">
+            {renderQuestion()}
+          </div>
+        </div>
       </div>
 
-      <div className="px-4 py-3 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
+      {/* iOS Style Navigation */}
+      <div className="px-6 py-4 flex items-center justify-between flex-shrink-0 border-t border-fidelix-purple/10 bg-gradient-to-t from-fidelix-purple/2 to-transparent">
         <Button
           onClick={handlePrev}
           variant="ghost"
-          size="sm"
+          size="lg"
+          className="text-fidelix-purple hover:bg-fidelix-purple/10 border border-fidelix-purple/20 hover:border-fidelix-purple/30 rounded-full px-6"
         >
-          <ArrowLeft className="w-4 h-4 mr-1" />
+          <ArrowLeft className="w-4 h-4 mr-2" />
           Voltar
         </Button>
           
         <Button
           onClick={handleNext}
           variant="default"
-          size="sm"
+          size="lg"
           disabled={!canAdvance()}
-          className="bg-primary hover:bg-primary-glow"
+          className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full px-8 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-          <ArrowRight className="w-4 h-4 ml-1" />
+          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
-    </Card>
+    </div>
   );
 };

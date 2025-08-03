@@ -390,14 +390,14 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         </div>
       </div>
 
-      {/* Botão Discreto para Girar */}
-      <div className="flex justify-center mt-4">
+      {/* iOS Style Flip Button */}
+      <div className="flex justify-center mt-6">
         <button
           onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full transition-colors shadow-sm"
+          className="flex items-center gap-2 px-6 py-3 text-sm font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm"
         >
           <RotateCcw className="w-4 h-4" />
-          Girar cartela
+          Girar cartão
         </button>
       </div>
 
