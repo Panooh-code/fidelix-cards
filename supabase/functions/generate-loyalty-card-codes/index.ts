@@ -18,10 +18,14 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { cardId } = await req.json()
+    const { cardId, appDomain } = await req.json()
 
     if (!cardId) {
       throw new Error('Card ID é obrigatório')
+    }
+
+    if (!appDomain) {
+      throw new Error('Domínio da aplicação é obrigatório')
     }
 
     // Gerar código público único (2 letras + 4 números)
@@ -66,8 +70,8 @@ serve(async (req) => {
       throw new Error('Não foi possível gerar um código único')
     }
 
-    // Gerar URLs
-    const publicUrl = `https://jpkogupeanqhhwujvkxh.supabase.co/card/${publicCode}`
+    // Gerar URLs usando o domínio da aplicação
+    const publicUrl = `${appDomain}/card/${publicCode}`
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(publicUrl)}`
 
     // Atualizar o cartão com os novos dados

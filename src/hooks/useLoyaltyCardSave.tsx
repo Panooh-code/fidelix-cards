@@ -108,7 +108,10 @@ export const useLoyaltyCardSave = () => {
         // Generate public code and QR code using Edge Function apenas para novos cartões
         const { data: codesData, error: codesError } = await supabase.functions
           .invoke('generate-loyalty-card-codes', {
-            body: { cardId: data.id }
+            body: { 
+              cardId: data.id,
+              appDomain: window.location.origin
+            }
           });
 
         if (codesError) {
