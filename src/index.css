@@ -27,6 +27,20 @@ All colors MUST be HSL for proper theming.
     --primary-dark: 261 78% 36%; /* fidelix-purple dark #5B21B6 */
     --primary-darkest: 220 26% 14%; /* fidelix-purple darkest #111827 */
 
+    /* Fidelix specific colors */
+    --fidelix-purple: 261 85% 58%;          /* Main purple: #7c3aed */
+    --fidelix-purple-light: 261 65% 75%;     /* Light purple: #a78bfa */
+    --fidelix-purple-dark: 261 85% 50%;      /* Dark purple: #6d28d9 */
+    --fidelix-purple-darkest: 261 85% 20%;   /* Darkest purple for dark mode */
+    --fidelix-lilac-light: 261 50% 80%;      /* Light lilac for dark mode text/icons */
+    
+    --fidelix-yellow: 50 100% 60%;           /* Accent yellow: #ffdd00 */
+    --fidelix-yellow-dark: 45 100% 50%;      /* Darker yellow: #ffb800 */
+    
+    /* Grays for backgrounds */
+    --fidelix-gray-light: 240 8% 98%;        /* Light background */
+    --fidelix-gray-dark: 240 10% 15%;        /* Dark background for cards */
+
     /* Fidelix accent colors */
     --accent-yellow: 48 96% 53%; /* fidelix-yellow #FACC15 */
     --accent-yellow-dark: 43 84% 50%; /* fidelix-yellow dark #EAB308 */

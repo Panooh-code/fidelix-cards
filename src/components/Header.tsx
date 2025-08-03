@@ -52,25 +52,25 @@ const Header = () => {
           <nav className="hidden lg:flex items-center gap-8">
             <button 
               onClick={() => scrollToSection('benefits')}
-              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium"
+              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium"
             >
               Vantagens
             </button>
             <button 
               onClick={() => scrollToSection('how-it-works')}
-              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium"
+              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium"
             >
               Como Funciona
             </button>
             <button 
               onClick={() => scrollToSection('faq')}
-              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium"
+              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium"
             >
               FAQs
             </button>
             <a 
               href="#"
-              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium"
+              className="text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium"
             >
               Fidelix Academy
             </a>
@@ -110,7 +110,7 @@ const Header = () => {
                 <Button 
                   variant="hero" 
                   size="default"
-                  className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                   onClick={() => navigate('/wizard')}
                 >
                   Criar Cartão Grátis
@@ -125,13 +125,13 @@ const Header = () => {
               variant="hero" 
               size="sm"
               onClick={() => navigate('/wizard')}
-              className="text-xs px-3 py-2 bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple text-white font-semibold shadow-lg"
+              className="text-xs px-3 py-2 bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white font-semibold shadow-lg"
             >
               Criar Cartão
             </Button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors"
+              className="p-2 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -151,25 +151,25 @@ const Header = () => {
               <div className="space-y-3">
                 <button 
                   onClick={() => scrollToSection('benefits')}
-                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium hover:bg-muted rounded-lg"
+                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium hover:bg-muted rounded-lg"
                 >
                   Vantagens
                 </button>
                 <button 
                   onClick={() => scrollToSection('how-it-works')}
-                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium hover:bg-muted rounded-lg"
+                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium hover:bg-muted rounded-lg"
                 >
                   Como Funciona
                 </button>
                 <button 
                   onClick={() => scrollToSection('faq')}
-                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium hover:bg-muted rounded-lg"
+                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium hover:bg-muted rounded-lg"
                 >
                   FAQs
                 </button>
                 <a 
                   href="#"
-                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-purple-light dark:hover:text-fidelix-purple transition-colors font-medium hover:bg-muted rounded-lg"
+                  className="block w-full text-left py-3 px-4 text-fidelix-purple hover:text-fidelix-purple-light dark:text-fidelix-lilac-light dark:hover:text-fidelix-purple-light transition-colors font-medium hover:bg-muted rounded-lg"
                 >
                   Fidelix Academy
                 </a>

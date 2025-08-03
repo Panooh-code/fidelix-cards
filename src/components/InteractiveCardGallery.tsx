@@ -196,7 +196,7 @@ const InteractiveCardGallery: React.FC = () => {
         <div className="mt-16 text-center">
           <button
             onClick={() => navigate('/wizard')}
-            className="rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:scale-105 dark:text-fidelix-purple-darkest dark:bg-gradient-to-r dark:from-fidelix-yellow dark:to-yellow-400"
+            className="rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple hover:scale-105"
           >
             Faça o seu card agora
           </button>

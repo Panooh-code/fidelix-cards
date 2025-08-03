@@ -46,7 +46,7 @@ const NewLandingPage: React.FC = () => {
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <button
                   onClick={() => navigate('/wizard')}
-                  className="rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple hover:scale-105"
+                  className="rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple hover:scale-105"
                 >
                   🐾 Começar Grátis Agora
                 </button>
@@ -127,37 +127,37 @@ const NewLandingPage: React.FC = () => {
             <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
               <dl className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <Smartphone className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <Smartphone className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     100% digital, sem papel ou carimbos perdidos
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <Clock className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <Clock className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     Criação em menos de 1 minuto
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <Store className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <Store className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     Ideal para lanchonetes, salões, lojas e autônomos
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <MessageCircle className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <MessageCircle className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     Compartilhável no WhatsApp
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <RotateCcw className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <RotateCcw className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     Seus clientes voltam mais vezes
                   </p>
                 </div>
                 <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-                  <UserCircle className="h-8 w-8 text-fidelix-purple dark:text-fidelix-purple-light" />
+                  <UserCircle className="h-8 w-8 text-fidelix-purple dark:text-fidelix-lilac-light" />
                   <p className="mt-4 text-lg font-semibold text-gray-800 dark:text-gray-200">
                     Seu cartão de fidelidade funciona como cartão de visitas
                   </p>
@@ -182,7 +182,7 @@ const NewLandingPage: React.FC = () => {
             <div className="mt-10">
               <button
                 onClick={() => navigate('/wizard')}
-                className="inline-flex items-center gap-x-3 rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:from-fidelix-purple-light hover:to-fidelix-purple hover:scale-105"
+                className="inline-flex items-center gap-x-3 rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple hover:scale-105"
               >
                 Começar agora grátis
               </button>
