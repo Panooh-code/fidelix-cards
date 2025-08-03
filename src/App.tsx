@@ -14,6 +14,7 @@ import MyCardsPage from "./pages/MyCardsPage";
 import PublicCardPage from "./pages/PublicCardPage";
 import CustomerSignupPage from "./pages/CustomerSignupPage";
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
+import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +30,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/wizard" element={<WizardPage />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/my-cards" element={<MyCardsPage />} />
+              <Route path="/my-cards" element={<PrivateRoute><MyCardsPage /></PrivateRoute>} />
+              <Route path="/my-customer-cards" element={<PrivateRoute><MyCustomerCardsPage /></PrivateRoute>} />
               
               {/* Public Card Routes */}
               <Route path="/card/:publicCode" element={<PublicCardPage />} />

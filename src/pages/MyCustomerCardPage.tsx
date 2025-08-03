@@ -179,7 +179,7 @@ const MyCustomerCardPage = () => {
             </p>
             <Button 
               variant="outline" 
-              onClick={() => navigate('/my-cards')}
+              onClick={() => navigate('/my-customer-cards')}
               className="w-full"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -220,7 +220,7 @@ const MyCustomerCardPage = () => {
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
-                onClick={() => navigate('/my-cards')}
+                onClick={() => navigate('/my-customer-cards')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
