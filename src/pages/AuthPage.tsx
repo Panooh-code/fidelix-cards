@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { getFidelixImageUrls } from '@/utils/uploadImages';
+import { useSmartRedirect } from '@/hooks/useSmartRedirect';
+import { supabase } from '@/integrations/supabase/client';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -21,16 +23,24 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const imageUrls = getFidelixImageUrls();
+  const { redirectUser } = useSmartRedirect();
 
   // Get redirect URL from query params
   const redirectTo = searchParams.get('redirect') || '/';
 
   useEffect(() => {
-    // If user is already logged in, redirect them
+    // If user is already logged in, redirect them intelligently
     if (user) {
-      navigate(redirectTo);
+      // If there's a specific redirect, use it
+      if (redirectTo !== '/') {
+        navigate(redirectTo);
+        return;
+      }
+      
+      // Otherwise, use smart redirect based on user profile
+      redirectUser(user.id, '/');
     }
-  }, [user, navigate, redirectTo]);
+  }, [user, navigate, redirectTo, redirectUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +52,18 @@ const AuthPage = () => {
       if (isLogin) {
         const { error } = await signIn(email, password);
         if (!error) {
-          navigate(redirectTo);
+          // Use smart redirect for login
+          if (redirectTo !== '/') {
+            navigate(redirectTo);
+          } else {
+            // Get user from session after successful login
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+              redirectUser(session.user.id, '/');
+            } else {
+              navigate('/');
+            }
+          }
         }
       } else {
         // Validation for sign up
@@ -61,7 +82,8 @@ const AuthPage = () => {
 
         const { error } = await signUp(email, password, fullName);
         if (!error) {
-          navigate(redirectTo);
+          // For new signups, redirect to merchant area by default
+          navigate('/my-cards');
         }
       }
     } finally {

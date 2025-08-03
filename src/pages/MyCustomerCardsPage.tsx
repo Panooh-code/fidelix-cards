@@ -130,7 +130,7 @@ const MyCustomerCardsPage = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold text-foreground">Meus Cartões</h1>
+          <h1 className="text-2xl font-bold text-foreground">Meus Cartões Fidelix</h1>
         </div>
 
         {/* Cards Grid */}

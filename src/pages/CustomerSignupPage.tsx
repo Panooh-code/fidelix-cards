@@ -38,7 +38,7 @@ const CustomerSignupPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/my-cards');
+      navigate('/my-customer-cards');
     }
   }, [user, navigate]);
 
@@ -130,10 +130,10 @@ const CustomerSignupPage = () => {
         return;
       }
 
-      toast.success('Conta criada e participação registrada com sucesso!');
+      toast.success('Bem-vindo! Seu cartão foi adicionado à sua lista de cartões Fidelix.');
       
-      // Redirect to customer card page
-      navigate(`/my-card/${participationData.customerCard.cardCode}`);
+      // Redirect to customer cards list page
+      navigate('/my-customer-cards');
       
     } catch (error: any) {
       console.error('Error in handleSubmit:', error);
