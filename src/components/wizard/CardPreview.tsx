@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
+import { Star, Circle, Square, MapPin, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
 import { useWizard } from "./WizardContext";
 
 export interface CardData {
@@ -42,6 +42,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [isFlipped, setIsFlipped] = useState(true);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
+  const [isCardExpanded, setIsCardExpanded] = useState(false);
 
   // Listen for flip events from wizard questions
   useEffect(() => {
@@ -207,11 +208,17 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       <div className={cn("perspective-1000", className)}>
         <div 
           className={cn(
-            "relative transition-transform duration-700 transform-style-preserve-3d",
+            "relative transition-all duration-700 transform-style-preserve-3d cursor-pointer",
             currentSize.width,
             currentSize.height,
-            isFlipped ? 'rotate-y-180' : ''
+            isFlipped ? 'rotate-y-180' : '',
+            isCardExpanded ? 'scale-110 -translate-y-2' : 'hover:scale-105'
           )}
+          onClick={() => setIsCardExpanded(!isCardExpanded)}
+          style={{
+            transform: isCardExpanded ? 'scale(1.1) translateY(-8px) rotateX(5deg)' : undefined,
+            boxShadow: isCardExpanded ? '0 20px 40px rgba(0,0,0,0.3)' : undefined
+          }}
         >
           {/* Front Face - Face dos Selos */}
           <div 
@@ -239,7 +246,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                       className="w-12 h-12 rounded-full flex items-center justify-center border-3 shadow-card-elegant bg-white/10"
                       style={{ borderColor: cardData.primary_color }}
                     >
-                      <Building2 className={cn("w-6 h-6", textColor)} />
+                      <Star className={cn("w-6 h-6", textColor)} />
                     </div>
                   )}
                 </div>
@@ -305,7 +312,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center border-4 border-white/50 shadow-card-elegant aspect-square">
-                    <Building2 className="w-10 h-10 text-white/80" />
+                    <Star className="w-10 h-10 text-white/80" />
                   </div>
                 )}
               </div>
@@ -391,12 +398,15 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       </div>
 
       {/* iOS Style Flip Button */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-4">
         <button
-          onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 px-6 py-3 text-sm font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsFlipped(!isFlipped);
+          }}
+          className="flex items-center gap-2 px-4 py-2 text-xs font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3 h-3" />
           Girar cartão
         </button>
       </div>

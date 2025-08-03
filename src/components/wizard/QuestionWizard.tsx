@@ -105,61 +105,51 @@ export const QuestionWizard = () => {
   };
 
   return (
-    <div className="border-0 overflow-hidden flex flex-col h-full">
+    <div className="h-full flex flex-col overflow-hidden">
       
-      {/* iOS Style Progress Bar */}
-      <div className="px-6 pt-6 pb-3 flex-shrink-0">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-fidelix-purple">
-            Pergunta {state.currentQuestion} de {TOTAL_QUESTIONS}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {Math.round(progress)}%
-          </span>
-        </div>
-        <Progress value={progress} className="h-1 bg-fidelix-purple/10 [&>div]:bg-gradient-to-r [&>div]:from-fidelix-purple [&>div]:to-fidelix-purple-light" />
+      {/* Ultra Minimal Progress Bar */}
+      <div className="px-4 pt-4 pb-2 flex-shrink-0">
+        <Progress value={progress} className="h-0.5 bg-fidelix-purple/10 [&>div]:bg-gradient-to-r [&>div]:from-fidelix-purple [&>div]:to-fidelix-purple-light" />
       </div>
 
-      {/* Fidelix Tip - iOS Style */}
-      <div className="px-6 py-2 flex items-center justify-center flex-shrink-0">
-        <div className="bg-fidelix-purple/5 rounded-full px-4 py-2 border border-fidelix-purple/10">
-          <FidelixTip questionNumber={state.currentQuestion} />
-        </div>
+      {/* Fidelix Tip - Redesigned */}
+      <div className="px-4 py-1 flex items-center justify-center flex-shrink-0">
+        <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* Question Content - iOS Style */}
+      {/* Question Content - Optimized */}
       <div className={cn(
-        "flex-1 transition-all duration-300 overflow-hidden px-6",
+        "flex-1 min-h-0 transition-all duration-300 px-4",
         isTransitioning ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
       )}>
-        <div className="h-full flex items-center justify-center">
-          <div className="w-full max-w-sm">
+        <div className="h-full flex flex-col justify-center">
+          <div className="w-full">
             {renderQuestion()}
           </div>
         </div>
       </div>
 
-      {/* iOS Style Navigation */}
-      <div className="px-6 py-4 flex items-center justify-between flex-shrink-0 border-t border-fidelix-purple/10 bg-gradient-to-t from-fidelix-purple/2 to-transparent">
+      {/* Compact Navigation */}
+      <div className="px-4 py-3 flex items-center justify-between flex-shrink-0 border-t border-fidelix-purple/10">
         <Button
           onClick={handlePrev}
           variant="ghost"
-          size="lg"
-          className="text-fidelix-purple hover:bg-fidelix-purple/10 border border-fidelix-purple/20 hover:border-fidelix-purple/30 rounded-full px-6"
+          size="sm"
+          className="text-fidelix-purple hover:bg-fidelix-purple/10 border border-fidelix-purple/20 hover:border-fidelix-purple/30 rounded-full px-4 py-1.5 h-auto text-xs"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="w-3 h-3 mr-1" />
           Voltar
         </Button>
           
         <Button
           onClick={handleNext}
           variant="default"
-          size="lg"
+          size="sm"
           disabled={!canAdvance()}
-          className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full px-8 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full px-6 py-1.5 h-auto text-xs disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-3 h-3 ml-1" />
         </Button>
       </div>
     </div>

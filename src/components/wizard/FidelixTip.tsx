@@ -1,4 +1,3 @@
-import { Cat } from "lucide-react";
 import { useWizard } from "./WizardContext";
 
 interface FidelixTipProps {
@@ -27,13 +26,30 @@ const getTipsByQuestion = (question: number): string => {
   return tips[question] || "Vamos criar algo incrível!";
 };
 
+// Array de emojis de gato variados
+const catEmojis = ["🐱", "😺", "😸", "😻", "🙀"];
+
+const getRandomCatEmoji = () => {
+  return catEmojis[Math.floor(Math.random() * catEmojis.length)];
+};
+
 export const FidelixTip = ({ questionNumber }: FidelixTipProps) => {
   const tip = getTipsByQuestion(questionNumber);
+  const randomCat = getRandomCatEmoji();
 
   return (
-    <div className="text-xs text-muted-foreground bg-muted/30 rounded-full flex items-center gap-2 px-3 py-1">
-      <span className="text-primary">🐱</span>
-      <span className="truncate">{tip}</span>
+    <div className="flex items-center gap-2 max-w-full">
+      {/* Cat Icon */}
+      <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+        <span className="text-sm">{randomCat}</span>
+      </div>
+      
+      {/* Elongated Speech Bubble */}
+      <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-full px-3 py-1 border border-fidelix-purple/20 shadow-sm min-h-[20px] flex items-center">
+        <span className="text-xs text-fidelix-purple font-medium truncate">
+          {tip}
+        </span>
+      </div>
     </div>
   );
 };
