@@ -189,7 +189,9 @@ const NewLandingPage: React.FC = () => {
         </section>
 
         {/* FAQ Section */}
-        <FaqSection />
+        <div id="faq">
+          <FaqSection />
+        </div>
       </main>
 
       {/* Footer */}
