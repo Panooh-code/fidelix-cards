@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, QrCode, MessageCircle, Clock, Award } from 'lucide-react';
+import { ArrowLeft, Loader2, QrCode, MessageCircle, Clock, Award, RotateCcw, Info, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { CardPreview, CardData } from '@/components/wizard/CardPreview';
@@ -49,6 +49,7 @@ const MyCustomerCardPage = () => {
   const [cardInfo, setCardInfo] = useState<CustomerCardInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isFlipped, setIsFlipped] = useState(false);
   const imageUrls = getFidelixImageUrls();
 
   useEffect(() => {
@@ -309,14 +310,92 @@ const MyCustomerCardPage = () => {
             </CardContent>
           </Card>
 
-          {/* Card Preview */}
-          <div className="flex justify-center">
-            <CardPreview 
-              cardData={cardData} 
-              size="lg"
-              className="max-w-sm"
-            />
-          </div>
+          {/* Card Preview with Rotation */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="w-5 h-5" />
+                  Meu Cartão
+                </CardTitle>
+                <Button 
+                  onClick={() => setIsFlipped(!isFlipped)}
+                  variant="outline"
+                  size="sm"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Girar
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <div 
+                  className="relative w-full max-w-sm h-64"
+                  style={{ perspective: '1000px' }}
+                >
+                  <div 
+                    className={`relative w-full h-full transition-transform duration-700 ${
+                      isFlipped ? 'rotate-y-180' : ''
+                    }`}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    {/* Front of Card */}
+                    <div 
+                      className="absolute inset-0"
+                      style={{ backfaceVisibility: 'hidden' }}
+                    >
+                      <CardPreview 
+                        cardData={cardData} 
+                        size="lg"
+                        className="w-full h-full"
+                      />
+                    </div>
+                    
+                    {/* Back of Card with Business Info */}
+                    <div 
+                      className="absolute inset-0 rotate-y-180"
+                      style={{ backfaceVisibility: 'hidden' }}
+                    >
+                      <Card className="w-full h-full">
+                        <CardContent className="p-6 h-full flex flex-col justify-center space-y-3">
+                          <div className="text-center mb-3">
+                            <h3 className="font-bold text-base">Informações do Estabelecimento</h3>
+                          </div>
+                          <div className="space-y-3 text-sm">
+                            <div className="flex items-center gap-2">
+                              <Info className="w-4 h-4 text-muted-foreground" />
+                              <span>{cardInfo.loyaltyCard.businessSegment}</span>
+                            </div>
+                            {cardInfo.loyaltyCard.businessAddress && (
+                              <div className="flex items-center gap-2">
+                                <MapPin className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-xs">{cardInfo.loyaltyCard.businessAddress}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <Phone className="w-4 h-4 text-muted-foreground" />
+                              <span>{cardInfo.loyaltyCard.businessPhone}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Mail className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-xs">{cardInfo.loyaltyCard.businessEmail}</span>
+                            </div>
+                            {cardInfo.loyaltyCard.socialNetwork && (
+                              <div className="flex items-center gap-2">
+                                <Globe className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-xs">{cardInfo.loyaltyCard.socialNetwork}</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* QR Code */}
           <Card>
@@ -385,29 +464,19 @@ const MyCustomerCardPage = () => {
             </Card>
           )}
 
-          {/* Card Info */}
+          {/* Progress Message */}
           <Card>
-            <CardHeader>
-              <CardTitle>Informações do Estabelecimento</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-sm">
-                <span className="text-muted-foreground">Segmento:</span>
-                <span className="ml-2">{cardInfo.loyaltyCard.businessSegment}</span>
+            <CardContent className="p-6 text-center">
+              <div className="text-lg font-semibold mb-2">
+                {sealsRemaining > 0 ? (
+                  `Junte mais ${sealsRemaining} selos para completar o cartão`
+                ) : (
+                  '🎉 Parabéns! Você pode resgatar sua recompensa!'
+                )}
               </div>
-              {cardInfo.loyaltyCard.businessAddress && (
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Endereço:</span>
-                  <span className="ml-2">{cardInfo.loyaltyCard.businessAddress}</span>
-                </div>
-              )}
-              <div className="text-sm">
-                <span className="text-muted-foreground">Contato:</span>
-                <span className="ml-2">{cardInfo.loyaltyCard.businessPhone}</span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-4">
-                Cartão criado em {new Date(cardInfo.createdAt).toLocaleDateString('pt-BR')}
-              </div>
+              <p className="text-muted-foreground">
+                Continue visitando <strong>{cardInfo.loyaltyCard.businessName}</strong> para ganhar mais selos
+              </p>
             </CardContent>
           </Card>
         </div>

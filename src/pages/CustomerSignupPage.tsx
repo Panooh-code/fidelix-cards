@@ -233,6 +233,13 @@ const CustomerSignupPage = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Quick Signup Note */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-blue-700">
+                    ✨ <strong>Cadastro rápido e simples!</strong> Sem confirmação de email necessária.
+                  </p>
+                </div>
+
                 <div className="space-y-2">
                   <label htmlFor="fullName" className="text-sm font-medium">
                     Nome Completo *
@@ -263,7 +270,7 @@ const CustomerSignupPage = () => {
 
                 <div className="space-y-2">
                   <label htmlFor="phone" className="text-sm font-medium">
-                    Telefone/WhatsApp
+                    WhatsApp (Opcional)
                   </label>
                   <Input
                     id="phone"
@@ -272,6 +279,9 @@ const CustomerSignupPage = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    💡 Coloque o seu número de WhatsApp para receber avisos e ofertas e promoções exclusivas para membros.
+                  </p>
                 </div>
 
                 <div className="space-y-2">

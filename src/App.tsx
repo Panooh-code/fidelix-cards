@@ -12,6 +12,7 @@ import WizardPage from "./pages/WizardPage";
 import AuthPage from "./pages/AuthPage";
 import MyCardsPage from "./pages/MyCardsPage";
 import PublicCardPage from "./pages/PublicCardPage";
+import PublicCardViewPage from "./pages/PublicCardViewPage";
 import CustomerSignupPage from "./pages/CustomerSignupPage";
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
 import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
@@ -37,6 +38,7 @@ const App = () => (
               
               {/* Public Card Routes */}
               <Route path="/card/:publicCode" element={<PublicCardPage />} />
+              <Route path="/card/:publicCode/view" element={<PublicCardViewPage />} />
               <Route path="/card/:publicCode/signup" element={<CustomerSignupPage />} />
               
               {/* Private Customer Card Route */}

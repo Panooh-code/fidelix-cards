@@ -206,27 +206,26 @@ const MyCardsPage = () => {
               {cards.map((card) => (
                 <Card key={card.id} className="group hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3 w-full">
-                    <div className="flex-shrink-0">
+                    {/* Card Preview */}
+                    <div className="flex justify-center mb-4">
                       <CardPreviewThumbnail card={card} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg leading-tight">
+                    
+                    {/* Business Name - Centered */}
+                    <div className="text-center space-y-2">
+                      <CardTitle className="text-lg leading-tight font-bold">
                         {card.business_name}
                       </CardTitle>
-                    </div>
-                  </div>
                       <Badge 
                         variant={card.is_active ? "default" : "secondary"}
-                        className="ml-2"
+                        className="mx-auto"
                       >
                         {card.is_active ? 'Ativo' : 'Inativo'}
                       </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        {card.business_segment}
+                      </p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {card.business_segment}
-                    </p>
                   </CardHeader>
                   
                   <CardContent className="space-y-4">
@@ -249,7 +248,7 @@ const MyCardsPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => card.public_code ? navigate(`/card/${card.public_code}`) : toast.error('Cartão ainda não publicado')}
+                        onClick={() => card.public_code ? navigate(`/card/${card.public_code}/view`) : toast.error('Cartão ainda não publicado')}
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         Ver
