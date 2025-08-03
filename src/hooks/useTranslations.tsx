@@ -19,7 +19,9 @@ const translations = {
     backToHome: 'Voltar ao início',
     back: 'Voltar',
     loyaltyCard: 'Cartão de Fidelidade',
-    agreeToTermsError: 'Você deve concordar com os termos para participar'
+    agreeToTermsError: 'Você deve concordar com os termos para participar',
+    flip_to_card: 'Ver Cartão',
+    flip_to_qr: 'Ver QR Code'
   },
   'pt-PT': {
     title: 'Cartão de Fidelização {businessName}',
@@ -35,7 +37,9 @@ const translations = {
     backToHome: 'Voltar ao início',
     back: 'Voltar',
     loyaltyCard: 'Cartão de Fidelização',
-    agreeToTermsError: 'Deve concordar com os termos para participar'
+    agreeToTermsError: 'Deve concordar com os termos para participar',
+    flip_to_card: 'Ver Cartão',
+    flip_to_qr: 'Ver QR Code'
   },
   'es-ES': {
     title: 'Tarjeta de Fidelidad {businessName}',
@@ -51,7 +55,9 @@ const translations = {
     backToHome: 'Volver al inicio',
     back: 'Volver',
     loyaltyCard: 'Tarjeta de Fidelidad',
-    agreeToTermsError: 'Debes aceptar los términos para participar'
+    agreeToTermsError: 'Debes aceptar los términos para participar',
+    flip_to_card: 'Ver Tarjeta',
+    flip_to_qr: 'Ver Código QR'
   },
   'en': {
     title: '{businessName} Loyalty Card',
@@ -67,7 +73,9 @@ const translations = {
     backToHome: 'Back to home',
     back: 'Back',
     loyaltyCard: 'Loyalty Card',
-    agreeToTermsError: 'You must agree to the terms to participate'
+    agreeToTermsError: 'You must agree to the terms to participate',
+    flip_to_card: 'View Card',
+    flip_to_qr: 'View QR Code'
   },
   'fr': {
     title: 'Carte de Fidélité {businessName}',
@@ -83,7 +91,9 @@ const translations = {
     backToHome: 'Retour à l\'accueil',
     back: 'Retour',
     loyaltyCard: 'Carte de Fidélité',
-    agreeToTermsError: 'Vous devez accepter les termes pour participer'
+    agreeToTermsError: 'Vous devez accepter les termes pour participer',
+    flip_to_card: 'Voir la carte',
+    flip_to_qr: 'Voir QR Code'
   },
   'it': {
     title: 'Carta Fedeltà {businessName}',
@@ -99,7 +109,9 @@ const translations = {
     backToHome: 'Torna alla home',
     back: 'Indietro',
     loyaltyCard: 'Carta Fedeltà',
-    agreeToTermsError: 'Devi accettare i termini per partecipare'
+    agreeToTermsError: 'Devi accettare i termini per partecipare',
+    flip_to_card: 'Vedi carta',
+    flip_to_qr: 'Vedi QR Code'
   },
   'de': {
     title: '{businessName} Treuekarte',
@@ -115,7 +127,9 @@ const translations = {
     backToHome: 'Zurück zur Startseite',
     back: 'Zurück',
     loyaltyCard: 'Treuekarte',
-    agreeToTermsError: 'Sie müssen den Bedingungen zustimmen, um teilzunehmen'
+    agreeToTermsError: 'Sie müssen den Bedingungen zustimmen, um teilzunehmen',
+    flip_to_card: 'Karte anzeigen',
+    flip_to_qr: 'QR-Code anzeigen'
   }
 };
 

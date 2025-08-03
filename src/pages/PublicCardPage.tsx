@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Loader2, RotateCcw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { CardPreview, CardData } from '@/components/wizard/CardPreview';
+import { PublicCardPreview } from '@/components/PublicCardPreview';
+import type { CardData } from '@/components/wizard/CardPreview';
 import { getFidelixImageUrls } from '@/utils/uploadImages';
 import { toast } from 'sonner';
 import { useTranslations } from '@/hooks/useTranslations';
@@ -184,7 +185,7 @@ const PublicCardPage = () => {
           {/* Card Display */}
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="hover:scale-105 transition-transform duration-300">
-              <CardPreview 
+              <PublicCardPreview 
                 cardData={cardData} 
                 size="lg"
                 className="shadow-elegant"

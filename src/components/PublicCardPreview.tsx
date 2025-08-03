@@ -1,28 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
-import { useWizard } from "./WizardContext";
+import { useTranslations } from "@/hooks/useTranslations";
+import type { CardData } from "@/components/wizard/CardPreview";
 
-export interface CardData {
-  logo_url?: string;
-  business_name: string;
-  reward_description: string;
-  primary_color: string;
-  backgroundColor: string;
-  pattern: 'waves' | 'dots' | 'lines' | 'grid' | 'none';
-  clientCode: string;
-  clientName?: string;
-  phone?: string;
-  email?: string;
-  address?: string;
-  whatsapp?: string;
-  socialNetwork?: string;
-  sealCount: number;
-  sealShape: 'star' | 'circle' | 'square' | 'heart';
-  instructions?: string;
-}
-
-export interface CardPreviewProps {
+export interface PublicCardPreviewProps {
   cardData: CardData;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -38,24 +20,11 @@ const isLightColor = (color: string) => {
   return brightness > 128;
 };
 
-export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
+export const PublicCardPreview = ({ cardData, className = "", size = "md" }: PublicCardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false); // Iniciar sempre mostrando os selos (front face)
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-
-  // Listen for flip events from wizard questions
-  useEffect(() => {
-    const handleFlipToSeals = () => setIsFlipped(false);
-    const handleFlipToQR = () => setIsFlipped(true);
-    
-    window.addEventListener('flipCardToSeals', handleFlipToSeals);
-    window.addEventListener('flipCardToQR', handleFlipToQR);
-    
-    return () => {
-      window.removeEventListener('flipCardToSeals', handleFlipToSeals);
-      window.removeEventListener('flipCardToQR', handleFlipToQR);
-    };
-  }, []);
+  const { t } = useTranslations(cardData.business_name);
 
   // Click em selo vazio para mostrar regras
   const handleSealClick = useCallback((e: React.MouseEvent, index: number) => {
@@ -390,14 +359,14 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         </div>
       </div>
 
-      {/* Botão Discreto para Girar */}
+      {/* Botão Traduzido para Girar */}
       <div className="flex justify-center mt-4">
         <button
           onClick={() => setIsFlipped(!isFlipped)}
           className="flex items-center gap-2 px-4 py-2 text-sm text-foreground/70 hover:text-foreground bg-background/80 hover:bg-background border border-border hover:border-primary/20 rounded-full transition-all shadow-sm hover:shadow-md"
         >
           <RotateCcw className="w-4 h-4" />
-          {isFlipped ? 'Ver cartão' : 'Ver QR Code'}
+          {isFlipped ? t('flip_to_card') : t('flip_to_qr')}
         </button>
       </div>
 
@@ -408,68 +377,49 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
           onClick={() => setShowContactPopup(false)}
         >
           <div 
-            className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-scale-in"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900">{cardData.business_name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Informações de Contato
+              </h3>
               <button
                 onClick={() => setShowContactPopup(false)}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3">
               {cardData.address && (
-                <div>
-                  <div className="flex items-start gap-3 mb-2">
-                    <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
-                    <p className="text-gray-700 text-sm">{cardData.address}</p>
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Endereço</p>
+                    <p className="text-gray-900 dark:text-white">{cardData.address}</p>
                   </div>
-                  <a
-                    href={createActionLink('maps', cardData.address)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-8 text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors inline-block"
-                  >
-                    Ver no Mapa
-                  </a>
                 </div>
               )}
               
-              {cardData.whatsapp && (
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <MessageCircle className="w-5 h-5 text-gray-500" />
-                    <p className="text-gray-700 text-sm">WhatsApp</p>
+              {cardData.phone && (
+                <div className="flex items-start gap-3">
+                  <MessageCircle className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Telefone</p>
+                    <p className="text-gray-900 dark:text-white">{cardData.phone}</p>
                   </div>
-                  <a
-                    href={createActionLink('whatsapp', cardData.whatsapp)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-8 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors inline-block"
-                  >
-                    Chamar no WhatsApp
-                  </a>
                 </div>
               )}
               
-              {cardData.socialNetwork && (
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Globe className="w-5 h-5 text-gray-500" />
-                    <p className="text-gray-700 text-sm">Rede Social</p>
+              {cardData.email && (
+                <div className="flex items-start gap-3">
+                  <ExternalLink className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
+                    <p className="text-gray-900 dark:text-white">{cardData.email}</p>
                   </div>
-                  <a
-                    href={createActionLink('social', cardData.socialNetwork)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-8 text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded-full hover:bg-purple-200 transition-colors inline-block"
-                  >
-                    Visitar Perfil
-                  </a>
                 </div>
               )}
             </div>
@@ -477,86 +427,34 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         </div>
       )}
 
-      {/* Popup de Regras dos Selos */}
+      {/* Popup de Regras */}
       {showRulesPopup && (
         <div 
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={() => setShowRulesPopup(false)}
         >
           <div 
-            className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-scale-in"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Como ganhar selos</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Regras do Programa
+              </h3>
               <button
                 onClick={() => setShowRulesPopup(false)}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="space-y-4">
-              <p className="text-gray-700 text-sm leading-relaxed">
-                {cardData.instructions || "Complete sua cartela de fidelidade e ganhe prêmios incríveis! A cada compra você ganha um selo."}
-              </p>
-              
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div 
-                    className="w-6 h-6 rounded-full border-2 flex items-center justify-center"
-                    style={{ borderColor: cardData.primary_color }}
-                  >
-                    {cardData.sealShape === 'star' ? (
-                      <Star className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : cardData.sealShape === 'heart' ? (
-                      <Heart className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : cardData.sealShape === 'square' ? (
-                      <Square className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : (
-                      <Circle className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    )}
-                  </div>
-                  <span className="text-sm font-medium text-gray-800">
-                    Colete {cardData.sealCount} selos
-                  </span>
-                </div>
-                <p className="text-xs text-gray-600 ml-8">
-                  {cardData.reward_description}
-                </p>
-              </div>
+            <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              {cardData.instructions || "Complete os selos para ganhar sua recompensa!"}
             </div>
           </div>
         </div>
       )}
     </>
   );
-};
-
-// Componente Wrapper que usa o contexto (para compatibilidade)
-export const CardPreviewWizard = () => {
-  const { state } = useWizard();
-  const [isFlipped, setIsFlipped] = useState(true); // Iniciar com face QR (flipped = true)
-  
-  const cardData: CardData = {
-    logo_url: state.businessData.logoUrl,
-    business_name: state.businessData.name || 'Nome do Negócio',
-    reward_description: state.rewardConfig.rewardDescription || 'Complete sua cartela e ganhe prêmios incríveis!',
-    primary_color: state.customization.primaryColor,
-    backgroundColor: state.customization.backgroundColor,
-    pattern: state.customization.backgroundPattern,
-    clientCode: state.businessData.clientCode || 'FI0001',
-    clientName: undefined,
-    phone: state.businessData.phone,
-    email: state.businessData.email,
-    address: state.businessData.address,
-    whatsapp: state.businessData.isWhatsApp ? state.businessData.phone : undefined,
-    socialNetwork: state.businessData.socialNetwork,
-    sealCount: state.rewardConfig.sealCount,
-    sealShape: state.rewardConfig.sealShape,
-    instructions: state.rewardConfig.instructions,
-  };
-  
-  return <CardPreview cardData={cardData} />;
 };
