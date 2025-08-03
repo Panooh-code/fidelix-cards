@@ -26,14 +26,19 @@ import { Question14Rules } from "./questions/Question14Rules";
 import { Question15Expiration } from "./questions/Question15Expiration";
 
 
+interface QuestionWizardProps {
+  showProgressOnly?: boolean;
+  hideProgress?: boolean;
+}
+
 const TOTAL_QUESTIONS = 15;
 
-export const QuestionWizard = () => {
+export const QuestionWizard = ({ showProgressOnly = false, hideProgress = false }: QuestionWizardProps = {}) => {
   const { state, nextQuestion, prevQuestion, setComplete } = useWizard();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
 
-  const progress = (state.currentQuestion / TOTAL_QUESTIONS) * 100;
+  const progressPercentage = (state.currentQuestion / TOTAL_QUESTIONS) * 100;
 
   const handleNext = () => {
     if (state.currentQuestion < TOTAL_QUESTIONS) {
@@ -104,52 +109,79 @@ export const QuestionWizard = () => {
     }
   };
 
-  return (
-    <div className="h-full flex flex-col overflow-hidden">
-      
-      {/* Ultra Minimal Progress Bar */}
-      <div className="px-4 pt-3 pb-2 flex-shrink-0">
-        <div className="w-full bg-muted/20 rounded-full h-0.5">
-          <div 
-            className="bg-fidelix-purple h-0.5 rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          />
+  // Show only progress bar for separator
+  if (showProgressOnly) {
+    return (
+      <div className="relative">
+        <Progress 
+          value={progressPercentage} 
+          className="h-1.5 bg-fidelix-purple/10"
+        />
+        <div 
+          className="absolute top-0 left-0 h-1.5 bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light rounded-full transition-all duration-500"
+          style={{ width: `${progressPercentage}%` }}
+        />
+        <div className="text-center text-xs text-muted-foreground mt-2">
+          {state.currentQuestion}/15
         </div>
       </div>
+    );
+  }
 
-      {/* Fidelix Tip - Redesigned */}
-      <div className="px-4 py-3 flex items-center justify-center flex-shrink-0">
-        <FidelixTip questionNumber={state.currentQuestion} />
-      </div>
-
-      {/* Question Content - Better Spacing */}
-      <div className={cn(
-        "flex-1 min-h-0 transition-all duration-300 px-4 py-2",
-        isTransitioning ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
-      )}>
-        <div className="h-full flex flex-col justify-center">
-          <div className="w-full">
-            {renderQuestion()}
+  return (
+    <div className="h-full flex flex-col">
+      {/* Progress Bar - Only show if not hidden */}
+      {!hideProgress && (
+        <div className="flex-shrink-0 px-4 py-3">
+          <div className="relative">
+            <Progress 
+              value={progressPercentage} 
+              className="h-1.5 bg-fidelix-purple/10"
+            />
+            <div 
+              className="absolute top-0 left-0 h-1.5 bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light rounded-full transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          <div className="text-center text-xs text-muted-foreground mt-1">
+            {state.currentQuestion}/15
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Compact Navigation with Better Spacing */}
-      <div className="px-4 py-4 flex items-center justify-between flex-shrink-0">
-        <button
-          onClick={handlePrev}
-          className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          Voltar
-        </button>
-        
-        <button
-          onClick={handleNext}
-          disabled={!canAdvance()}
-          className="px-4 py-2 bg-fidelix-purple text-white text-sm font-medium rounded-lg hover:bg-fidelix-purple/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-        >
-          {state.currentQuestion === TOTAL_QUESTIONS ? 'Publicar' : 'Avançar'}
-        </button>
+      {/* Main Content Area */}
+      <div className="flex-1 min-h-0 flex flex-col">
+        {/* Fidelix Tip - Fixed Height */}
+        <div className="flex-shrink-0 px-4 py-3">
+          <FidelixTip questionNumber={state.currentQuestion} />
+        </div>
+
+        {/* Question Content - Flexible */}
+        <div className="flex-1 min-h-0 px-3 py-2">
+          {renderQuestion()}
+        </div>
+
+        {/* Navigation - Fixed Height - Only show for non-final questions */}
+        {state.currentQuestion !== 15 && (
+          <div className="flex-shrink-0 p-4">
+            <div className="flex justify-between gap-3">
+              <Button
+                variant="outline"
+                onClick={handlePrev}
+                className="flex-1 h-9 text-sm border-fidelix-purple/30 text-fidelix-purple hover:bg-fidelix-purple/5"
+              >
+                Voltar
+              </Button>
+              <Button
+                onClick={handleNext}
+                disabled={!canAdvance()}
+                className="flex-1 h-9 text-sm bg-fidelix-purple hover:bg-fidelix-purple-dark"
+              >
+                Avançar
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

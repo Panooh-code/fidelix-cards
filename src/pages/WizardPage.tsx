@@ -1,6 +1,7 @@
 import { QuestionWizard } from "@/components/wizard/QuestionWizard";
 import { CardPreviewWizard } from "@/components/wizard/CardPreview";
 import { WizardProvider } from "@/components/wizard/WizardContext";
+import { Question15PublishButton } from "@/components/wizard/Question15PublishButton";
 import Logo from "@/components/Logo";
 import { Link } from "react-router-dom";
 
@@ -9,16 +10,16 @@ const WizardPage = () => {
     <WizardProvider>
       <div className="min-h-screen bg-gradient-to-br from-background via-fidelix-gray-light to-background/80">
         {/* Mobile Layout - iOS Style */}
-        <div className="lg:hidden h-screen flex flex-col overflow-hidden pt-8">
+        <div className="lg:hidden h-screen flex flex-col overflow-hidden pt-12">
           {/* Logo Header */}
-          <div className="flex-shrink-0 pb-4 flex justify-center">
+          <div className="flex-shrink-0 pb-6 flex justify-center">
             <Link to="/" className="hover:opacity-80 transition-opacity">
               <Logo className="h-6 w-auto" />
             </Link>
           </div>
 
           {/* Card Stage - Optimized */}
-          <div className="flex-shrink-0 h-[28vh] relative bg-gradient-to-b from-fidelix-purple/5 to-fidelix-purple/10">
+          <div className="flex-shrink-0 h-[22vh] relative bg-gradient-to-b from-fidelix-purple/5 to-fidelix-purple/10">
             {/* Backlight Effect */}
             <div className="absolute inset-0 bg-gradient-radial from-fidelix-purple/8 via-transparent to-transparent opacity-60"></div>
             
@@ -30,11 +31,21 @@ const WizardPage = () => {
             </div>
           </div>
 
+          {/* Progress Bar Separator */}
+          <div className="flex-shrink-0 px-6 py-4">
+            <QuestionWizard showProgressOnly />
+          </div>
+
           {/* Form Section - Increased Height */}
-          <div className="flex-1 min-h-0 p-4">
-            <div className="h-[40vh] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/30 overflow-hidden">
-              <QuestionWizard />
+          <div className="flex-1 min-h-0 px-4 pb-4">
+            <div className="h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/30 overflow-hidden">
+              <QuestionWizard hideProgress />
             </div>
+          </div>
+
+          {/* Publish Button for Question 15 - Outside Card */}
+          <div className="lg:hidden">
+            <Question15PublishButton />
           </div>
         </div>
 
