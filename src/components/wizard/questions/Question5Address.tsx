@@ -1,5 +1,7 @@
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useWizard } from "../WizardContext";
+import { MapPin, AlertCircle } from "lucide-react";
 
 interface QuestionProps {
   onNext: () => void;
@@ -16,8 +18,8 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col px-2">
-      <h2 className="text-sm font-semibold text-center mb-2">
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
         Endereço (opcional)
       </h2>
       
@@ -29,8 +31,14 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
             value={state.businessData.address}
             onChange={(e) => updateBusinessData({ address: e.target.value })}
             onKeyPress={handleKeyPress}
-            className="min-h-[50px] text-sm resize-none border-fidelix-purple/20 focus:border-fidelix-purple"
+            className="min-h-[80px] text-sm resize-none"
           />
+          
+          {state.businessData.address && (
+            <div className="text-right text-xs text-muted-foreground mt-2">
+              {state.businessData.address.length} caracteres
+            </div>
+          )}
         </div>
       </div>
     </div>

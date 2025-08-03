@@ -166,23 +166,14 @@ export default {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-accent': 'var(--gradient-accent)', 
 				'gradient-hero': 'var(--gradient-hero)',
-				'gradient-hero-new': 'var(--gradient-hero-new)',
-				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-			},
-			perspective: {
-				'1000': '1000px',
-			},
-			rotate: {
-				'y-5': 'rotateY(5deg)',
-				'y-180': 'rotateY(180deg)',
+				'gradient-hero-new': 'var(--gradient-hero-new)'
 			},
 			boxShadow: {
 				'soft': 'var(--shadow-soft)',
 				'glow': 'var(--shadow-glow)',
 				'card': 'var(--shadow-card)',
 				'elegant': 'var(--shadow-elegant)',
-				'premium': 'var(--shadow-premium)',
-				'2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+				'premium': 'var(--shadow-premium)'
 			},
 			transitionProperty: {
 				'smooth': 'var(--transition-smooth)'

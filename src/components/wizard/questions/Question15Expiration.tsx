@@ -135,8 +135,8 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
           </div>
         </div>
 
-        {/* Desktop Publish Section - Keep for desktop */}
-        <div className="hidden lg:block border-t pt-4 mt-4">
+        {/* Publish Section */}
+        <div className="border-t pt-4 mt-4">
           <div className="text-center space-y-3">
             <h3 className="font-semibold text-primary">
               Tudo pronto! 🎉
@@ -158,6 +158,8 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
                 onClick={handlePublish}
                 disabled={saving}
                 className="w-full"
+                variant="hero"
+                size="lg"
               >
                 {saving ? (
                   <>

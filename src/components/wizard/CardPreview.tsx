@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Star, Circle, Square, MapPin, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
+import { Star, Circle, Square, MapPin, Building2, QrCode, Heart, ExternalLink, MessageCircle, Globe, X, RotateCcw } from "lucide-react";
 import { useWizard } from "./WizardContext";
 
 export interface CardData {
@@ -42,11 +42,6 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [isFlipped, setIsFlipped] = useState(true);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
-  const [isCardExpanded, setIsCardExpanded] = useState(false);
-
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
-  };
 
   // Listen for flip events from wizard questions
   useEffect(() => {
@@ -212,24 +207,15 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       <div className={cn("perspective-1000", className)}>
         <div 
           className={cn(
-            "relative transition-all duration-700 transform-style-preserve-3d cursor-pointer",
+            "relative transition-transform duration-700 transform-style-preserve-3d",
             currentSize.width,
             currentSize.height,
-            isFlipped ? 'rotate-y-180' : '',
-            isCardExpanded ? 'scale-110 -translate-y-2' : 'hover:scale-105'
+            isFlipped ? 'rotate-y-180' : ''
           )}
-          onClick={() => setIsCardExpanded(!isCardExpanded)}
-          style={{
-            transform: isCardExpanded ? 'scale(1.1) translateY(-8px) rotateX(5deg)' : undefined,
-            boxShadow: isCardExpanded ? '0 20px 40px rgba(0,0,0,0.3)' : undefined
-          }}
         >
           {/* Front Face - Face dos Selos */}
           <div 
-            className={cn(
-              "absolute w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-front-texture",
-              isCardExpanded ? "inset-2" : "inset-0"
-            )}
+            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-front-texture"
             style={{ 
               backgroundColor: cardData.backgroundColor,
               backgroundImage: `linear-gradient(135deg, transparent, ${cardData.primary_color}20), ${getBackgroundPattern().backgroundImage || ''}`,
@@ -253,7 +239,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                       className="w-12 h-12 rounded-full flex items-center justify-center border-3 shadow-card-elegant bg-white/10"
                       style={{ borderColor: cardData.primary_color }}
                     >
-                      <Star className={cn("w-6 h-6", textColor)} />
+                      <Building2 className={cn("w-6 h-6", textColor)} />
                     </div>
                   )}
                 </div>
@@ -302,10 +288,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
           {/* Back Face - Face QR Redesenhada */}
           <div 
-            className={cn(
-              "absolute w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-back-texture",
-              isCardExpanded ? "inset-2" : "inset-0"
-            )}
+            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-back-texture"
             style={{ 
               backgroundColor: cardData.primary_color,
               backgroundImage: `linear-gradient(135deg, transparent, ${cardData.backgroundColor}40)`,
@@ -322,7 +305,7 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center border-4 border-white/50 shadow-card-elegant aspect-square">
-                    <Star className="w-10 h-10 text-white/80" />
+                    <Building2 className="w-10 h-10 text-white/80" />
                   </div>
                 )}
               </div>
@@ -407,17 +390,14 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         </div>
       </div>
 
-      {/* iOS Style Flip Button */}
+      {/* Botão Discreto para Girar */}
       <div className="flex justify-center mt-4">
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleFlip();
-          }}
-          className="flex items-center gap-2 px-4 py-2 text-xs font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm z-20"
+          onClick={() => setIsFlipped(!isFlipped)}
+          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full transition-colors shadow-sm"
         >
-          <RotateCcw className="w-3 h-3" />
-          Girar cartão
+          <RotateCcw className="w-4 h-4" />
+          Girar cartela
         </button>
       </div>
 

@@ -1,10 +1,5 @@
+import { Cat } from "lucide-react";
 import { useWizard } from "./WizardContext";
-import { useState, useEffect } from "react";
-import catIcon1 from "@/assets/cat-icon-1.png";
-import catIcon2 from "@/assets/cat-icon-2.png";
-import catIcon3 from "@/assets/cat-icon-3.png";
-import catIcon4 from "@/assets/cat-icon-4.png";
-import catIcon5 from "@/assets/cat-icon-5.png";
 
 interface FidelixTipProps {
   questionNumber: number;
@@ -32,47 +27,13 @@ const getTipsByQuestion = (question: number): string => {
   return tips[question] || "Vamos criar algo incrível!";
 };
 
-// Array de ícones de gato personalizados
-const catIcons = [catIcon1, catIcon2, catIcon3, catIcon4, catIcon5];
-
-const getRandomCatIcon = () => {
-  return catIcons[Math.floor(Math.random() * catIcons.length)];
-};
-
 export const FidelixTip = ({ questionNumber }: FidelixTipProps) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [randomCat] = useState(getRandomCatIcon());
   const tip = getTipsByQuestion(questionNumber);
 
-  useEffect(() => {
-    setDisplayedText("");
-    let currentIndex = 0;
-    const timer = setInterval(() => {
-      if (currentIndex < tip.length) {
-        setDisplayedText(tip.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 30);
-
-    return () => clearInterval(timer);
-  }, [tip]);
-
   return (
-    <div className="flex items-center gap-3 max-w-full">
-      {/* Cat Icon */}
-      <div className="flex-shrink-0 w-[40px] h-[40px] flex items-center justify-center">
-        <img src={randomCat} alt="Fidelix Cat" className="w-full h-full object-contain rounded-full" />
-      </div>
-      
-      {/* Speech Bubble - Optimized for 2 Lines */}
-      <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl px-4 py-2 border border-fidelix-purple/20 shadow-sm min-h-[40px] flex items-center flex-1 max-w-[calc(100vw-120px)]">
-        <span className="text-xs text-fidelix-purple font-medium leading-relaxed break-words">
-          {displayedText}
-          <span className="animate-pulse">|</span>
-        </span>
-      </div>
+    <div className="text-xs text-muted-foreground bg-muted/30 rounded-full flex items-center gap-2 px-3 py-1">
+      <span className="text-primary">🐱</span>
+      <span className="truncate">{tip}</span>
     </div>
   );
 };
