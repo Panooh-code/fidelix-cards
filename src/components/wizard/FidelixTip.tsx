@@ -1,4 +1,10 @@
 import { useWizard } from "./WizardContext";
+import { useState, useEffect } from "react";
+import catIcon1 from "@/assets/cat-icon-1.png";
+import catIcon2 from "@/assets/cat-icon-2.png";
+import catIcon3 from "@/assets/cat-icon-3.png";
+import catIcon4 from "@/assets/cat-icon-4.png";
+import catIcon5 from "@/assets/cat-icon-5.png";
 
 interface FidelixTipProps {
   questionNumber: number;
@@ -26,28 +32,45 @@ const getTipsByQuestion = (question: number): string => {
   return tips[question] || "Vamos criar algo incrível!";
 };
 
-// Array de emojis de gato variados
-const catEmojis = ["🐱", "😺", "😸", "😻", "🙀"];
+// Array de ícones de gato personalizados
+const catIcons = [catIcon1, catIcon2, catIcon3, catIcon4, catIcon5];
 
-const getRandomCatEmoji = () => {
-  return catEmojis[Math.floor(Math.random() * catEmojis.length)];
+const getRandomCatIcon = () => {
+  return catIcons[Math.floor(Math.random() * catIcons.length)];
 };
 
 export const FidelixTip = ({ questionNumber }: FidelixTipProps) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [randomCat] = useState(getRandomCatIcon());
   const tip = getTipsByQuestion(questionNumber);
-  const randomCat = getRandomCatEmoji();
+
+  useEffect(() => {
+    setDisplayedText("");
+    let currentIndex = 0;
+    const timer = setInterval(() => {
+      if (currentIndex < tip.length) {
+        setDisplayedText(tip.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(timer);
+      }
+    }, 30);
+
+    return () => clearInterval(timer);
+  }, [tip]);
 
   return (
-    <div className="flex items-center gap-2 max-w-full">
+    <div className="flex items-center gap-2 max-w-full px-2">
       {/* Cat Icon */}
-      <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
-        <span className="text-sm">{randomCat}</span>
+      <div className="flex-shrink-0 w-[35px] h-[35px] flex items-center justify-center">
+        <img src={randomCat} alt="Cat" className="w-full h-full object-contain rounded-full" />
       </div>
       
       {/* Elongated Speech Bubble */}
-      <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-full px-3 py-1 border border-fidelix-purple/20 shadow-sm min-h-[20px] flex items-center">
-        <span className="text-xs text-fidelix-purple font-medium truncate">
-          {tip}
+      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-3 py-2 border border-fidelix-purple/20 shadow-sm h-[35px] flex items-center flex-1 max-w-[calc(100vw-80px)]">
+        <span className="text-xs text-fidelix-purple font-medium leading-tight break-words">
+          {displayedText}
+          <span className="animate-pulse">|</span>
         </span>
       </div>
     </div>

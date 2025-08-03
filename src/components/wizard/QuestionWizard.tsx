@@ -108,18 +108,23 @@ export const QuestionWizard = () => {
     <div className="h-full flex flex-col overflow-hidden">
       
       {/* Ultra Minimal Progress Bar */}
-      <div className="px-4 pt-4 pb-2 flex-shrink-0">
-        <Progress value={progress} className="h-0.5 bg-fidelix-purple/10 [&>div]:bg-gradient-to-r [&>div]:from-fidelix-purple [&>div]:to-fidelix-purple-light" />
+      <div className="px-2 pt-2 pb-1 flex-shrink-0">
+        <div className="w-full bg-muted/20 rounded-full h-0.5">
+          <div 
+            className="bg-fidelix-purple h-0.5 rounded-full transition-all duration-300 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
       {/* Fidelix Tip - Redesigned */}
-      <div className="px-4 py-1 flex items-center justify-center flex-shrink-0">
+      <div className="px-2 py-1 flex items-center justify-center flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* Question Content - Optimized */}
+      {/* Question Content - Compact */}
       <div className={cn(
-        "flex-1 min-h-0 transition-all duration-300 px-4",
+        "flex-1 min-h-0 transition-all duration-300 px-2",
         isTransitioning ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
       )}>
         <div className="h-full flex flex-col justify-center">
@@ -130,27 +135,21 @@ export const QuestionWizard = () => {
       </div>
 
       {/* Compact Navigation */}
-      <div className="px-4 py-3 flex items-center justify-between flex-shrink-0 border-t border-fidelix-purple/10">
-        <Button
+      <div className="px-2 py-2 flex items-center justify-between flex-shrink-0">
+        <button
           onClick={handlePrev}
-          variant="ghost"
-          size="sm"
-          className="text-fidelix-purple hover:bg-fidelix-purple/10 border border-fidelix-purple/20 hover:border-fidelix-purple/30 rounded-full px-4 py-1.5 h-auto text-xs"
+          className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="w-3 h-3 mr-1" />
           Voltar
-        </Button>
-          
-        <Button
+        </button>
+        
+        <button
           onClick={handleNext}
-          variant="default"
-          size="sm"
           disabled={!canAdvance()}
-          className="bg-gradient-to-r from-fidelix-purple to-fidelix-purple-dark hover:from-fidelix-purple-dark hover:to-fidelix-purple text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full px-6 py-1.5 h-auto text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 bg-fidelix-purple text-white text-xs font-medium rounded-md hover:bg-fidelix-purple/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
-          {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-          <ArrowRight className="w-3 h-3 ml-1" />
-        </Button>
+          {state.currentQuestion === TOTAL_QUESTIONS ? 'Publicar' : 'Avançar'}
+        </button>
       </div>
     </div>
   );

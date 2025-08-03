@@ -16,8 +16,8 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <h2 className="text-lg font-semibold text-center mb-3">
+    <div className="h-full flex flex-col px-2">
+      <h2 className="text-sm font-semibold text-center mb-2">
         Endereço (opcional)
       </h2>
       
@@ -29,7 +29,7 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
             value={state.businessData.address}
             onChange={(e) => updateBusinessData({ address: e.target.value })}
             onKeyPress={handleKeyPress}
-            className="min-h-[60px] text-sm resize-none border-fidelix-purple/20 focus:border-fidelix-purple"
+            className="min-h-[50px] text-sm resize-none border-fidelix-purple/20 focus:border-fidelix-purple"
           />
         </div>
       </div>

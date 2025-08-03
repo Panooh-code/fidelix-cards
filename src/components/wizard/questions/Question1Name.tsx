@@ -16,8 +16,8 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col text-center">
-      <h2 className="text-lg font-semibold text-center mb-3">
+    <div className="h-full flex flex-col text-center px-2">
+      <h2 className="text-sm font-semibold text-center mb-2">
         Qual o nome do seu negócio?
       </h2>
       
@@ -29,7 +29,7 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
             value={state.businessData.name}
             onChange={(e) => updateBusinessData({ name: e.target.value })}
             onKeyPress={handleKeyPress}
-            className="h-10 text-sm text-center bg-white border border-fidelix-purple/20 focus:border-fidelix-purple rounded-lg"
+            className="h-8 text-sm text-center bg-white border border-fidelix-purple/20 focus:border-fidelix-purple rounded-lg"
           />
         </div>
       </div>

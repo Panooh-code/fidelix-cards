@@ -44,6 +44,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
 
+  const handleFlip = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   // Listen for flip events from wizard questions
   useEffect(() => {
     const handleFlipToSeals = () => setIsFlipped(false);
@@ -222,7 +226,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         >
           {/* Front Face - Face dos Selos */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-front-texture"
+            className={cn(
+              "absolute w-full h-full backface-hidden rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-front-texture",
+              isCardExpanded ? "inset-2" : "inset-0"
+            )}
             style={{ 
               backgroundColor: cardData.backgroundColor,
               backgroundImage: `linear-gradient(135deg, transparent, ${cardData.primary_color}20), ${getBackgroundPattern().backgroundImage || ''}`,
@@ -295,7 +302,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
 
           {/* Back Face - Face QR Redesenhada */}
           <div 
-            className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-back-texture"
+            className={cn(
+              "absolute w-full h-full backface-hidden rotate-y-180 rounded-3xl overflow-hidden shadow-paper-realistic paper-thickness-effect paper-realistic-texture paper-back-texture",
+              isCardExpanded ? "inset-2" : "inset-0"
+            )}
             style={{ 
               backgroundColor: cardData.primary_color,
               backgroundImage: `linear-gradient(135deg, transparent, ${cardData.backgroundColor}40)`,
@@ -402,9 +412,9 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsFlipped(!isFlipped);
+            handleFlip();
           }}
-          className="flex items-center gap-2 px-4 py-2 text-xs font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-medium bg-white/80 hover:bg-white/90 dark:bg-slate-800/80 dark:hover:bg-slate-800/90 text-fidelix-purple border border-fidelix-purple/20 hover:border-fidelix-purple/40 rounded-full transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm z-20"
         >
           <RotateCcw className="w-3 h-3" />
           Girar cartão
