@@ -9,7 +9,7 @@ All colors MUST be HSL for proper theming.
 @layer base {
   :root {
     /* Base colors */
-    --background: 0 0% 100%; /* Branco #ffffff */
+    --background: 249 50% 98%; /* Fidelix Gray Light #f9fafb */
     --foreground: 0 0% 3%; /* Preto #080808 */
 
     /* Card components */
@@ -20,13 +20,16 @@ All colors MUST be HSL for proper theming.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3%;
 
-    /* Fidelix brand colors */
-    --primary: 261 91% 35%; /* Roxo Principal #480da2 */
+    /* Fidelix brand colors - seguindo exatamente o HTML */
+    --primary: 261 91% 35%; /* fidelix-purple DEFAULT #7C3AED */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 261 91% 45%;
+    --primary-glow: 261 91% 45%; /* fidelix-purple light #A78BFA */
+    --primary-dark: 261 78% 36%; /* fidelix-purple dark #5B21B6 */
+    --primary-darkest: 220 26% 14%; /* fidelix-purple darkest #111827 */
 
     /* Fidelix accent colors */
-    --accent-yellow: 40 100% 67%; /* Amarelo de Destaque #ffbd59 */
+    --accent-yellow: 48 96% 53%; /* fidelix-yellow #FACC15 */
+    --accent-yellow-dark: 43 84% 50%; /* fidelix-yellow dark #EAB308 */
     --accent-yellow-foreground: 0 0% 3%;
 
     /* Secondary colors */
@@ -98,7 +101,7 @@ All colors MUST be HSL for proper theming.
   }
 
   .dark {
-    --background: 0 0% 3%;
+    --background: 220 26% 14%; /* fidelix-purple-darkest #111827 */
     --foreground: 0 0% 100%;
 
     --card: 222.2 84% 4.9%;

@@ -31,7 +31,24 @@ export default {
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))',
-					glow: 'hsl(var(--primary-glow))'
+					glow: 'hsl(var(--primary-glow))',
+					dark: 'hsl(var(--primary-dark))',
+					darkest: 'hsl(var(--primary-darkest))'
+				},
+				// Fidelix specific colors
+				'fidelix-purple': {
+					light: 'hsl(var(--primary-glow))',
+					DEFAULT: 'hsl(var(--primary))',
+					dark: 'hsl(var(--primary-dark))',
+					darkest: 'hsl(var(--primary-darkest))'
+				},
+				'fidelix-yellow': {
+					DEFAULT: 'hsl(var(--accent-yellow))',
+					dark: 'hsl(var(--accent-yellow-dark))'
+				},
+				'fidelix-gray': {
+					light: 'hsl(var(--background))',
+					dark: 'hsl(220 14% 25%)'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -53,7 +70,8 @@ export default {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))',
 					yellow: 'hsl(var(--accent-yellow))',
-					'yellow-foreground': 'hsl(var(--accent-yellow-foreground))'
+					'yellow-foreground': 'hsl(var(--accent-yellow-foreground))',
+					'yellow-dark': 'hsl(var(--accent-yellow-dark))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -128,6 +146,10 @@ export default {
 						transform: 'translateY(-5px) translateX(-5px)',
 						opacity: '0.15'
 					}
+				},
+				'infinite-scroll': {
+					'from': { transform: 'translateX(0)' },
+					'to': { transform: 'translateX(-100%)' }
 				}
 			},
 			animation: {
@@ -137,7 +159,8 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 				'twinkle': 'twinkle var(--twinkle-duration, 3s) ease-in-out infinite',
-				'float-gentle': 'float-gentle var(--float-duration, 6s) ease-in-out infinite'
+				'float-gentle': 'float-gentle var(--float-duration, 6s) ease-in-out infinite',
+				'infinite-scroll': 'infinite-scroll 150s linear infinite'
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
