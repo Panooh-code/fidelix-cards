@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      card_participations: {
+        Row: {
+          agreed_to_terms: boolean | null
+          customer_id: string | null
+          id: string
+          loyalty_card_id: string | null
+          participated_at: string | null
+        }
+        Insert: {
+          agreed_to_terms?: boolean | null
+          customer_id?: string | null
+          id?: string
+          loyalty_card_id?: string | null
+          participated_at?: string | null
+        }
+        Update: {
+          agreed_to_terms?: boolean | null
+          customer_id?: string | null
+          id?: string
+          loyalty_card_id?: string | null
+          participated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "card_participations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "card_participations_loyalty_card_id_fkey"
+            columns: ["loyalty_card_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_cards: {
+        Row: {
+          card_code: string | null
+          created_at: string | null
+          current_seals: number | null
+          customer_id: string | null
+          id: string
+          is_active: boolean | null
+          loyalty_card_id: string | null
+          qr_code_url: string | null
+          total_rewards_earned: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          card_code?: string | null
+          created_at?: string | null
+          current_seals?: number | null
+          customer_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          loyalty_card_id?: string | null
+          qr_code_url?: string | null
+          total_rewards_earned?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          card_code?: string | null
+          created_at?: string | null
+          current_seals?: number | null
+          customer_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          loyalty_card_id?: string | null
+          qr_code_url?: string | null
+          total_rewards_earned?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_cards_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "customer_cards_loyalty_card_id_fkey"
+            columns: ["loyalty_card_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       loyalty_cards: {
         Row: {
           background_color: string
@@ -35,6 +128,9 @@ export type Database = {
           logo_url: string
           max_cards: number | null
           primary_color: string
+          public_code: string | null
+          public_url: string | null
+          qr_code_url: string | null
           reward_description: string
           seal_count: number
           seal_shape: string
@@ -62,6 +158,9 @@ export type Database = {
           logo_url: string
           max_cards?: number | null
           primary_color?: string
+          public_code?: string | null
+          public_url?: string | null
+          qr_code_url?: string | null
           reward_description: string
           seal_count?: number
           seal_shape?: string
@@ -89,6 +188,9 @@ export type Database = {
           logo_url?: string
           max_cards?: number | null
           primary_color?: string
+          public_code?: string | null
+          public_url?: string | null
+          qr_code_url?: string | null
           reward_description?: string
           seal_count?: number
           seal_shape?: string
@@ -124,6 +226,48 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      seal_transactions: {
+        Row: {
+          business_owner_id: string | null
+          customer_card_id: string | null
+          id: string
+          notes: string | null
+          seals_given: number
+          transaction_date: string | null
+        }
+        Insert: {
+          business_owner_id?: string | null
+          customer_card_id?: string | null
+          id?: string
+          notes?: string | null
+          seals_given: number
+          transaction_date?: string | null
+        }
+        Update: {
+          business_owner_id?: string | null
+          customer_card_id?: string | null
+          id?: string
+          notes?: string | null
+          seals_given?: number
+          transaction_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seal_transactions_business_owner_id_fkey"
+            columns: ["business_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "seal_transactions_customer_card_id_fkey"
+            columns: ["customer_card_id"]
+            isOneToOne: false
+            referencedRelation: "customer_cards"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

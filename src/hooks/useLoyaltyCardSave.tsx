@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -78,6 +79,28 @@ export const useLoyaltyCardSave = () => {
         console.error('Error saving card:', error);
         throw new Error('Erro ao salvar cartão');
       }
+
+      // Generate public code and QR code using Edge Function
+      const { data: codesData, error: codesError } = await supabase.functions
+        .invoke('generate-loyalty-card-codes', {
+          body: { cardId: data.id }
+        });
+
+      if (codesError) {
+        console.error('Error generating codes:', codesError);
+        throw new Error('Erro ao gerar códigos do cartão');
+      }
+
+      if (!codesData.success) {
+        throw new Error(codesData.error || 'Erro ao gerar códigos do cartão');
+      }
+
+      console.log('Cartão criado com códigos:', {
+        cardId: data.id,
+        publicCode: codesData.publicCode,
+        qrCodeUrl: codesData.qrCodeUrl,
+        publicUrl: codesData.publicUrl
+      });
 
       toast.success('Cartão publicado com sucesso!');
       return { success: true, cardId: data.id };

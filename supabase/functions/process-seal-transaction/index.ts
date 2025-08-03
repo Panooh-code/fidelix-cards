@@ -1,0 +1,134 @@
+
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
+    const { customerCardCode, businessOwnerId, sealsToGive, notes } = await req.json()
+
+    if (!customerCardCode || !businessOwnerId || !sealsToGive) {
+      throw new Error('Código do cartão, ID do lojista e número de selos são obrigatórios')
+    }
+
+    if (sealsToGive < 1) {
+      throw new Error('Número de selos deve ser maior que zero')
+    }
+
+    // Buscar o cartão do cliente
+    const { data: customerCard, error: cardError } = await supabaseClient
+      .from('customer_cards')
+      .select(`
+        *,
+        loyalty_cards!inner(
+          id,
+          user_id,
+          business_name,
+          seal_count,
+          is_active
+        )
+      `)
+      .eq('card_code', customerCardCode)
+      .eq('is_active', true)
+      .single()
+
+    if (cardError || !customerCard) {
+      throw new Error('Cartão do cliente não encontrado ou inativo')
+    }
+
+    // Verificar se o lojista é o dono do programa de fidelidade
+    if (customerCard.loyalty_cards.user_id !== businessOwnerId) {
+      throw new Error('Você não tem permissão para dar selos neste cartão')
+    }
+
+    if (!customerCard.loyalty_cards.is_active) {
+      throw new Error('Este programa de fidelidade não está mais ativo')
+    }
+
+    // Calcular novos selos
+    const currentSeals = customerCard.current_seals || 0
+    const newSealsTotal = currentSeals + sealsToGive
+    const requiredSeals = customerCard.loyalty_cards.seal_count
+    
+    let rewardsEarned = 0
+    let finalSealsCount = newSealsTotal
+
+    // Se completou cartões, calcular recompensas
+    if (newSealsTotal >= requiredSeals) {
+      rewardsEarned = Math.floor(newSealsTotal / requiredSeals)
+      finalSealsCount = newSealsTotal % requiredSeals
+    }
+
+    // Registrar transação de selos
+    const { error: transactionError } = await supabaseClient
+      .from('seal_transactions')
+      .insert({
+        customer_card_id: customerCard.id,
+        business_owner_id: businessOwnerId,
+        seals_given: sealsToGive,
+        notes: notes || null
+      })
+
+    if (transactionError) {
+      throw new Error('Erro ao registrar transação de selos')
+    }
+
+    // Atualizar cartão do cliente
+    const { error: updateError } = await supabaseClient
+      .from('customer_cards')
+      .update({
+        current_seals: finalSealsCount,
+        total_rewards_earned: (customerCard.total_rewards_earned || 0) + rewardsEarned,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', customerCard.id)
+
+    if (updateError) {
+      throw new Error('Erro ao atualizar cartão do cliente')
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        transaction: {
+          sealsGiven: sealsToGive,
+          newSealsTotal: finalSealsCount,
+          rewardsEarned,
+          businessName: customerCard.loyalty_cards.business_name
+        },
+        customerCard: {
+          currentSeals: finalSealsCount,
+          totalRewardsEarned: (customerCard.total_rewards_earned || 0) + rewardsEarned,
+          requiredSeals
+        }
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    )
+
+  } catch (error) {
+    console.error('Error in process-seal-transaction:', error)
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      }
+    )
+  }
+})
