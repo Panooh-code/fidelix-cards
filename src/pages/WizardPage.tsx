@@ -9,16 +9,16 @@ const WizardPage = () => {
     <WizardProvider>
       <div className="min-h-screen bg-gradient-to-br from-background via-fidelix-gray-light to-background/80">
         {/* Mobile Layout - iOS Style */}
-        <div className="lg:hidden h-screen flex flex-col overflow-hidden">
+        <div className="lg:hidden h-screen flex flex-col overflow-hidden pt-8">
           {/* Logo Header */}
-          <div className="flex-shrink-0 pt-3 pb-6 flex justify-center">
+          <div className="flex-shrink-0 pb-4 flex justify-center">
             <Link to="/" className="hover:opacity-80 transition-opacity">
               <Logo className="h-6 w-auto" />
             </Link>
           </div>
 
           {/* Card Stage - Optimized */}
-          <div className="flex-shrink-0 h-[35vh] relative bg-gradient-to-b from-fidelix-purple/5 to-fidelix-purple/10">
+          <div className="flex-shrink-0 h-[28vh] relative bg-gradient-to-b from-fidelix-purple/5 to-fidelix-purple/10">
             {/* Backlight Effect */}
             <div className="absolute inset-0 bg-gradient-radial from-fidelix-purple/8 via-transparent to-transparent opacity-60"></div>
             
@@ -30,9 +30,9 @@ const WizardPage = () => {
             </div>
           </div>
 
-          {/* Form Section - Fixed Height */}
+          {/* Form Section - Increased Height */}
           <div className="flex-1 min-h-0 p-4">
-            <div className="h-[25vh] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/30 overflow-hidden">
+            <div className="h-[40vh] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 dark:border-slate-700/30 overflow-hidden">
               <QuestionWizard />
             </div>
           </div>

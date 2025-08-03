@@ -60,15 +60,15 @@ export const FidelixTip = ({ questionNumber }: FidelixTipProps) => {
   }, [tip]);
 
   return (
-    <div className="flex items-center gap-2 max-w-full px-2">
+    <div className="flex items-center gap-3 max-w-full">
       {/* Cat Icon */}
-      <div className="flex-shrink-0 w-[35px] h-[35px] flex items-center justify-center">
-        <img src={randomCat} alt="Cat" className="w-full h-full object-contain rounded-full" />
+      <div className="flex-shrink-0 w-[40px] h-[40px] flex items-center justify-center">
+        <img src={randomCat} alt="Fidelix Cat" className="w-full h-full object-contain rounded-full" />
       </div>
       
-      {/* Elongated Speech Bubble */}
-      <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-full px-3 py-2 border border-fidelix-purple/20 shadow-sm h-[35px] flex items-center flex-1 max-w-[calc(100vw-80px)]">
-        <span className="text-xs text-fidelix-purple font-medium leading-tight break-words">
+      {/* Speech Bubble - Optimized for 2 Lines */}
+      <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl px-4 py-2 border border-fidelix-purple/20 shadow-sm min-h-[40px] flex items-center flex-1 max-w-[calc(100vw-120px)]">
+        <span className="text-xs text-fidelix-purple font-medium leading-relaxed break-words">
           {displayedText}
           <span className="animate-pulse">|</span>
         </span>

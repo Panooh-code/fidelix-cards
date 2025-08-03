@@ -108,7 +108,7 @@ export const QuestionWizard = () => {
     <div className="h-full flex flex-col overflow-hidden">
       
       {/* Ultra Minimal Progress Bar */}
-      <div className="px-2 pt-2 pb-1 flex-shrink-0">
+      <div className="px-4 pt-3 pb-2 flex-shrink-0">
         <div className="w-full bg-muted/20 rounded-full h-0.5">
           <div 
             className="bg-fidelix-purple h-0.5 rounded-full transition-all duration-300 ease-out"
@@ -118,13 +118,13 @@ export const QuestionWizard = () => {
       </div>
 
       {/* Fidelix Tip - Redesigned */}
-      <div className="px-2 py-1 flex items-center justify-center flex-shrink-0">
+      <div className="px-4 py-3 flex items-center justify-center flex-shrink-0">
         <FidelixTip questionNumber={state.currentQuestion} />
       </div>
 
-      {/* Question Content - Compact */}
+      {/* Question Content - Better Spacing */}
       <div className={cn(
-        "flex-1 min-h-0 transition-all duration-300 px-2",
+        "flex-1 min-h-0 transition-all duration-300 px-4 py-2",
         isTransitioning ? "opacity-0 transform translate-y-2" : "opacity-100 transform translate-y-0"
       )}>
         <div className="h-full flex flex-col justify-center">
@@ -134,11 +134,11 @@ export const QuestionWizard = () => {
         </div>
       </div>
 
-      {/* Compact Navigation */}
-      <div className="px-2 py-2 flex items-center justify-between flex-shrink-0">
+      {/* Compact Navigation with Better Spacing */}
+      <div className="px-4 py-4 flex items-center justify-between flex-shrink-0">
         <button
           onClick={handlePrev}
-          className="px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           Voltar
         </button>
@@ -146,7 +146,7 @@ export const QuestionWizard = () => {
         <button
           onClick={handleNext}
           disabled={!canAdvance()}
-          className="px-3 py-1 bg-fidelix-purple text-white text-xs font-medium rounded-md hover:bg-fidelix-purple/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="px-4 py-2 bg-fidelix-purple text-white text-sm font-medium rounded-lg hover:bg-fidelix-purple/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
           {state.currentQuestion === TOTAL_QUESTIONS ? 'Publicar' : 'Avançar'}
         </button>
