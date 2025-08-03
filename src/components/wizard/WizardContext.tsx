@@ -82,12 +82,48 @@ const initialState: WizardState = {
 
 const STORAGE_KEY = 'wizard-loyalty-card-state';
 
+// Função para carregar estado do localStorage (síncrona)
+const loadFromStorage = (): WizardState | null => {
+  try {
+    if (typeof window === 'undefined') return null;
+    
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsedState = JSON.parse(saved);
+      console.log('🔄 Estado carregado do localStorage:', parsedState);
+      
+      // Converter data de string para Date se existir
+      if (parsedState.rewardConfig?.expirationDate) {
+        parsedState.rewardConfig.expirationDate = new Date(parsedState.rewardConfig.expirationDate);
+      }
+      return parsedState;
+    }
+  } catch (error) {
+    console.warn('❌ Erro ao carregar estado do localStorage:', error);
+  }
+  return null;
+};
+
+// Inicializar com estado salvo se existir
+const getInitialState = (): WizardState => {
+  const savedState = loadFromStorage();
+  if (savedState) {
+    console.log('✅ Usando estado salvo na inicialização');
+    return savedState;
+  }
+  console.log('📝 Usando estado inicial padrão');
+  return initialState;
+};
+
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
-  const [state, setState] = useState<WizardState>(initialState);
+  const [state, setState] = useState<WizardState>(getInitialState);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Função para salvar estado no localStorage
   const saveToStorage = (newState: WizardState) => {
     try {
+      if (typeof window === 'undefined') return;
+      
       const stateToSave = {
         ...newState,
         businessData: {
@@ -97,53 +133,37 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
         }
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+      console.log('💾 Estado salvo no localStorage:', stateToSave);
     } catch (error) {
-      console.warn('Erro ao salvar estado no localStorage:', error);
+      console.warn('❌ Erro ao salvar estado no localStorage:', error);
     }
-  };
-
-  // Função para carregar estado do localStorage
-  const loadFromStorage = (): WizardState | null => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsedState = JSON.parse(saved);
-        // Converter data de string para Date se existir
-        if (parsedState.rewardConfig?.expirationDate) {
-          parsedState.rewardConfig.expirationDate = new Date(parsedState.rewardConfig.expirationDate);
-        }
-        return parsedState;
-      }
-    } catch (error) {
-      console.warn('Erro ao carregar estado do localStorage:', error);
-    }
-    return null;
   };
 
   // Função para limpar estado salvo
   const clearSavedState = () => {
     try {
+      if (typeof window === 'undefined') return;
       localStorage.removeItem(STORAGE_KEY);
+      console.log('🗑️ Estado limpo do localStorage');
     } catch (error) {
-      console.warn('Erro ao limpar estado do localStorage:', error);
+      console.warn('❌ Erro ao limpar estado do localStorage:', error);
     }
   };
 
-  // Carregar estado salvo na inicialização
+  // Marcar como inicializado na primeira renderização
   useEffect(() => {
-    const savedState = loadFromStorage();
-    if (savedState) {
-      setState(savedState);
-    }
+    setIsInitialized(true);
   }, []);
 
-  // Salvar estado sempre que houver mudanças
+  // Salvar estado sempre que houver mudanças (após inicialização)
   useEffect(() => {
+    if (!isInitialized) return;
+    
     // Só salvar se não for o estado inicial (evitar salvar o estado vazio)
     if (state.businessData.name || state.currentQuestion > 1) {
       saveToStorage(state);
     }
-  }, [state]);
+  }, [state, isInitialized]);
 
   const generateClientCode = (businessName: string): string => {
     const letters = businessName.replace(/[^a-zA-Z]/g, '');

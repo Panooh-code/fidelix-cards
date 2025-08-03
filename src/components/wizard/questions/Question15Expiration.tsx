@@ -16,7 +16,7 @@ interface QuestionProps {
 }
 
 export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
-  const { state, updateRewardConfig } = useWizard();
+  const { state, updateRewardConfig, clearSavedState } = useWizard();
   const { user } = useAuth();
   const { saveCard, saving } = useLoyaltyCardSave();
   const navigate = useNavigate();
@@ -56,9 +56,7 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
     if (success) {
       setPublished(true);
       // Limpar estado salvo após publicação bem-sucedida
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('wizard-loyalty-card-state');
-      }
+      clearSavedState();
       setTimeout(() => {
         navigate('/my-cards');
       }, 2000);
