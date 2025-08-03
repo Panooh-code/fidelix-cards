@@ -1,132 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, Smartphone, Clock, Store, MessageCircle, RotateCcw, UserCircle, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Smartphone, Clock, Store, MessageCircle, RotateCcw, UserCircle, Facebook, Instagram, Twitter } from 'lucide-react';
+import Header from '@/components/Header';
 import Logo from '@/components/Logo';
-import ThemeToggle from '@/components/ThemeToggle';
 import InteractiveCardGallery from '@/components/InteractiveCardGallery';
 import FaqSection from '@/components/FaqSection';
 import MascotSection from '@/components/MascotSection';
 
 const NewLandingPage: React.FC = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
     <div className="bg-fidelix-gray-light dark:bg-fidelix-purple-darkest text-gray-800 dark:text-gray-200 transition-colors duration-300 overflow-x-hidden">
-      {/* Header */}
-      <header className="absolute inset-x-0 top-0 z-50">
-        <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-          <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5">
-              <Logo />
-            </a>
-          </div>
-          <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 dark:text-gray-400"
-              onClick={() => setMobileMenuOpen(true)}
-            >
-              <span className="sr-only">Abrir menu principal</span>
-              <Menu className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            <a href="#how-it-works" className="text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300">
-              Como Funciona
-            </a>
-            <a href="#benefits" className="text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300">
-              Benefícios
-            </a>
-            <a href="#faq" className="text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300">
-              Dúvidas
-            </a>
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300">
-              Blog
-            </a>
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end items-center gap-x-6">
-            <ThemeToggle />
-            <a href="#" className="text-sm font-semibold leading-6 text-gray-700 dark:text-gray-300 pl-4">
-              Entrar
-            </a>
-          </div>
-        </nav>
-        
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden" role="dialog" aria-modal="true">
-            <div className="fixed inset-0 z-50" />
-            <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-fidelix-gray-light dark:bg-fidelix-purple-darkest px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10 dark:sm:ring-gray-100/10">
-              <div className="flex items-center justify-between">
-                <a href="#" className="-m-1.5 p-1.5">
-                  <Logo />
-                </a>
-                <button
-                  type="button"
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-300"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="sr-only">Fechar menu</span>
-                  <X className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <div className="mt-6 flow-root">
-                <div className="-my-6 divide-y divide-gray-500/10 dark:divide-gray-200/10">
-                  <div className="py-6">
-                    <a
-                      href="#"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-fidelix-gray-dark"
-                    >
-                      Entrar/Sair
-                    </a>
-                    <a
-                      href="#"
-                      onClick={() => navigate('/wizard')}
-                      className="mt-2 -mx-3 block rounded-lg px-3 py-2.5 text-center text-base font-semibold leading-7 text-white bg-fidelix-purple hover:bg-fidelix-purple-dark dark:bg-fidelix-purple-light dark:text-fidelix-purple-darkest dark:hover:bg-fidelix-purple"
-                    >
-                      Começar Grátis Agora
-                    </a>
-                  </div>
-                  <div className="space-y-2 py-6">
-                    <a
-                      href="#how-it-works"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-fidelix-gray-dark"
-                    >
-                      Como Funciona
-                    </a>
-                    <a
-                      href="#benefits"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-fidelix-gray-dark"
-                    >
-                      Benefícios
-                    </a>
-                    <a
-                      href="#faq"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-fidelix-gray-dark"
-                    >
-                      FAQs
-                    </a>
-                    <a
-                      href="#"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-fidelix-gray-dark"
-                    >
-                      Blog
-                    </a>
-                  </div>
-                  <div className="py-6 flex justify-center">
-                    <ThemeToggle />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main>

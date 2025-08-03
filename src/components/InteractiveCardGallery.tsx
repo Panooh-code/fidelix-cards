@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Card {
   name: string;
@@ -95,6 +96,7 @@ const InteractiveCard: React.FC<InteractiveCardProps> = ({ card, isIdle }) => {
 };
 
 const InteractiveCardGallery: React.FC = () => {
+  const navigate = useNavigate();
   const cards: Card[] = [
     { name: 'Pink Kat', front: 'https://i.imgur.com/rUEfVC6.png', back: 'https://i.imgur.com/WxtJWMd.png' },
     { name: 'Kappa Sushi', front: 'https://i.imgur.com/f9XSaMX.png', back: 'https://i.imgur.com/9iVsVuV.png' },
@@ -192,12 +194,12 @@ const InteractiveCardGallery: React.FC = () => {
           </ul>
         </div>
         <div className="mt-16 text-center">
-          <a
-            href="#"
+          <button
+            onClick={() => navigate('/wizard')}
             className="rounded-xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all duration-300 ease-in-out bg-gradient-to-r from-fidelix-purple to-fidelix-purple-light hover:scale-105 dark:text-fidelix-purple-darkest dark:bg-gradient-to-r dark:from-fidelix-yellow dark:to-yellow-400"
           >
             Faça o seu card agora
-          </a>
+          </button>
           <p className="mt-8 text-sm text-gray-500 dark:text-gray-400">
             Gratuito 💚 para sempre!
           </p>
