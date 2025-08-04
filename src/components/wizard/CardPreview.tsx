@@ -39,7 +39,7 @@ const isLightColor = (color: string) => {
 };
 
 export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
-  const [isFlipped, setIsFlipped] = useState(false); // Iniciar sempre mostrando os selos (front face)
+  const [isFlipped, setIsFlipped] = useState(true);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
 
@@ -394,10 +394,10 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
       <div className="flex justify-center mt-4">
         <button
           onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 px-4 py-2 text-sm text-foreground/70 hover:text-foreground bg-background/80 hover:bg-background border border-border hover:border-primary/20 rounded-full transition-all shadow-sm hover:shadow-md"
+          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full transition-colors shadow-sm"
         >
           <RotateCcw className="w-4 h-4" />
-          {isFlipped ? 'Ver cartão' : 'Ver QR Code'}
+          Girar cartela
         </button>
       </div>
 
