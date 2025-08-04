@@ -6,13 +6,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// Interfaces de dados (sem clientCode)
-export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; }
+// Interfaces de dados (com clientCode de volta)
+export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; clientCode?: string; }
 export interface CustomizationData { primaryColor: string; backgroundColor: string; backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none'; }
 export interface RewardConfig { sealShape: 'star' | 'circle' | 'square' | 'heart'; sealCount: number; maxCards?: number; rewardDescription: string; instructions: string; expirationDate?: Date; }
 export interface WizardState { businessData: BusinessData; customization: CustomizationData; rewardConfig: RewardConfig; currentQuestion: number; isComplete: boolean; }
 
-// Context Type (sem clientCode)
 interface WizardContextType {
     state: WizardState;
     updateBusinessData: (data: Partial<BusinessData>) => void;
@@ -26,14 +25,13 @@ interface WizardContextType {
     loadExistingCard: (cardId: string) => Promise<void>;
     isEditMode: boolean;
     editingCardId: string | null;
-    handleSaveAndPublish: () => Promise<void>; // A função para guardar
+    handleSaveAndPublish: () => Promise<void>;
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
-// Estado inicial (sem clientCode)
 const initialState: WizardState = {
-    businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "" },
+    businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "", clientCode: "" },
     customization: { primaryColor: "#480da2", backgroundColor: "#ffffff", backgroundPattern: 'none' },
     rewardConfig: { sealShape: 'star', sealCount: 9, rewardDescription: "Complete e ganhe um prémio", instructions: "Ganhe um selo a cada compra" },
     currentQuestion: 1,
@@ -42,7 +40,6 @@ const initialState: WizardState = {
 
 const STORAGE_KEY = 'wizard-loyalty-card-state';
 
-// Lógica de LocalStorage (mantida com pequenas adaptações)
 const loadFromStorage = (): WizardState | null => {
     try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -51,14 +48,12 @@ const loadFromStorage = (): WizardState | null => {
             if (parsed.rewardConfig?.expirationDate) {
                 parsed.rewardConfig.expirationDate = new Date(parsed.rewardConfig.expirationDate);
             }
-            delete parsed.businessData.clientCode; // Remove o campo antigo
             return parsed;
         }
     } catch (error) { console.warn('Erro ao carregar estado:', error); }
     return null;
 };
 const getInitialState = (): WizardState => loadFromStorage() || initialState;
-
 
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const [state, setState] = useState<WizardState>(getInitialState);
@@ -77,7 +72,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
     const setComplete = (complete: boolean) => setState(prev => ({ ...prev, isComplete: complete }));
     const clearSavedState = () => { localStorage.removeItem(STORAGE_KEY); setState(initialState); };
-    const loadExistingCard = async (cardId: string) => { /* A sua lógica de load é mantida */ };
+    const loadExistingCard = async (cardId: string) => { /* Sua lógica de load mantida */ };
 
     // ### FUNÇÃO DE GUARDAR FINAL E CORRIGIDA ###
     const handleSaveAndPublish = async () => {
@@ -88,6 +83,13 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
 
+        const generateUniqueCode = (prefix: string, length: number) => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = prefix;
+            for (let i = 0; i < length; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
+            return result;
+        };
+        
         const cardToUpsert = {
             id: isEditMode ? editingCardId : undefined,
             user_id: user.id,
@@ -96,6 +98,9 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             business_phone: businessData.phone,
             business_email: businessData.email,
             logo_url: businessData.logoUrl,
+            // ### CORREÇÃO CRÍTICA AQUI ###
+            // Garante que o client_code é enviado e é único para novos cartões.
+            client_code: isEditMode ? businessData.clientCode : generateUniqueCode('FID', 8),
             primary_color: customization.primaryColor,
             background_color: customization.backgroundColor,
             background_pattern: customization.backgroundPattern,
@@ -103,7 +108,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             seal_count: rewardConfig.sealCount,
             reward_description: rewardConfig.rewardDescription,
             instructions: rewardConfig.instructions,
-            is_active: true
+            is_active: true,
         };
 
         try {
@@ -112,7 +117,6 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             const { data: savedCard, error } = await supabase.from('loyalty_cards').upsert(cardToUpsert).select().single();
             if (error) throw error;
 
-            // Chamar a Edge Function para gerar os códigos públicos APÓS guardar
             const { data: codesData, error: codesError } = await supabase.functions.invoke('generate-loyalty-card-codes', {
                 body: { cardId: savedCard.id, appDomain: window.location.origin }
             });
@@ -120,7 +124,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
 
             toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
             clearSavedState();
-            navigate(`/card/${codesData.publicCode}`);
+            navigate(`/my-cards`); // Redireciona para a lista de cartões do lojista
 
         } catch (err: any) {
             console.error("Erro detalhado ao guardar:", err);
