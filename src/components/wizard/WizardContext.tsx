@@ -1,4 +1,5 @@
 // CAMINHO DO FICHEIRO: src/components/wizard/WizardContext.tsx
+// VERSÃO DE DIAGNÓSTICO COM INSERÇÃO MÍNIMA
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,10 +23,6 @@ interface WizardContextType {
     nextQuestion: () => void;
     prevQuestion: () => void;
     setComplete: (complete: boolean) => void;
-    clearSavedState: () => void;
-    loadExistingCard: (cardId: string) => Promise<void>;
-    isEditMode: boolean;
-    editingCardId: string | null;
     handleSaveAndPublish: () => Promise<void>;
 }
 
@@ -39,14 +36,13 @@ const initialState: WizardState = {
     isComplete: false,
 };
 
-// --- COMPONENTE PROVIDER COM A LÓGICA FINAL ---
+// --- COMPONENTE PROVIDER COM A LÓGICA DE DIAGNÓSTICO ---
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const [state, setState] = useState<WizardState>(initialState);
-    const [editingCardId, setEditingCardId] = useState<string | null>(null);
-    const [isEditMode, setIsEditMode] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    // Funções de gestão de estado (mantidas)
     const updateBusinessData = (data: Partial<BusinessData>) => setState(prev => ({...prev, businessData: { ...prev.businessData, ...data }}));
     const updateCustomization = (data: Partial<CustomizationData>) => setState(prev => ({...prev, customization: { ...prev.customization, ...data }}));
     const updateRewardConfig = (data: Partial<RewardConfig>) => setState(prev => ({...prev, rewardConfig: { ...prev.rewardConfig, ...data }}));
@@ -54,20 +50,16 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const nextQuestion = () => setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
     const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
     const setComplete = (complete: boolean) => setState(prev => ({ ...prev, isComplete: complete }));
-    const clearSavedState = () => { localStorage.removeItem('wizard-loyalty-card-state'); setState(initialState); };
-    const loadExistingCard = async (cardId: string) => { /* A sua lógica de load é mantida */ };
 
-    // ### FUNÇÃO DE GUARDAR CORRIGIDA E DEFINITIVA ###
+    // ### FUNÇÃO DE DIAGNÓSTICO MÍNIMA ###
     const handleSaveAndPublish = async () => {
+        console.log("--- INICIANDO TESTE DE INSERÇÃO MÍNIMA ---");
         if (!user) {
-            toast.error("Autenticação necessária.");
+            toast.error("Utilizador não autenticado.");
             return;
         }
-
-        const { businessData, customization, rewardConfig } = state;
-
-        if (!businessData.name || !rewardConfig.rewardDescription || !businessData.logoUrl) {
-            toast.error("Nome do negócio, prémio e logótipo são obrigatórios.");
+        if (!state.businessData.name || !state.rewardConfig.rewardDescription || !state.businessData.logoUrl) {
+            toast.error("Nome, prémio e logótipo são obrigatórios para o teste.");
             return;
         }
 
@@ -79,65 +71,42 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             }
             return result;
         };
-        
-        const cardToUpsert = {
-            id: isEditMode ? editingCardId : undefined, // Envia o ID apenas se estiver a editar
+
+        const cardToInsert = {
             user_id: user.id,
-            business_name: businessData.name,
-            business_segment: businessData.segment,
-            business_phone: businessData.phone,
-            is_whatsapp: businessData.isWhatsApp,
-            business_email: businessData.email,
-            business_address: businessData.address,
-            social_network: businessData.socialNetwork,
-            logo_url: businessData.logoUrl,
-            client_code: isEditMode ? businessData.clientCode : generateUniqueCode('FI', 6), // Gera novo client_code só na criação
-            public_code: isEditMode ? undefined : generateUniqueCode('', 6), // Gera novo public_code só na criação
-            primary_color: customization.primaryColor,
-            background_color: customization.backgroundColor,
-            background_pattern: customization.backgroundPattern,
-            seal_shape: rewardConfig.sealShape,
-            seal_count: rewardConfig.sealCount,
-            reward_description: rewardConfig.rewardDescription,
-            instructions: rewardConfig.instructions,
-            is_active: true,
+            business_name: state.businessData.name,
+            business_segment: state.businessData.segment || "Teste",
+            business_phone: state.businessData.phone || "000",
+            business_email: state.businessData.email || "teste@teste.com",
+            logo_url: state.businessData.logoUrl,
+            reward_description: state.rewardConfig.rewardDescription,
+            instructions: state.rewardConfig.instructions || "Instruções",
+            public_code: generateUniqueCode("T", 5), // Código de teste
         };
 
+        console.log("A tentar inserir este objeto MÍNIMO:", cardToInsert);
+
         try {
-            toast.info(isEditMode ? "A atualizar cartão..." : "A criar novo cartão...");
-            
-            const { data, error } = await supabase.from('loyalty_cards').upsert(cardToUpsert).select().single();
-            
-            if (error) {
-                // Se o erro for de duplicado, tentamos novamente com um novo código.
-                if (error.code === '23505') {
-                    toast.warning("Conflito de código, a tentar gerar um novo...");
-                    const newCardWithNewCode = { ...cardToUpsert, client_code: generateUniqueCode('FI', 6), public_code: generateUniqueCode('', 6) };
-                    const { data: retryData, error: retryError } = await supabase.from('loyalty_cards').upsert(newCardWithNewCode).select().single();
-                    if (retryError) throw retryError;
-                    toast.success("Cartão criado com sucesso após nova tentativa!");
-                    clearSavedState();
-                    navigate(`/card/${retryData.public_code}`);
-                    return;
-                }
-                throw error;
-            }
-
-            toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
-            clearSavedState();
+            const { data, error } = await supabase.from('loyalty_cards').insert(cardToInsert).select().single();
+            if (error) throw error;
+            console.log("SUCESSO! DADOS GUARDADOS:", data);
+            toast.success("TESTE BEM SUCEDIDO! Cartão guardado!");
             navigate(`/card/${data.public_code}`);
-
         } catch (err: any) {
-            console.error("Erro detalhado ao guardar:", err);
-            toast.error(`Falha ao guardar: ${err.message}`);
+            console.error("ERRO DE INSERÇÃO:", err);
+            toast.error(`Falha no teste de inserção: ${err.message}`);
         }
     };
 
     return (
         <WizardContext.Provider value={{
             state, updateBusinessData, updateCustomization, updateRewardConfig,
-            setCurrentQuestion, nextQuestion, prevQuestion, setComplete, clearSavedState,
-            loadExistingCard, isEditMode, editingCardId,
+            setCurrentQuestion, nextQuestion, prevQuestion, setComplete,
+            // Funções não usadas neste teste
+            clearSavedState: () => {},
+            loadExistingCard: async () => {},
+            isEditMode: false,
+            editingCardId: null,
             handleSaveAndPublish,
         }}>
             {children}
