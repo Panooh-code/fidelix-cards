@@ -7,9 +7,15 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  otpSent: boolean;
+  otpLoading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
+  signInWithPhone: (phone: string) => Promise<{ error: any }>;
+  verifyPhoneOtp: (phone: string, otp: string) => Promise<{ error: any }>;
+  signUpWithPhone: (phone: string, fullName: string, email?: string) => Promise<{ error: any }>;
+  checkUserByPhone: (phone: string) => Promise<{ exists: boolean; error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -19,6 +25,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -122,6 +130,109 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithPhone = async (phone: string) => {
+    try {
+      setOtpLoading(true);
+      const { error } = await supabase.auth.signInWithOtp({
+        phone,
+      });
+
+      if (error) {
+        console.error('Phone sign in error:', error);
+        toast.error(error.message);
+        return { error };
+      }
+
+      setOtpSent(true);
+      toast.success('Código enviado via SMS!');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Phone sign in error:', error);
+      toast.error('Erro ao enviar código');
+      return { error };
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const verifyPhoneOtp = async (phone: string, otp: string) => {
+    try {
+      setOtpLoading(true);
+      const { error } = await supabase.auth.verifyOtp({
+        phone,
+        token: otp,
+        type: 'sms',
+      });
+
+      if (error) {
+        console.error('OTP verification error:', error);
+        toast.error('Código inválido ou expirado');
+        return { error };
+      }
+
+      setOtpSent(false);
+      toast.success('Verificação concluída!');
+      return { error: null };
+    } catch (error: any) {
+      console.error('OTP verification error:', error);
+      toast.error('Erro ao verificar código');
+      return { error };
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const signUpWithPhone = async (phone: string, fullName: string, email?: string) => {
+    try {
+      setOtpLoading(true);
+      const { error } = await supabase.auth.signInWithOtp({
+        phone,
+        options: {
+          data: {
+            full_name: fullName,
+            email: email || '',
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Phone sign up error:', error);
+        toast.error(error.message);
+        return { error };
+      }
+
+      setOtpSent(true);
+      toast.success('Código enviado via SMS!');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Phone sign up error:', error);
+      toast.error('Erro ao enviar código');
+      return { error };
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const checkUserByPhone = async (phone: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('phone_number', phone)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error checking user by phone:', error);
+        return { exists: false, error };
+      }
+
+      return { exists: !!data, error: null };
+    } catch (error: any) {
+      console.error('Error checking user by phone:', error);
+      return { exists: false, error };
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -129,6 +240,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error('Sign out error:', error);
         toast.error('Erro ao fazer logout');
       } else {
+        setOtpSent(false);
         toast.success('Logout realizado com sucesso!');
       }
     } catch (error: any) {
@@ -143,9 +255,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         session,
         loading,
+        otpSent,
+        otpLoading,
         signUp,
         signIn,
         signInWithGoogle,
+        signInWithPhone,
+        verifyPhoneOtp,
+        signUpWithPhone,
+        checkUserByPhone,
         signOut,
       }}
     >
