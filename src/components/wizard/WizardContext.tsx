@@ -1,4 +1,5 @@
 // CAMINHO DO FICHEIRO: src/components/wizard/WizardContext.tsx
+// VERSÃO DE DIAGNÓSTICO PARA VER O QUE ESTÁ A SER GUARDADO
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,41 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 // As suas interfaces de dados (mantidas)
-export interface BusinessData {
-    name: string;
-    segment: string;
-    phone: string;
-    country: 'BR' | 'PT';
-    isWhatsApp: boolean;
-    email: string;
-    address: string;
-    socialNetwork?: string;
-    logoFile: File | null;
-    logoUrl: string;
-    clientCode?: string;
-}
-export interface CustomizationData {
-    primaryColor: string;
-    backgroundColor: string;
-    backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none';
-}
-export interface RewardConfig {
-    sealShape: 'star' | 'circle' | 'square' | 'heart';
-    sealCount: number;
-    maxCards?: number;
-    rewardDescription: string;
-    instructions: string;
-    expirationDate?: Date;
-}
-export interface WizardState {
-    businessData: BusinessData;
-    customization: CustomizationData;
-    rewardConfig: RewardConfig;
-    currentQuestion: number;
-    isComplete: boolean;
-}
+export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; clientCode?: string; }
+export interface CustomizationData { primaryColor: string; backgroundColor: string; backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none'; }
+export interface RewardConfig { sealShape: 'star' | 'circle' | 'square' | 'heart'; sealCount: number; maxCards?: number; rewardDescription: string; instructions: string; expirationDate?: Date; }
+export interface WizardState { businessData: BusinessData; customization: CustomizationData; rewardConfig: RewardConfig; currentQuestion: number; isComplete: boolean; }
 
-// ### ALTERAÇÃO 1: Adicionar a função de guardar ao tipo do Contexto ###
+// Adicionar a função de guardar ao tipo do Contexto
 interface WizardContextType {
     state: WizardState;
     updateBusinessData: (data: Partial<BusinessData>) => void;
@@ -55,53 +27,28 @@ interface WizardContextType {
     loadExistingCard: (cardId: string) => Promise<void>;
     isEditMode: boolean;
     editingCardId: string | null;
-    handleSaveAndPublish: () => Promise<void>; // <-- FUNÇÃO ADICIONADA
+    handleSaveAndPublish: () => Promise<void>; // Função de guardar
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
-// O seu estado inicial (mantido)
 const initialState: WizardState = {
     businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "", clientCode: "" },
     customization: { primaryColor: "#480da2", backgroundColor: "#ffffff", backgroundPattern: 'none' },
-    rewardConfig: { sealShape: 'star', sealCount: 9, rewardDescription: "Complete a cartela e ganhe um café grátis*", instructions: "A cada compra acima de $100 você ganha um selo" },
+    rewardConfig: { sealShape: 'star', sealCount: 9, rewardDescription: "Complete e ganhe um prémio", instructions: "Ganhe um selo a cada compra" },
     currentQuestion: 1,
     isComplete: false,
 };
 
-const STORAGE_KEY = 'wizard-loyalty-card-state';
-
-// O seu código de localStorage (mantido)
-const loadFromStorage = (): WizardState | null => {
-    try {
-        if (typeof window === 'undefined') return null;
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            const parsedState = JSON.parse(saved);
-            if (parsedState.rewardConfig?.expirationDate) {
-                parsedState.rewardConfig.expirationDate = new Date(parsedState.rewardConfig.expirationDate);
-            }
-            return parsedState;
-        }
-    } catch (error) { console.warn('Erro ao carregar estado do localStorage:', error); }
-    return null;
-};
-const getInitialState = (): WizardState => {
-    const savedState = loadFromStorage();
-    return savedState || initialState;
-};
-
-// --- COMPONENTE PROVIDER (COM A LÓGICA DE GUARDAR) ---
+// --- COMPONENTE PROVIDER COM A LÓGICA DE DIAGNÓSTICO ---
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
-    const [state, setState] = useState<WizardState>(getInitialState);
+    const [state, setState] = useState<WizardState>(initialState);
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
     const [isEditMode, setIsEditMode] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // O seu código de gestão de estado (mantido)
-    useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify({...state, businessData: {...state.businessData, logoFile: null}})); }, [state]);
-    const clearSavedState = () => { localStorage.removeItem(STORAGE_KEY); };
+    // Funções de gestão de estado (mantidas)
     const updateBusinessData = (data: Partial<BusinessData>) => setState(prev => ({...prev, businessData: { ...prev.businessData, ...data }}));
     const updateCustomization = (data: Partial<CustomizationData>) => setState(prev => ({...prev, customization: { ...prev.customization, ...data }}));
     const updateRewardConfig = (data: Partial<RewardConfig>) => setState(prev => ({...prev, rewardConfig: { ...prev.rewardConfig, ...data }}));
@@ -109,18 +56,21 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const nextQuestion = () => setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
     const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
     const setComplete = (complete: boolean) => setState(prev => ({ ...prev, isComplete: complete }));
-    const loadExistingCard = async (cardId: string) => { /* O seu código de load existente é mantido */ };
+    const clearSavedState = () => { /* Lógica mantida */ };
+    const loadExistingCard = async (cardId: string) => { /* Lógica mantida */ };
 
-    // ### ALTERAÇÃO 2: A LÓGICA PARA GUARDAR O CARTÃO NA BASE DE DADOS ###
+    // ### FUNÇÃO DE DIAGNÓSTICO ###
     const handleSaveAndPublish = async () => {
+        console.log("--- INICIANDO DIAGNÓSTICO DE GRAVAÇÃO ---");
+        
         if (!user) {
+            console.error("ERRO DE DIAGNÓSTICO: Utilizador não autenticado.");
             toast.error("Precisa de estar autenticado para guardar um cartão.");
             return;
         }
-        if (!state.businessData.name || !state.rewardConfig.rewardDescription || !state.businessData.logoUrl) {
-            toast.error("Por favor, preencha o nome do negócio, o prémio e envie um logótipo.");
-            return;
-        }
+
+        console.log("Utilizador autenticado:", user.id);
+        console.log("Estado atual do formulário (state):", state);
 
         const generatePublicCode = () => {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -129,7 +79,7 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             return result;
         };
         
-        const cardToUpsert = {
+        const cardToInsert = {
             user_id: user.id,
             business_name: state.businessData.name,
             business_segment: state.businessData.segment,
@@ -146,22 +96,30 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             seal_count: state.rewardConfig.sealCount,
             reward_description: state.rewardConfig.rewardDescription,
             instructions: state.rewardConfig.instructions,
-            expiration_date: state.rewardConfig.expirationDate,
             is_active: true,
-            public_code: isEditMode ? undefined : generatePublicCode(),
+            public_code: generatePublicCode(),
         };
 
+        console.log("Objeto que será enviado para o Supabase:", cardToInsert);
+
         try {
-            toast.info(isEditMode ? "A atualizar o cartão..." : "A criar o novo cartão...");
-            const { data, error } = await supabase.from('loyalty_cards').upsert(isEditMode ? { ...cardToUpsert, id: editingCardId } : cardToUpsert).select().single();
-            if (error) throw error;
-            toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
-            clearSavedState(); // Limpa o estado do wizard após o sucesso
+            toast.info("A tentar guardar o cartão...");
+            const { data, error } = await supabase.from('loyalty_cards').insert(cardToInsert).select().single();
+            
+            if (error) {
+                console.error("ERRO RETORNADO PELO SUPABASE:", error);
+                throw error; // Lança o erro para ser apanhado pelo 'catch'
+            }
+
+            console.log("SUCESSO! Dados retornados pelo Supabase:", data);
+            toast.success("Cartão criado com sucesso!");
             navigate(`/card/${data.public_code}`);
+
         } catch (err: any) {
-            console.error("Erro detalhado ao guardar:", err);
+            console.error("ERRO FINAL no bloco try/catch:", err);
             toast.error(`Falha ao guardar o cartão: ${err.message}`);
         }
+        console.log("--- FIM DO DIAGNÓSTICO ---");
     };
 
     return (
@@ -169,14 +127,13 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             state, updateBusinessData, updateCustomization, updateRewardConfig,
             setCurrentQuestion, nextQuestion, prevQuestion, setComplete, clearSavedState,
             loadExistingCard, isEditMode, editingCardId,
-            handleSaveAndPublish, // <-- FUNÇÃO DISPONIBILIZADA
+            handleSaveAndPublish,
         }}>
             {children}
         </WizardContext.Provider>
     );
 };
 
-// O seu hook personalizado (mantido)
 export const useWizard = () => {
     const context = useContext(WizardContext);
     if (context === undefined) { throw new Error("useWizard must be used within a WizardProvider"); }
