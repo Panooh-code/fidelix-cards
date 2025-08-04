@@ -18,7 +18,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { publicCode, customerId, agreedToTerms } = await req.json()
+    const { publicCode, customerId, agreedToTerms, phoneNumber } = await req.json()
 
     if (!publicCode || !customerId) {
       throw new Error('Código público e ID do cliente são obrigatórios')
@@ -120,6 +120,19 @@ serve(async (req) => {
 
     if (customerCardError) {
       throw new Error('Erro ao criar seu cartão de fidelidade')
+    }
+
+    // Atualizar número de telefone no perfil se fornecido
+    if (phoneNumber) {
+      const { error: profileUpdateError } = await supabaseClient
+        .from('profiles')
+        .update({ phone_number: phoneNumber })
+        .eq('user_id', customerId)
+
+      if (profileUpdateError) {
+        console.error('Error updating profile phone number:', profileUpdateError)
+        // Não falha a operação se não conseguir atualizar o telefone
+      }
     }
 
     return new Response(
