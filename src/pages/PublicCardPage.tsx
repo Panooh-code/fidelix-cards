@@ -1,4 +1,5 @@
 // CAMINHO DO FICHEIRO: src/pages/PublicCardPage.tsx
+// Esta versão remove o redirecionamento automático para depurar o carregamento infinito.
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -13,7 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { CardPreview, CardData } from '@/components/wizard/CardPreview';
 import { toast } from 'sonner';
 
-// Interfaces para os tipos de dados
+// Interfaces
 interface LoyaltyCard {
   id: string;
   business_name: string;
@@ -32,7 +33,7 @@ interface LoyaltyCard {
 const PublicCardPage = () => {
   const { publicCode } = useParams<{ publicCode: string }>();
   const navigate = useNavigate();
-  const { signUp, session, user } = useAuth();
+  const { signUp } = useAuth();
 
   // Estados do componente
   const [card, setCard] = useState<LoyaltyCard | null>(null);
@@ -47,7 +48,7 @@ const PublicCardPage = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Efeito para buscar os dados do cartão
+  // Efeito para buscar os dados do cartão (sem lógicas adicionais)
   useEffect(() => {
     if (!publicCode) {
       setError('Código do cartão inválido.');
@@ -56,10 +57,11 @@ const PublicCardPage = () => {
     }
 
     const fetchCard = async () => {
+      setLoading(true);
       try {
         const { data, error: dbError } = await supabase
           .from('loyalty_cards')
-          .select('*')
+          .select('id, business_name, reward_description, logo_url, primary_color, background_color, background_pattern, seal_shape, seal_count, instructions, business_phone, business_email')
           .eq('public_code', publicCode)
           .eq('is_active', true)
           .single();
@@ -78,28 +80,6 @@ const PublicCardPage = () => {
     fetchCard();
   }, [publicCode]);
 
-  // Efeito para verificar se o utilizador já está logado e participa
-  useEffect(() => {
-    if (user && card) {
-      const checkParticipation = async () => {
-        const { data } = await supabase
-          .from('customer_cards')
-          .select('card_code')
-          .eq('customer_id', user.id)
-          .eq('loyalty_card_id', card.id)
-          .single();
-        
-        if (data) {
-          // Se já participa, redireciona para a sua área de cartões
-          toast.info("Já participa neste programa! A redirecionar...");
-          navigate('/my-customer-cards');
-        }
-      };
-      checkParticipation();
-    }
-  }, [user, card, navigate]);
-
-
   // Função para lidar com o registo do cliente
   const handleParticipation = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +91,7 @@ const PublicCardPage = () => {
 
     try {
       // 1. Registar o utilizador
-      const { user: newUser, error: signUpError } = await signUp({
+      const { data: { user }, error: signUpError } = await signUp({
         email,
         password,
         options: {
@@ -121,29 +101,22 @@ const PublicCardPage = () => {
         },
       });
 
-      if (signUpError) {
-        throw new Error(signUpError.message);
-      }
-
-      if (!newUser) {
-        throw new Error('Registo falhou. Por favor, tente novamente.');
-      }
+      if (signUpError) throw new Error(signUpError.message);
+      if (!user) throw new Error('Registo falhou. Por favor, tente novamente.');
 
       // 2. Chamar a Edge Function para associar o cartão ao cliente
       const { error: participationError } = await supabase.functions.invoke('process-customer-participation', {
         body: { loyaltyCardId: card!.id },
       });
 
-      if (participationError) {
-        throw new Error(`Erro ao aderir ao cartão: ${participationError.message}`);
-      }
+      if (participationError) throw new Error(`Erro ao aderir ao cartão: ${participationError.message}`);
 
       // 3. Sucesso
       toast.success(`Parabéns, ${name}! É o mais novo membro do nosso cartão fidelidade ${card!.business_name}!`);
       navigate('/my-customer-cards');
 
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.message || "Ocorreu um erro desconhecido.");
     } finally {
       setIsSubmitting(false);
     }
@@ -167,19 +140,12 @@ const PublicCardPage = () => {
           <CardContent className="text-center space-y-4">
             <p className="text-muted-foreground">{error}</p>
             <Button variant="outline" onClick={() => navigate('/')} className="w-full">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Voltar à Página Inicial
+              <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
             </Button>
           </CardContent>
         </Card>
       </div>
     );
-  }
-
-  // Se o utilizador estiver logado, mas ainda não participa, não mostra o formulário completo.
-  if (session) {
-    // Esta parte pode ser melhorada para um fluxo de "um clique" se o utilizador já estiver logado.
-    // Por agora, mantemos o fluxo de redirecionamento.
   }
 
   const cardData: CardData = {
@@ -205,14 +171,12 @@ const PublicCardPage = () => {
           <div className="text-center space-y-4">
             <h1 className="text-3xl font-bold text-white drop-shadow-lg">Cartão de Fidelidade {card.business_name}</h1>
           </div>
-
           <CardPreview cardData={cardData} size="lg" className="shadow-elegant" />
-
           <Card className="bg-white/95 backdrop-blur-lg">
             <CardHeader>
               <CardTitle className="text-center">Adira Agora!</CardTitle>
               <p className="text-center text-sm text-muted-foreground pt-2">
-                Quer participar para colecionar selos e ganhar prémios? Crie uma conta gratuita.
+                Crie uma conta gratuita para guardar os seus selos e nunca mais perder um prémio.
               </p>
             </CardHeader>
             <CardContent>
@@ -235,7 +199,7 @@ const PublicCardPage = () => {
                 <div className="flex items-start space-x-3 pt-2">
                   <Checkbox id="terms" checked={agreedToTerms} onCheckedChange={(checked) => setAgreedToTerms(checked === true)} />
                   <Label htmlFor="terms" className="text-xs text-muted-foreground">
-                    Concordo em participar na promoção e fazer parte do cartão de fidelidade {card.business_name}, e em receber comunicações sobre o programa.
+                    Concordo em participar na promoção e fazer parte do cartão de fidelidade {card.business_name}.
                   </Label>
                 </div>
                 <Button type="submit" disabled={isSubmitting || !agreedToTerms} variant="hero" size="lg" className="w-full">
