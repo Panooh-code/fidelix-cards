@@ -33,12 +33,19 @@ const PublicCardPage = () => {
     const fetchAndCheckData = async () => {
       if (!publicCode) { setError('Código do cartão inválido.'); setLoading(false); return; }
       try {
-        const { data: cardData, error: rpcError } = await supabase
-            .rpc('get_public_card', { p_public_code: publicCode })
-            .maybeSingle(); // Usar maybeSingle é mais seguro que single
+        // ### CORREÇÃO: Voltamos a uma consulta direta, simples e fiável ###
+        const { data: cardData, error: cardError } = await supabase
+          .from('loyalty_cards')
+          .select('*')
+          .eq('public_code', publicCode)
+          .maybeSingle(); // Usar maybeSingle é mais seguro
         
-        if (rpcError) throw new Error(`Erro na base de dados: ${rpcError.message}`);
+        if (cardError) throw new Error(`Erro na base de dados: ${cardError.message}`);
         if (!cardData) throw new Error('Este cartão não foi encontrado ou já não se encontra ativo.');
+        
+        // A política de RLS irá filtrar, mas verificamos aqui por segurança extra.
+        if (!cardData.is_active) throw new Error('Este cartão não está ativo.');
+
         setCard(cardData as LoyaltyCard);
 
         if (user) {
