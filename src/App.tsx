@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import "@/i18n";
 import PrivateRoute from "@/components/PrivateRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -13,7 +14,7 @@ import AuthPage from "./pages/AuthPage";
 import MyCardsPage from "./pages/MyCardsPage";
 import PublicCardPage from "./pages/PublicCardPage";
 import PublicCardViewPage from "./pages/PublicCardViewPage";
-import CustomerSignupPage from "./pages/CustomerSignupPage";
+
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
 import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
 import CustomerManagementPage from "./pages/CustomerManagementPage";
@@ -39,7 +40,6 @@ const App = () => (
               {/* Public Card Routes */}
               <Route path="/card/:publicCode" element={<PublicCardPage />} />
               <Route path="/card/:publicCode/view" element={<PublicCardViewPage />} />
-              <Route path="/card/:publicCode/signup" element={<CustomerSignupPage />} />
               
               {/* Private Customer Card Route */}
               <Route path="/my-card/:cardCode" element={
