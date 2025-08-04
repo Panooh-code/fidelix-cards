@@ -13,12 +13,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { CardPreview, CardData } from '@/components/wizard/CardPreview';
 import { toast } from 'sonner';
 
+// Interfaces
 interface LoyaltyCard { id: string; business_name: string; reward_description: string; logo_url: string; primary_color: string; background_color: string; background_pattern: string; seal_shape: string; seal_count: number; instructions: string; business_phone: string; business_email: string; }
 
 const PublicCardPage = () => {
   const { publicCode } = useParams<{ publicCode: string }>();
   const navigate = useNavigate();
-  const { user, signUp } = useAuth();
+  const { user } = useAuth();
+
+  // Estados
   const [card, setCard] = useState<LoyaltyCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -31,11 +34,20 @@ const PublicCardPage = () => {
 
   useEffect(() => {
     const fetchAndCheckData = async () => {
-      if (!publicCode) { setError('Código do cartão inválido.'); setLoading(false); return; }
+      if (!publicCode) {
+        setError('Código do cartão inválido.');
+        setLoading(false);
+        return;
+      }
       try {
-        const { data: cardData, error: cardError } = await supabase.from('loyalty_cards').select('*').eq('public_code', publicCode).single();
-        if (cardError || !cardData) throw new Error('Este cartão não foi encontrado ou já não se encontra ativo.');
-        setCard(cardData);
+        // ### CORREÇÃO CRÍTICA 1: Usar a nova função RPC segura ###
+        // Isto contorna qualquer problema de RLS para utilizadores anónimos.
+        const { data: cardData, error: rpcError } = await supabase
+            .rpc('get_public_card', { p_public_code: publicCode })
+            .single();
+        
+        if (rpcError || !cardData) throw new Error('Este cartão não foi encontrado ou já não se encontra ativo.');
+        setCard(cardData as LoyaltyCard);
 
         if (user) {
           const { data: participationData } = await supabase.from('customer_cards').select('id').eq('customer_id', user.id).eq('loyalty_card_id', cardData.id).single();
@@ -54,6 +66,7 @@ const PublicCardPage = () => {
     e.preventDefault();
     if (!agreedToTerms) { toast.error('Deve concordar com os termos para poder participar.'); return; }
     setIsSubmitting(true);
+    
     try {
       let currentUserId = user?.id;
       if (!user) {
@@ -63,12 +76,11 @@ const PublicCardPage = () => {
         currentUserId = signUpData.user.id;
       }
       
-      // ### CORREÇÃO CRÍTICA ###
-      // A função de backend espera o 'publicCode' para encontrar o cartão.
+      // ### CORREÇÃO CRÍTICA 2: Enviar todos os dados que a Edge Function precisa ###
       const { error: funcError } = await supabase.functions.invoke('process-customer-participation', {
-        body: { publicCode: publicCode, customerId: currentUserId },
+        body: { publicCode: publicCode, customerId: currentUserId, agreedToTerms: true },
       });
-      if (funcError) throw new Error(funcError.message);
+      if (funcError) throw new Error("A função de adesão falhou: " + funcError.message);
 
       toast.success(`Parabéns! Já faz parte do cartão fidelidade ${card!.business_name}!`);
       navigate('/my-customer-cards');
