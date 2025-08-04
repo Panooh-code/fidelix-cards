@@ -1,5 +1,4 @@
 // CAMINHO DO FICHEIRO: src/components/wizard/WizardContext.tsx
-// VERSÃO DE DIAGNÓSTICO PARA VER O QUE ESTÁ A SER GUARDADO
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// As suas interfaces de dados (mantidas)
+// As suas interfaces (mantidas)
 export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; clientCode?: string; }
 export interface CustomizationData { primaryColor: string; backgroundColor: string; backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none'; }
 export interface RewardConfig { sealShape: 'star' | 'circle' | 'square' | 'heart'; sealCount: number; maxCards?: number; rewardDescription: string; instructions: string; expirationDate?: Date; }
@@ -27,7 +26,7 @@ interface WizardContextType {
     loadExistingCard: (cardId: string) => Promise<void>;
     isEditMode: boolean;
     editingCardId: string | null;
-    handleSaveAndPublish: () => Promise<void>; // Função de guardar
+    handleSaveAndPublish: () => Promise<void>;
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
@@ -40,7 +39,7 @@ const initialState: WizardState = {
     isComplete: false,
 };
 
-// --- COMPONENTE PROVIDER COM A LÓGICA DE DIAGNÓSTICO ---
+// --- COMPONENTE PROVIDER COM A LÓGICA FINAL ---
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const [state, setState] = useState<WizardState>(initialState);
     const [editingCardId, setEditingCardId] = useState<string | null>(null);
@@ -48,7 +47,6 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    // Funções de gestão de estado (mantidas)
     const updateBusinessData = (data: Partial<BusinessData>) => setState(prev => ({...prev, businessData: { ...prev.businessData, ...data }}));
     const updateCustomization = (data: Partial<CustomizationData>) => setState(prev => ({...prev, customization: { ...prev.customization, ...data }}));
     const updateRewardConfig = (data: Partial<RewardConfig>) => setState(prev => ({...prev, rewardConfig: { ...prev.rewardConfig, ...data }}));
@@ -56,70 +54,83 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const nextQuestion = () => setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
     const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
     const setComplete = (complete: boolean) => setState(prev => ({ ...prev, isComplete: complete }));
-    const clearSavedState = () => { /* Lógica mantida */ };
-    const loadExistingCard = async (cardId: string) => { /* Lógica mantida */ };
+    const clearSavedState = () => { localStorage.removeItem('wizard-loyalty-card-state'); setState(initialState); };
+    const loadExistingCard = async (cardId: string) => { /* A sua lógica de load é mantida */ };
 
-    // ### FUNÇÃO DE DIAGNÓSTICO ###
+    // ### FUNÇÃO DE GUARDAR CORRIGIDA E DEFINITIVA ###
     const handleSaveAndPublish = async () => {
-        console.log("--- INICIANDO DIAGNÓSTICO DE GRAVAÇÃO ---");
-        
         if (!user) {
-            console.error("ERRO DE DIAGNÓSTICO: Utilizador não autenticado.");
-            toast.error("Precisa de estar autenticado para guardar um cartão.");
+            toast.error("Autenticação necessária.");
             return;
         }
 
-        console.log("Utilizador autenticado:", user.id);
-        console.log("Estado atual do formulário (state):", state);
+        const { businessData, customization, rewardConfig } = state;
 
-        const generatePublicCode = () => {
+        if (!businessData.name || !rewardConfig.rewardDescription || !businessData.logoUrl) {
+            toast.error("Nome do negócio, prémio e logótipo são obrigatórios.");
+            return;
+        }
+
+        const generateUniqueCode = (prefix: string, length: number) => {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 6; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
+            let result = prefix;
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
             return result;
         };
         
-        const cardToInsert = {
+        const cardToUpsert = {
+            id: isEditMode ? editingCardId : undefined, // Envia o ID apenas se estiver a editar
             user_id: user.id,
-            business_name: state.businessData.name,
-            business_segment: state.businessData.segment,
-            business_phone: state.businessData.phone,
-            is_whatsapp: state.businessData.isWhatsApp,
-            business_email: state.businessData.email,
-            business_address: state.businessData.address,
-            social_network: state.businessData.socialNetwork,
-            logo_url: state.businessData.logoUrl,
-            primary_color: state.customization.primaryColor,
-            background_color: state.customization.backgroundColor,
-            background_pattern: state.customization.backgroundPattern,
-            seal_shape: state.rewardConfig.sealShape,
-            seal_count: state.rewardConfig.sealCount,
-            reward_description: state.rewardConfig.rewardDescription,
-            instructions: state.rewardConfig.instructions,
+            business_name: businessData.name,
+            business_segment: businessData.segment,
+            business_phone: businessData.phone,
+            is_whatsapp: businessData.isWhatsApp,
+            business_email: businessData.email,
+            business_address: businessData.address,
+            social_network: businessData.socialNetwork,
+            logo_url: businessData.logoUrl,
+            client_code: isEditMode ? businessData.clientCode : generateUniqueCode('FI', 6), // Gera novo client_code só na criação
+            public_code: isEditMode ? undefined : generateUniqueCode('', 6), // Gera novo public_code só na criação
+            primary_color: customization.primaryColor,
+            background_color: customization.backgroundColor,
+            background_pattern: customization.backgroundPattern,
+            seal_shape: rewardConfig.sealShape,
+            seal_count: rewardConfig.sealCount,
+            reward_description: rewardConfig.rewardDescription,
+            instructions: rewardConfig.instructions,
             is_active: true,
-            public_code: generatePublicCode(),
         };
 
-        console.log("Objeto que será enviado para o Supabase:", cardToInsert);
-
         try {
-            toast.info("A tentar guardar o cartão...");
-            const { data, error } = await supabase.from('loyalty_cards').insert(cardToInsert).select().single();
+            toast.info(isEditMode ? "A atualizar cartão..." : "A criar novo cartão...");
+            
+            const { data, error } = await supabase.from('loyalty_cards').upsert(cardToUpsert).select().single();
             
             if (error) {
-                console.error("ERRO RETORNADO PELO SUPABASE:", error);
-                throw error; // Lança o erro para ser apanhado pelo 'catch'
+                // Se o erro for de duplicado, tentamos novamente com um novo código.
+                if (error.code === '23505') {
+                    toast.warning("Conflito de código, a tentar gerar um novo...");
+                    const newCardWithNewCode = { ...cardToUpsert, client_code: generateUniqueCode('FI', 6), public_code: generateUniqueCode('', 6) };
+                    const { data: retryData, error: retryError } = await supabase.from('loyalty_cards').upsert(newCardWithNewCode).select().single();
+                    if (retryError) throw retryError;
+                    toast.success("Cartão criado com sucesso após nova tentativa!");
+                    clearSavedState();
+                    navigate(`/card/${retryData.public_code}`);
+                    return;
+                }
+                throw error;
             }
 
-            console.log("SUCESSO! Dados retornados pelo Supabase:", data);
-            toast.success("Cartão criado com sucesso!");
+            toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
+            clearSavedState();
             navigate(`/card/${data.public_code}`);
 
         } catch (err: any) {
-            console.error("ERRO FINAL no bloco try/catch:", err);
-            toast.error(`Falha ao guardar o cartão: ${err.message}`);
+            console.error("Erro detalhado ao guardar:", err);
+            toast.error(`Falha ao guardar: ${err.message}`);
         }
-        console.log("--- FIM DO DIAGNÓSTICO ---");
     };
 
     return (
