@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Star, Heart, Circle, Square, CheckCircle, Award } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, Plus, Star, Heart, Circle, Square, CheckCircle, Award, Search, QrCode } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AddSealsModal } from '@/components/AddSealsModal';
+import { QRScannerModal } from '@/components/QRScannerModal';
 
 interface CustomerCard {
   id: string;
@@ -40,6 +42,8 @@ const CustomerManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerCard | null>(null);
   const [showAddSealsModal, setShowAddSealsModal] = useState(false);
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (!user || !cardId) return;
@@ -102,8 +106,8 @@ const CustomerManagementPage = () => {
     setShowAddSealsModal(true);
   };
 
-  const handleResetCard = async (customer: CustomerCard) => {
-    if (!confirm(`Tem certeza que deseja finalizar e zerar o cartão de ${customer.profiles.full_name}?`)) {
+  const handleFinalizarRecompensa = async (customer: CustomerCard) => {
+    if (!confirm(`Tem a certeza que deseja finalizar este cartão e entregar a recompensa? Os selos do cliente ${customer.profiles.full_name} serão repostos a zero.`)) {
       return;
     }
 
@@ -122,7 +126,7 @@ const CustomerManagementPage = () => {
         return;
       }
 
-      toast.success('Cartão finalizado e resetado com sucesso!');
+      toast.success('Cartão finalizado e reiniciado com sucesso!');
       fetchData();
     } catch (error) {
       console.error('Erro ao resetar cartão:', error);
@@ -146,6 +150,23 @@ const CustomerManagementPage = () => {
   }
 
   const SealIcon = getSealIcon(loyaltyCard.seal_shape);
+
+  // Filtrar clientes baseado na busca
+  const filteredCustomers = useMemo(() => {
+    if (!searchTerm.trim()) return customers;
+    
+    const term = searchTerm.toLowerCase();
+    return customers.filter(customer => 
+      customer.card_code.toLowerCase().includes(term) ||
+      customer.profiles.full_name.toLowerCase().includes(term) ||
+      customer.profiles.email.toLowerCase().includes(term)
+    );
+  }, [customers, searchTerm]);
+
+  const handleQRScanSuccess = (scannedCode: string) => {
+    setSearchTerm(scannedCode);
+    setShowQRScanner(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -176,6 +197,27 @@ const CustomerManagementPage = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
+          {/* Search and Scanner */}
+          <div className="flex gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Procurar por código de cliente..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowQRScanner(true)}
+              className="flex items-center gap-2"
+            >
+              <QrCode className="w-4 h-4" />
+              Escanear QR Code
+            </Button>
+          </div>
+
           {/* Stats */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card>
@@ -209,7 +251,23 @@ const CustomerManagementPage = () => {
           </div>
 
           {/* Customers List */}
-          {customers.length === 0 ? (
+          {filteredCustomers.length === 0 ? (
+            searchTerm ? (
+              <div className="text-center space-y-4 py-12">
+                <div className="w-24 h-24 mx-auto bg-muted rounded-full flex items-center justify-center">
+                  <Search className="w-12 h-12 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground">
+                  Nenhum resultado encontrado
+                </h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Não foram encontrados clientes que correspondam à sua busca "{searchTerm}".
+                </p>
+                <Button variant="outline" onClick={() => setSearchTerm('')}>
+                  Limpar busca
+                </Button>
+              </div>
+            ) : customers.length === 0 ? (
             <div className="text-center space-y-4 py-12">
               <div className="w-24 h-24 mx-auto bg-muted rounded-full flex items-center justify-center">
                 <Plus className="w-12 h-12 text-muted-foreground" />
@@ -220,10 +278,11 @@ const CustomerManagementPage = () => {
               <p className="text-muted-foreground max-w-md mx-auto">
                 Quando os clientes se inscreverem no seu cartão de fidelidade, eles aparecerão aqui.
               </p>
-            </div>
+              </div>
+            ) : null
           ) : (
             <div className="grid gap-4">
-              {customers.map((customer) => (
+              {filteredCustomers.map((customer) => (
                 <Card key={customer.id} className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -280,22 +339,24 @@ const CustomerManagementPage = () => {
 
                       {/* Actions */}
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleAddSeals(customer)}
-                        >
-                          <Plus className="w-4 h-4 mr-1" />
-                          Adicionar Selos
-                        </Button>
-                        {customer.current_seals >= loyaltyCard.seal_count && (
+                        {customer.current_seals >= loyaltyCard.seal_count ? (
                           <Button
                             variant="default"
                             size="sm"
-                            onClick={() => handleResetCard(customer)}
+                            onClick={() => handleFinalizarRecompensa(customer)}
+                            className="bg-green-600 hover:bg-green-700 text-white"
                           >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Finalizar
+                            <Award className="w-4 h-4 mr-1" />
+                            Finalizar e Entregar Recompensa
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddSeals(customer)}
+                          >
+                            <Plus className="w-4 h-4 mr-1" />
+                            Adicionar Selos
                           </Button>
                         )}
                       </div>
@@ -321,6 +382,13 @@ const CustomerManagementPage = () => {
           }}
         />
       )}
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal
+        isOpen={showQRScanner}
+        onClose={() => setShowQRScanner(false)}
+        onScanSuccess={handleQRScanSuccess}
+      />
     </div>
   );
 };
