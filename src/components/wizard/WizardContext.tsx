@@ -6,8 +6,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// Interfaces de dados (com clientCode de volta)
-export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; clientCode?: string; }
+// Interfaces de dados (sem 'clientCode')
+export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; }
 export interface CustomizationData { primaryColor: string; backgroundColor: string; backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none'; }
 export interface RewardConfig { sealShape: 'star' | 'circle' | 'square' | 'heart'; sealCount: number; maxCards?: number; rewardDescription: string; instructions: string; expirationDate?: Date; }
 export interface WizardState { businessData: BusinessData; customization: CustomizationData; rewardConfig: RewardConfig; currentQuestion: number; isComplete: boolean; }
@@ -20,18 +20,17 @@ interface WizardContextType {
     setCurrentQuestion: (question: number) => void;
     nextQuestion: () => void;
     prevQuestion: () => void;
-    setComplete: (complete: boolean) => void;
     clearSavedState: () => void;
     loadExistingCard: (cardId: string) => Promise<void>;
     isEditMode: boolean;
     editingCardId: string | null;
-    handleSaveAndPublish: () => Promise<void>;
+    handleSaveAndPublish: () => Promise<void>; // A única função que precisamos para guardar
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
 const initialState: WizardState = {
-    businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "", clientCode: "" },
+    businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "" },
     customization: { primaryColor: "#480da2", backgroundColor: "#ffffff", backgroundPattern: 'none' },
     rewardConfig: { sealShape: 'star', sealCount: 9, rewardDescription: "Complete e ganhe um prémio", instructions: "Ganhe um selo a cada compra" },
     currentQuestion: 1,
@@ -40,6 +39,7 @@ const initialState: WizardState = {
 
 const STORAGE_KEY = 'wizard-loyalty-card-state';
 
+// Lógica de LocalStorage (mantida para uma boa experiência de utilizador)
 const loadFromStorage = (): WizardState | null => {
     try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -47,6 +47,10 @@ const loadFromStorage = (): WizardState | null => {
             const parsed = JSON.parse(saved);
             if (parsed.rewardConfig?.expirationDate) {
                 parsed.rewardConfig.expirationDate = new Date(parsed.rewardConfig.expirationDate);
+            }
+            // Remove o campo antigo se ainda existir no localStorage
+            if (parsed.businessData.clientCode) {
+                delete parsed.businessData.clientCode;
             }
             return parsed;
         }
@@ -70,11 +74,10 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
     const setCurrentQuestion = (question: number) => setState(prev => ({ ...prev, currentQuestion: question }));
     const nextQuestion = () => setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
     const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
-    const setComplete = (complete: boolean) => setState(prev => ({ ...prev, isComplete: complete }));
     const clearSavedState = () => { localStorage.removeItem(STORAGE_KEY); setState(initialState); };
-    const loadExistingCard = async (cardId: string) => { /* Sua lógica de load mantida */ };
+    const loadExistingCard = async (cardId: string) => { /* A sua lógica de load é mantida */ };
 
-    // ### FUNÇÃO DE GUARDAR FINAL E CORRIGIDA ###
+    // ### A FUNÇÃO DE GUARDAR FINAL, CORRIGIDA E SIMPLIFICADA ###
     const handleSaveAndPublish = async () => {
         if (!user) { toast.error("Autenticação necessária."); return; }
         const { businessData, customization, rewardConfig } = state;
@@ -83,13 +86,6 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
 
-        const generateUniqueCode = (prefix: string, length: number) => {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = prefix;
-            for (let i = 0; i < length; i++) { result += chars.charAt(Math.floor(Math.random() * chars.length)); }
-            return result;
-        };
-        
         const cardToUpsert = {
             id: isEditMode ? editingCardId : undefined,
             user_id: user.id,
@@ -98,9 +94,6 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
             business_phone: businessData.phone,
             business_email: businessData.email,
             logo_url: businessData.logoUrl,
-            // ### CORREÇÃO CRÍTICA AQUI ###
-            // Garante que o client_code é enviado e é único para novos cartões.
-            client_code: isEditMode ? businessData.clientCode : generateUniqueCode('FID', 8),
             primary_color: customization.primaryColor,
             background_color: customization.backgroundColor,
             background_pattern: customization.backgroundPattern,
@@ -124,13 +117,17 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
 
             toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
             clearSavedState();
-            navigate(`/my-cards`); // Redireciona para a lista de cartões do lojista
+            navigate('/my-cards');
 
         } catch (err: any) {
             console.error("Erro detalhado ao guardar:", err);
             toast.error(`Falha ao guardar: ${err.message}`);
         }
     };
+    
+    // O setComplete não é mais necessário aqui, pois a navegação trata do fim do fluxo.
+    const setComplete = (complete: boolean) => { console.log("Wizard complete:", complete); };
+
 
     return (
         <WizardContext.Provider value={{
