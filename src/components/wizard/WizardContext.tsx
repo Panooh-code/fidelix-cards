@@ -1,148 +1,289 @@
 // CAMINHO DO FICHEIRO: src/components/wizard/WizardContext.tsx
+// RESTAURAR PARA ESTA VERSÃO ORIGINAL E CORRETA
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
-// Interfaces de dados (sem 'clientCode')
-export interface BusinessData { name: string; segment: string; phone: string; country: 'BR' | 'PT'; isWhatsApp: boolean; email: string; address: string; socialNetwork?: string; logoFile: File | null; logoUrl: string; }
-export interface CustomizationData { primaryColor: string; backgroundColor: string; backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none'; }
-export interface RewardConfig { sealShape: 'star' | 'circle' | 'square' | 'heart'; sealCount: number; maxCards?: number; rewardDescription: string; instructions: string; expirationDate?: Date; }
-export interface WizardState { businessData: BusinessData; customization: CustomizationData; rewardConfig: RewardConfig; currentQuestion: number; isComplete: boolean; }
+export interface BusinessData {
+  name: string;
+  segment: string;
+  phone: string;
+  country: 'BR' | 'PT';
+  isWhatsApp: boolean;
+  email: string;
+  address: string;
+  socialNetwork?: string;
+  logoFile: File | null;
+  logoUrl: string;
+  clientCode?: string;
+}
+
+export interface CustomizationData {
+  primaryColor: string;
+  backgroundColor: string;
+  backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none';
+}
+
+export interface RewardConfig {
+  sealShape: 'star' | 'circle' | 'square' | 'heart';
+  sealCount: number;
+  maxCards?: number;
+  rewardDescription: string;
+  instructions: string;
+  expirationDate?: Date;
+}
+
+export interface WizardState {
+  businessData: BusinessData;
+  customization: CustomizationData;
+  rewardConfig: RewardConfig;
+  currentQuestion: number;
+  isComplete: boolean;
+}
 
 interface WizardContextType {
-    state: WizardState;
-    updateBusinessData: (data: Partial<BusinessData>) => void;
-    updateCustomization: (data: Partial<CustomizationData>) => void;
-    updateRewardConfig: (data: Partial<RewardConfig>) => void;
-    setCurrentQuestion: (question: number) => void;
-    nextQuestion: () => void;
-    prevQuestion: () => void;
-    clearSavedState: () => void;
-    loadExistingCard: (cardId: string) => Promise<void>;
-    isEditMode: boolean;
-    editingCardId: string | null;
-    handleSaveAndPublish: () => Promise<void>; // A única função que precisamos para guardar
+  state: WizardState;
+  updateBusinessData: (data: Partial<BusinessData>) => void;
+  updateCustomization: (data: Partial<CustomizationData>) => void;
+  updateRewardConfig: (data: Partial<RewardConfig>) => void;
+  setCurrentQuestion: (question: number) => void;
+  nextQuestion: () => void;
+  prevQuestion: () => void;
+  setComplete: (complete: boolean) => void;
+  clearSavedState: () => void;
+  loadExistingCard: (cardId: string) => Promise<void>;
+  isEditMode: boolean;
+  editingCardId: string | null;
 }
 
 const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
 const initialState: WizardState = {
-    businessData: { name: "", segment: "", phone: "", country: 'BR', isWhatsApp: false, email: "", address: "", socialNetwork: "", logoFile: null, logoUrl: "" },
-    customization: { primaryColor: "#480da2", backgroundColor: "#ffffff", backgroundPattern: 'none' },
-    rewardConfig: { sealShape: 'star', sealCount: 9, rewardDescription: "Complete e ganhe um prémio", instructions: "Ganhe um selo a cada compra" },
-    currentQuestion: 1,
-    isComplete: false,
+  businessData: {
+    name: "",
+    segment: "",
+    phone: "",
+    country: 'BR',
+    isWhatsApp: false,
+    email: "",
+    address: "",
+    socialNetwork: "",
+    logoFile: null,
+    logoUrl: "",
+    clientCode: "",
+  },
+  customization: {
+    primaryColor: "#480da2",
+    backgroundColor: "#ffffff",
+    backgroundPattern: 'none',
+  },
+  rewardConfig: {
+    sealShape: 'star',
+    sealCount: 9,
+    rewardDescription: "Complete a cartela e ganhe um café grátis*",
+    instructions: "A cada compra acima de $100 você ganha um selo",
+  },
+  currentQuestion: 1,
+  isComplete: false,
 };
 
 const STORAGE_KEY = 'wizard-loyalty-card-state';
 
-// Lógica de LocalStorage (mantida para uma boa experiência de utilizador)
 const loadFromStorage = (): WizardState | null => {
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.rewardConfig?.expirationDate) {
-                parsed.rewardConfig.expirationDate = new Date(parsed.rewardConfig.expirationDate);
-            }
-            // Remove o campo antigo se ainda existir no localStorage
-            if (parsed.businessData.clientCode) {
-                delete parsed.businessData.clientCode;
-            }
-            return parsed;
-        }
-    } catch (error) { console.warn('Erro ao carregar estado:', error); }
-    return null;
+  try {
+    if (typeof window === 'undefined') return null;
+    
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsedState = JSON.parse(saved);
+      if (parsedState.rewardConfig?.expirationDate) {
+        parsedState.rewardConfig.expirationDate = new Date(parsedState.rewardConfig.expirationDate);
+      }
+      return parsedState;
+    }
+  } catch (error) {
+    console.warn('❌ Erro ao carregar estado do localStorage:', error);
+  }
+  return null;
 };
-const getInitialState = (): WizardState => loadFromStorage() || initialState;
+
+const getInitialState = (): WizardState => {
+  const savedState = loadFromStorage();
+  if (savedState) {
+    return savedState;
+  }
+  return initialState;
+};
 
 export const WizardProvider = ({ children }: { children: ReactNode }) => {
-    const [state, setState] = useState<WizardState>(getInitialState);
-    const [editingCardId, setEditingCardId] = useState<string | null>(null);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const { user } = useAuth();
-    const navigate = useNavigate();
+  const [state, setState] = useState<WizardState>(getInitialState);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-    useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify({...state, businessData: {...state.businessData, logoFile: null}})); }, [state]);
-
-    const updateBusinessData = (data: Partial<BusinessData>) => setState(prev => ({...prev, businessData: { ...prev.businessData, ...data }}));
-    const updateCustomization = (data: Partial<CustomizationData>) => setState(prev => ({...prev, customization: { ...prev.customization, ...data }}));
-    const updateRewardConfig = (data: Partial<RewardConfig>) => setState(prev => ({...prev, rewardConfig: { ...prev.rewardConfig, ...data }}));
-    const setCurrentQuestion = (question: number) => setState(prev => ({ ...prev, currentQuestion: question }));
-    const nextQuestion = () => setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
-    const prevQuestion = () => setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
-    const clearSavedState = () => { localStorage.removeItem(STORAGE_KEY); setState(initialState); };
-    const loadExistingCard = async (cardId: string) => { /* A sua lógica de load é mantida */ };
-
-    // ### A FUNÇÃO DE GUARDAR FINAL, CORRIGIDA E SIMPLIFICADA ###
-    const handleSaveAndPublish = async () => {
-        if (!user) { toast.error("Autenticação necessária."); return; }
-        const { businessData, customization, rewardConfig } = state;
-        if (!businessData.name || !rewardConfig.rewardDescription || !businessData.logoUrl) {
-            toast.error("Nome do negócio, prémio e logótipo são obrigatórios.");
-            return;
+  const saveToStorage = (newState: WizardState) => {
+    try {
+      if (typeof window === 'undefined') return;
+      
+      const stateToSave = {
+        ...newState,
+        businessData: {
+          ...newState.businessData,
+          logoFile: null
         }
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    } catch (error) {
+      console.warn('❌ Erro ao salvar estado no localStorage:', error);
+    }
+  };
 
-        const cardToUpsert = {
-            id: isEditMode ? editingCardId : undefined,
-            user_id: user.id,
-            business_name: businessData.name,
-            business_segment: businessData.segment,
-            business_phone: businessData.phone,
-            business_email: businessData.email,
-            logo_url: businessData.logoUrl,
-            primary_color: customization.primaryColor,
-            background_color: customization.backgroundColor,
-            background_pattern: customization.backgroundPattern,
-            seal_shape: rewardConfig.sealShape,
-            seal_count: rewardConfig.sealCount,
-            reward_description: rewardConfig.rewardDescription,
-            instructions: rewardConfig.instructions,
-            is_active: true,
-        };
+  const clearSavedState = () => {
+    try {
+      if (typeof window === 'undefined') return;
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.warn('❌ Erro ao limpar estado do localStorage:', error);
+    }
+  };
 
-        try {
-            toast.info(isEditMode ? "A atualizar cartão..." : "A criar novo cartão...");
-            
-            const { data: savedCard, error } = await supabase.from('loyalty_cards').upsert(cardToUpsert).select().single();
-            if (error) throw error;
+  useEffect(() => {
+    setIsInitialized(true);
+  }, []);
 
-            const { data: codesData, error: codesError } = await supabase.functions.invoke('generate-loyalty-card-codes', {
-                body: { cardId: savedCard.id, appDomain: window.location.origin }
-            });
-            if (codesError) throw codesError;
+  useEffect(() => {
+    if (!isInitialized) return;
+    if (state.businessData.name || state.currentQuestion > 1) {
+      saveToStorage(state);
+    }
+  }, [state, isInitialized]);
 
-            toast.success(`Cartão ${isEditMode ? 'atualizado' : 'criado'} com sucesso!`);
-            clearSavedState();
-            navigate('/my-cards');
+  const generateClientCode = (businessName: string): string => {
+    const letters = businessName.replace(/[^a-zA-Z]/g, '');
+    const initials = letters.substring(0, 2).toUpperCase().padEnd(2, 'X');
+    const numbers = Math.floor(1000 + Math.random() * 9000);
+    return `FI${initials}${numbers}`;
+  };
 
-        } catch (err: any) {
-            console.error("Erro detalhado ao guardar:", err);
-            toast.error(`Falha ao guardar: ${err.message}`);
-        }
-    };
-    
-    // O setComplete não é mais necessário aqui, pois a navegação trata do fim do fluxo.
-    const setComplete = (complete: boolean) => { console.log("Wizard complete:", complete); };
+  const updateBusinessData = (data: Partial<BusinessData>) => {
+    if (data.name && !data.clientCode) {
+      data.clientCode = generateClientCode(data.name);
+    }
+    setState(prev => ({
+      ...prev,
+      businessData: { ...prev.businessData, ...data }
+    }));
+  };
 
+  const updateCustomization = (data: Partial<CustomizationData>) => {
+    setState(prev => ({
+      ...prev,
+      customization: { ...prev.customization, ...data }
+    }));
+  };
 
-    return (
-        <WizardContext.Provider value={{
-            state, updateBusinessData, updateCustomization, updateRewardConfig,
-            setCurrentQuestion, nextQuestion, prevQuestion, setComplete,
-            clearSavedState, loadExistingCard, isEditMode, editingCardId,
-            handleSaveAndPublish,
-        }}>
-            {children}
-        </WizardContext.Provider>
-    );
+  const updateRewardConfig = (data: Partial<RewardConfig>) => {
+    setState(prev => ({
+      ...prev,
+      rewardConfig: { ...prev.rewardConfig, ...data }
+    }));
+  };
+
+  const setCurrentQuestion = (question: number) => {
+    setState(prev => ({ ...prev, currentQuestion: question }));
+  };
+
+  const nextQuestion = () => {
+    setState(prev => ({ ...prev, currentQuestion: prev.currentQuestion + 1 }));
+  };
+
+  const prevQuestion = () => {
+    setState(prev => ({ ...prev, currentQuestion: Math.max(1, prev.currentQuestion - 1) }));
+  };
+
+  const setComplete = (complete: boolean) => {
+    setState(prev => ({ ...prev, isComplete: complete }));
+  };
+
+  const loadExistingCard = async (cardId: string) => {
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data, error } = await supabase
+        .from('loyalty_cards')
+        .select('*')
+        .eq('id', cardId)
+        .single();
+
+      if (error) {
+        console.error('Erro ao carregar cartão:', error);
+        return;
+      }
+
+      if (data) {
+        setEditingCardId(cardId);
+        setIsEditMode(true);
+        
+        setState({
+          businessData: {
+            name: data.business_name,
+            segment: data.business_segment,
+            phone: data.business_phone,
+            country: data.business_country as 'BR' | 'PT',
+            isWhatsApp: data.is_whatsapp,
+            email: data.business_email,
+            address: data.business_address || '',
+            socialNetwork: data.social_network || '',
+            logoFile: null,
+            logoUrl: data.logo_url,
+            clientCode: data.client_code,
+          },
+          customization: {
+            primaryColor: data.primary_color,
+            backgroundColor: data.background_color,
+            backgroundPattern: data.background_pattern as any,
+          },
+          rewardConfig: {
+            sealShape: data.seal_shape as any,
+            sealCount: data.seal_count,
+            maxCards: data.max_cards || undefined,
+            rewardDescription: data.reward_description,
+            instructions: data.instructions,
+            expirationDate: data.expiration_date ? new Date(data.expiration_date) : undefined,
+          },
+          currentQuestion: 1,
+          isComplete: true,
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar cartão:', error);
+    }
+  };
+
+  return (
+    <WizardContext.Provider
+      value={{
+        state,
+        updateBusinessData,
+        updateCustomization,
+        updateRewardConfig,
+        setCurrentQuestion,
+        nextQuestion,
+        prevQuestion,
+        setComplete,
+        clearSavedState,
+        loadExistingCard,
+        isEditMode,
+        editingCardId,
+      }}
+    >
+      {children}
+    </WizardContext.Provider>
+  );
 };
 
 export const useWizard = () => {
-    const context = useContext(WizardContext);
-    if (context === undefined) { throw new Error("useWizard must be used within a WizardProvider"); }
-    return context;
+  const context = useContext(WizardContext);
+  if (context === undefined) {
+    throw new Error("useWizard must be used within a WizardProvider");
+  }
+  return context;
 };
