@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { User, LogOut, Menu, X } from "lucide-react";
+import { User, LogOut, Menu, X, Store, CreditCard } from "lucide-react";
 import { useState } from "react";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -10,10 +10,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, hasRole } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -88,10 +89,19 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate('/my-cards')}>
-                    <User className="w-4 h-4 mr-2" />
-                    Meus Cartões
-                  </DropdownMenuItem>
+                  {hasRole('merchant') && (
+                    <DropdownMenuItem onClick={() => navigate('/my-cards')}>
+                      <Store className="w-4 h-4 mr-2" />
+                      Cartões do Meu Negócio
+                    </DropdownMenuItem>
+                  )}
+                  {hasRole('customer') && (
+                    <DropdownMenuItem onClick={() => navigate('/my-customer-cards')}>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Meus Cartões de Fidelidade
+                    </DropdownMenuItem>
+                  )}
+                  {(hasRole('merchant') || hasRole('customer')) && <DropdownMenuSeparator />}
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     Sair
@@ -179,13 +189,24 @@ const Header = () => {
               <div className="pt-4 border-t border-border space-y-3">
                 {user ? (
                   <>
-                    <button
-                      onClick={() => handleNavigate('/my-cards')}
-                      className="flex items-center w-full py-3 px-4 text-left hover:bg-muted rounded-lg transition-colors"
-                    >
-                      <User className="w-4 h-4 mr-3" />
-                      Meus Cartões
-                    </button>
+                    {hasRole('merchant') && (
+                      <button
+                        onClick={() => handleNavigate('/my-cards')}
+                        className="flex items-center w-full py-3 px-4 text-left hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <Store className="w-4 h-4 mr-3" />
+                        Cartões do Meu Negócio
+                      </button>
+                    )}
+                    {hasRole('customer') && (
+                      <button
+                        onClick={() => handleNavigate('/my-customer-cards')}
+                        className="flex items-center w-full py-3 px-4 text-left hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <CreditCard className="w-4 h-4 mr-3" />
+                        Meus Cartões de Fidelidade
+                      </button>
+                    )}
                     <button
                       onClick={handleSignOut}
                       className="flex items-center w-full py-3 px-4 text-left hover:bg-muted rounded-lg transition-colors text-destructive"

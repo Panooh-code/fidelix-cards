@@ -122,6 +122,16 @@ serve(async (req) => {
       throw new Error('Erro ao criar seu cartão de fidelidade')
     }
 
+    // Add customer role if user doesn't have it
+    const { error: roleError } = await supabaseClient.rpc('add_user_role', {
+      user_id_param: customerId,
+      role_param: 'customer'
+    });
+
+    if (roleError) {
+      console.error('Error adding customer role:', roleError);
+    }
+
     // Atualizar número de telefone no perfil se fornecido
     if (phoneNumber) {
       const { error: profileUpdateError } = await supabaseClient

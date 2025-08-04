@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 export const useLoyaltyCardSave = () => {
   const [saving, setSaving] = useState(false);
   const { isEditMode, editingCardId, state: wizardStateFromContext } = useWizard();
-  const { user } = useAuth();
+  const { user, hasRole, refreshProfile } = useAuth();
 
   const saveCard = async (wizardState: WizardState): Promise<{ success: boolean; cardId?: string; publicCode?: string; }> => {
     if (!user) {
@@ -90,6 +90,21 @@ export const useLoyaltyCardSave = () => {
           });
 
         if (codesError) throw new Error('Erro ao gerar códigos do cartão');
+
+        // Add merchant role for first card creation
+        if (!hasRole('merchant')) {
+          const { error: roleError } = await supabase.rpc('add_user_role', {
+            user_id_param: user.id,
+            role_param: 'merchant'
+          });
+
+          if (roleError) {
+            console.error('Error adding merchant role:', roleError);
+          } else {
+            await refreshProfile();
+            toast.success('Parabéns! Você agora é um lojista');
+          }
+        }
         
         toast.success('Cartão publicado com sucesso!');
         return { success: true, cardId: savedCard.id, publicCode: codesData.publicCode };
