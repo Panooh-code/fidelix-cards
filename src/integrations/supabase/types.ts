@@ -207,7 +207,6 @@ export type Database = {
           full_name: string
           id: string
           phone_number: string | null
-          roles: string[] | null
           updated_at: string
           user_id: string
         }
@@ -217,7 +216,6 @@ export type Database = {
           full_name: string
           id?: string
           phone_number?: string | null
-          roles?: string[] | null
           updated_at?: string
           user_id: string
         }
@@ -227,7 +225,6 @@ export type Database = {
           full_name?: string
           id?: string
           phone_number?: string | null
-          roles?: string[] | null
           updated_at?: string
           user_id?: string
         }
@@ -280,18 +277,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      add_user_role: {
-        Args: { user_id_param: string; role_param: string }
-        Returns: undefined
-      }
-      has_user_role: {
-        Args: { user_id_param: string; role_param: string }
-        Returns: boolean
-      }
-      remove_user_role: {
-        Args: { user_id_param: string; role_param: string }
-        Returns: undefined
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
