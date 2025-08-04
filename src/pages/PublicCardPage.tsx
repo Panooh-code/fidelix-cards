@@ -18,7 +18,7 @@ interface LoyaltyCard { id: string; business_name: string; reward_description: s
 const PublicCardPage = () => {
   const { publicCode } = useParams<{ publicCode: string }>();
   const navigate = useNavigate();
-  const { user, signUp } = useAuth();
+  const { user } = useAuth();
   const [card, setCard] = useState<LoyaltyCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,18 +33,16 @@ const PublicCardPage = () => {
     const fetchAndCheckData = async () => {
       if (!publicCode) { setError('Código do cartão inválido.'); setLoading(false); return; }
       try {
-        // ### CORREÇÃO CRÍTICA 1: Usar .maybeSingle() em vez de .single() ###
-        // Isto permite que a função retorne zero resultados (se o cartão não existir) sem causar um erro.
         const { data: cardData, error: rpcError } = await supabase
             .rpc('get_public_card', { p_public_code: publicCode })
-            .maybeSingle();
+            .maybeSingle(); // Usar maybeSingle é mais seguro que single
         
         if (rpcError) throw new Error(`Erro na base de dados: ${rpcError.message}`);
         if (!cardData) throw new Error('Este cartão não foi encontrado ou já não se encontra ativo.');
         setCard(cardData as LoyaltyCard);
 
         if (user) {
-          const { data: participationData } = await supabase.from('customer_cards').select('id').eq('customer_id', user.id).eq('loyalty_card_id', cardData.id).single();
+          const { data: participationData } = await supabase.from('customer_cards').select('id').eq('customer_id', user.id).eq('loyalty_card_id', cardData.id).maybeSingle();
           if (participationData) {
             toast.info("Já participa neste programa! A redirecionar...");
             navigate('/my-customer-cards');
