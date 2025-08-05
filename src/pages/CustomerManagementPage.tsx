@@ -3,13 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { ArrowLeft, Plus, Star, Heart, Circle, Square, CheckCircle, Award, Search, QrCode } from 'lucide-react';
+import { ArrowLeft, Plus, Star, Heart, Circle, Square, Award, User, Search } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AddSealsModal } from '@/components/AddSealsModal';
 import { QRScannerModal } from '@/components/QRScannerModal';
+import { CustomerSearchToolbar } from '@/components/CustomerSearchToolbar';
+import { CustomerManagementModal } from '@/components/CustomerManagementModal';
 
 interface CustomerCard {
   id: string;
@@ -33,6 +34,34 @@ interface LoyaltyCard {
   reward_description: string;
 }
 
+interface CustomerCardDetails {
+  id: string;
+  cardCode: string;
+  currentSeals: number;
+  totalRewardsEarned: number;
+  createdAt: string;
+  customer: {
+    name: string;
+    email: string;
+  };
+  loyaltyProgram: {
+    businessName: string;
+    businessSegment: string;
+    sealCount: number;
+    sealShape: string;
+    rewardDescription: string;
+    primaryColor: string;
+    backgroundColor: string;
+  };
+}
+
+interface Transaction {
+  id: string;
+  seals_given: number;
+  transaction_date: string;
+  notes?: string;
+}
+
 const CustomerManagementPage = () => {
   const { cardId } = useParams<{ cardId: string }>();
   const { user } = useAuth();
@@ -44,6 +73,12 @@ const CustomerManagementPage = () => {
   const [showAddSealsModal, setShowAddSealsModal] = useState(false);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // New states for individual customer management
+  const [isManagementModalOpen, setIsManagementModalOpen] = useState(false);
+  const [selectedCustomerDetails, setSelectedCustomerDetails] = useState<CustomerCardDetails | null>(null);
+  const [customerTransactions, setCustomerTransactions] = useState<Transaction[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     if (!user || !cardId) return;
@@ -164,8 +199,119 @@ const CustomerManagementPage = () => {
   }, [customers, searchTerm]);
 
   const handleQRScanSuccess = (scannedCode: string) => {
-    setSearchTerm(scannedCode);
     setShowQRScanner(false);
+    searchCustomerByCode(scannedCode);
+  };
+
+  const searchCustomerByCode = async (code: string) => {
+    if (!code.trim() || !user?.id) return;
+
+    setIsSearching(true);
+    
+    try {
+      const response = await supabase.functions.invoke('get-customer-card-info', {
+        body: {
+          cardCode: code.trim(),
+          businessOwnerId: user.id
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Erro ao buscar cliente');
+      }
+
+      if (response.data?.success && response.data?.customerCard) {
+        setSelectedCustomerDetails(response.data.customerCard);
+        setCustomerTransactions(response.data.transactions || []);
+        setIsManagementModalOpen(true);
+      } else {
+        toast.error('Cliente não encontrado');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar cliente:', error);
+      toast.error('Erro ao buscar cliente. Verifique o código e tente novamente.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const openCustomerManagement = async (customer: CustomerCard) => {
+    setIsSearching(true);
+    
+    try {
+      const response = await supabase.functions.invoke('get-customer-card-info', {
+        body: {
+          cardCode: customer.card_code,
+          businessOwnerId: user?.id
+        }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Erro ao carregar detalhes do cliente');
+      }
+
+      if (response.data?.success && response.data?.customerCard) {
+        setSelectedCustomerDetails(response.data.customerCard);
+        setCustomerTransactions(response.data.transactions || []);
+        setIsManagementModalOpen(true);
+      } else {
+        toast.error('Erro ao carregar detalhes do cliente');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar detalhes:', error);
+      toast.error('Erro ao carregar detalhes do cliente');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const closeCustomerManagement = () => {
+    setIsManagementModalOpen(false);
+    setSelectedCustomerDetails(null);
+    setCustomerTransactions([]);
+  };
+
+  const handleManagementAddSeals = () => {
+    if (selectedCustomerDetails) {
+      // Find the customer in the current list to open AddSealsModal
+      const customer = customers.find(c => c.card_code === selectedCustomerDetails.cardCode);
+      if (customer) {
+        setSelectedCustomer(customer);
+        setShowAddSealsModal(true);
+        setIsManagementModalOpen(false);
+      }
+    }
+  };
+
+  const handleManagementFinalizeReward = async () => {
+    if (!selectedCustomerDetails) return;
+
+    if (!confirm(`Tem a certeza que deseja finalizar este cartão e entregar a recompensa? Os selos de ${selectedCustomerDetails.customer.name} serão repostos a zero.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('customer_cards')
+        .update({
+          current_seals: 0,
+          total_rewards_earned: selectedCustomerDetails.totalRewardsEarned + 1,
+        })
+        .eq('id', selectedCustomerDetails.id);
+
+      if (error) {
+        console.error('Erro ao resetar cartão:', error);
+        toast.error('Erro ao resetar cartão');
+        return;
+      }
+
+      toast.success('Cartão finalizado e reiniciado com sucesso!');
+      closeCustomerManagement();
+      fetchData();
+    } catch (error) {
+      console.error('Erro ao resetar cartão:', error);
+      toast.error('Erro ao resetar cartão');
+    }
   };
 
   return (
@@ -197,26 +343,14 @@ const CustomerManagementPage = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
-          {/* Search and Scanner */}
-          <div className="flex gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Procurar por código de cliente..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => setShowQRScanner(true)}
-              className="flex items-center gap-2"
-            >
-              <QrCode className="w-4 h-4" />
-              Escanear QR Code
-            </Button>
-          </div>
+          {/* Search Toolbar */}
+          <CustomerSearchToolbar
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onSearchByCode={searchCustomerByCode}
+            onOpenQRScanner={() => setShowQRScanner(true)}
+            isSearching={isSearching}
+          />
 
           {/* Stats */}
           <div className="grid gap-4 md:grid-cols-3">
@@ -283,7 +417,11 @@ const CustomerManagementPage = () => {
           ) : (
             <div className="grid gap-4">
               {filteredCustomers.map((customer) => (
-                <Card key={customer.id} className="p-6">
+                <Card 
+                  key={customer.id} 
+                  className="p-6 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => openCustomerManagement(customer)}
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -339,21 +477,38 @@ const CustomerManagementPage = () => {
 
                       {/* Actions */}
                       <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCustomerManagement(customer);
+                          }}
+                        >
+                          <User className="w-4 h-4 mr-1" />
+                          Gerir Cliente
+                        </Button>
                         {customer.current_seals >= loyaltyCard.seal_count ? (
                           <Button
                             variant="default"
                             size="sm"
-                            onClick={() => handleFinalizarRecompensa(customer)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFinalizarRecompensa(customer);
+                            }}
                             className="bg-green-600 hover:bg-green-700 text-white"
                           >
                             <Award className="w-4 h-4 mr-1" />
-                            Finalizar e Entregar Recompensa
+                            Finalizar
                           </Button>
                         ) : (
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleAddSeals(customer)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddSeals(customer);
+                            }}
                           >
                             <Plus className="w-4 h-4 mr-1" />
                             Adicionar Selos
@@ -388,6 +543,16 @@ const CustomerManagementPage = () => {
         isOpen={showQRScanner}
         onClose={() => setShowQRScanner(false)}
         onScanSuccess={handleQRScanSuccess}
+      />
+
+      {/* Customer Management Modal */}
+      <CustomerManagementModal
+        isOpen={isManagementModalOpen}
+        onClose={closeCustomerManagement}
+        customerDetails={selectedCustomerDetails}
+        transactions={customerTransactions}
+        onAddSeals={handleManagementAddSeals}
+        onFinalizeReward={handleManagementFinalizeReward}
       />
     </div>
   );
