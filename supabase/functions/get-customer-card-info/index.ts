@@ -44,8 +44,13 @@ serve(async (req) => {
           is_active
         ),
         profiles!customer_cards_customer_id_fkey(
+          user_id,
           full_name,
-          email
+          email,
+          phone_number,
+          address,
+          birth_date,
+          is_whatsapp
         )
       `)
       .eq('card_code', customerCardCode)
@@ -87,8 +92,13 @@ serve(async (req) => {
           totalRewardsEarned: customerCard.total_rewards_earned || 0,
           createdAt: customerCard.created_at,
           customer: {
+            id: customerCard.profiles?.user_id || customerCard.customer_id,
             name: customerCard.profiles?.full_name || 'Nome não disponível',
-            email: customerCard.profiles?.email || 'Email não disponível'
+            email: customerCard.profiles?.email || 'Email não disponível',
+            phone: customerCard.profiles?.phone_number || '',
+            address: customerCard.profiles?.address || '',
+            birthDate: customerCard.profiles?.birth_date || '',
+            isWhatsapp: customerCard.profiles?.is_whatsapp || false
           },
           loyaltyProgram: {
             businessName: customerCard.loyalty_cards.business_name,

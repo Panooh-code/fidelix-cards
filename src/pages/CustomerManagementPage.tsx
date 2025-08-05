@@ -10,7 +10,8 @@ import { toast } from 'sonner';
 import { AddSealsModal } from '@/components/AddSealsModal';
 import { QRScannerModal } from '@/components/QRScannerModal';
 import { CustomerSearchToolbar } from '@/components/CustomerSearchToolbar';
-import { CustomerManagementModal } from '@/components/CustomerManagementModal';
+import { ExpandedCustomerManagementModal } from '@/components/ExpandedCustomerManagementModal';
+import Logo from '@/components/Logo';
 
 interface CustomerCard {
   id: string;
@@ -23,6 +24,10 @@ interface CustomerCard {
   profiles: {
     full_name: string;
     email: string;
+    phone_number?: string;
+    address?: string;
+    birth_date?: string;
+    is_whatsapp?: boolean;
   };
 }
 
@@ -41,8 +46,13 @@ interface CustomerCardDetails {
   totalRewardsEarned: number;
   createdAt: string;
   customer: {
+    id: string;
     name: string;
     email: string;
+    phone?: string;
+    address?: string;
+    birthDate?: string;
+    isWhatsapp?: boolean;
   };
   loyaltyProgram: {
     businessName: string;
@@ -108,9 +118,10 @@ const CustomerManagementPage = () => {
         .from('customer_cards')
         .select(`
           id, card_code, customer_id, current_seals, total_rewards_earned, is_active, created_at,
-          profiles!customer_cards_customer_id_fkey (full_name, email)
+          profiles!customer_cards_customer_id_fkey (full_name, email, phone_number, address, birth_date, is_whatsapp)
         `)
-        .eq('loyalty_card_id', cardId);
+        .eq('loyalty_card_id', cardId)
+        .eq('is_active', true);
 
       if (customersError) {
         console.error('Erro ao buscar clientes:', customersError);
@@ -317,25 +328,46 @@ const CustomerManagementPage = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-4">
+      <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
+            {/* Left side - Logo and Back */}
             <div className="flex items-center gap-4">
+              <div 
+                className="cursor-pointer" 
+                onClick={() => navigate('/')}
+              >
+                <Logo />
+              </div>
               <Button
                 variant="ghost"
-                onClick={() => navigate('/my-cards')}
+                size="sm"
+                onClick={() => navigate(-1)}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
+                <span className="hidden sm:inline">Voltar</span>
               </Button>
-              <div>
-                <h1 className="text-xl font-bold">Clientes - {loyaltyCard.business_name}</h1>
-                <p className="text-sm text-muted-foreground">
-                  Gerencie os clientes do seu cartão de fidelidade
-                </p>
-              </div>
             </div>
+
+            {/* Center - Title (hidden on mobile) */}
+            <div className="hidden md:block text-center">
+              <h1 className="text-xl font-bold">Clientes - {loyaltyCard.business_name}</h1>
+              <p className="text-sm text-muted-foreground">
+                Gestão de clientes do programa de fidelidade
+              </p>
+            </div>
+
+            {/* Mobile title */}
+            <div className="md:hidden flex-1 ml-4">
+              <h1 className="text-lg font-bold truncate">Clientes</h1>
+              <p className="text-xs text-muted-foreground truncate">
+                {loyaltyCard.business_name}
+              </p>
+            </div>
+
+            {/* Right side - empty for balance */}
+            <div className="w-20"></div>
           </div>
         </div>
       </header>
@@ -546,13 +578,13 @@ const CustomerManagementPage = () => {
       />
 
       {/* Customer Management Modal */}
-      <CustomerManagementModal
+      <ExpandedCustomerManagementModal
         isOpen={isManagementModalOpen}
         onClose={closeCustomerManagement}
         customerDetails={selectedCustomerDetails}
         transactions={customerTransactions}
         onAddSeals={handleManagementAddSeals}
-        onFinalizeReward={handleManagementFinalizeReward}
+        onRefresh={fetchData}
       />
     </div>
   );

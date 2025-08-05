@@ -18,18 +18,18 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { customerCardCode, businessOwnerId, sealsToGive, notes } = await req.json()
+    const { customerCardCode, customer_card_id, businessOwnerId, sealsToGive, notes } = await req.json()
 
-    if (!customerCardCode || !businessOwnerId || !sealsToGive) {
-      throw new Error('Código do cartão, ID do lojista e número de selos são obrigatórios')
+    if ((!customerCardCode && !customer_card_id) || !businessOwnerId || sealsToGive === undefined || sealsToGive === null) {
+      throw new Error('Código do cartão ou ID do cartão, ID do lojista e número de selos são obrigatórios')
     }
 
-    if (sealsToGive < 1) {
-      throw new Error('Número de selos deve ser maior que zero')
+    if (sealsToGive === 0) {
+      throw new Error('Número de selos não pode ser zero')
     }
 
     // Buscar o cartão do cliente
-    const { data: customerCard, error: cardError } = await supabaseClient
+    let query = supabaseClient
       .from('customer_cards')
       .select(`
         *,
@@ -41,9 +41,15 @@ serve(async (req) => {
           is_active
         )
       `)
-      .eq('card_code', customerCardCode)
-      .eq('is_active', true)
-      .single()
+      .eq('is_active', true);
+
+    if (customer_card_id) {
+      query = query.eq('id', customer_card_id);
+    } else {
+      query = query.eq('card_code', customerCardCode);
+    }
+
+    const { data: customerCard, error: cardError } = await query.single()
 
     if (cardError || !customerCard) {
       throw new Error('Cartão do cliente não encontrado ou inativo')
@@ -63,11 +69,20 @@ serve(async (req) => {
     const newSealsTotal = currentSeals + sealsToGive
     const requiredSeals = customerCard.loyalty_cards.seal_count
     
+    // Validar limites de selos
+    if (sealsToGive > 0 && newSealsTotal > requiredSeals) {
+      throw new Error(`Não é possível adicionar ${sealsToGive} selos. Máximo permitido: ${requiredSeals - currentSeals}`)
+    }
+    
+    if (sealsToGive < 0 && newSealsTotal < 0) {
+      throw new Error(`Não é possível remover ${Math.abs(sealsToGive)} selos. Máximo permitido: ${currentSeals}`)
+    }
+    
     let rewardsEarned = 0
-    let finalSealsCount = newSealsTotal
+    let finalSealsCount = Math.max(0, newSealsTotal) // Ensure seals don't go below 0
 
-    // Se completou cartões, calcular recompensas
-    if (newSealsTotal >= requiredSeals) {
+    // Se completou cartões, calcular recompensas (apenas para adições)
+    if (sealsToGive > 0 && newSealsTotal >= requiredSeals) {
       rewardsEarned = Math.floor(newSealsTotal / requiredSeals)
       finalSealsCount = newSealsTotal % requiredSeals
     }
