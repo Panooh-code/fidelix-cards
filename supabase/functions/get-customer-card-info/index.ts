@@ -18,11 +18,9 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const url = new URL(req.url)
-    const customerCardCode = url.searchParams.get('cardCode')
-    const businessOwnerId = url.searchParams.get('businessOwnerId')
+    const { cardCode, businessOwnerId } = await req.json()
 
-    if (!customerCardCode || !businessOwnerId) {
+    if (!cardCode || !businessOwnerId) {
       throw new Error('Código do cartão e ID do lojista são obrigatórios')
     }
 
@@ -53,7 +51,7 @@ serve(async (req) => {
           is_whatsapp
         )
       `)
-      .eq('card_code', customerCardCode)
+      .eq('card_code', cardCode)
       .eq('is_active', true)
       .single()
 

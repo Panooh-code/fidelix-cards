@@ -53,6 +53,7 @@ export const AddSealsModal = ({ isOpen, onClose, customer, loyaltyCard, onSucces
       const { data, error } = await supabase.functions.invoke('process-seal-transaction', {
         body: {
           customer_card_id: customer.id,
+          businessOwnerId: user.id,
           seals_given: finalSealsAmount,
           notes: notes || `Selos ${isAddingSeals ? 'adicionados' : 'removidos'} manualmente pelo lojista`,
         }

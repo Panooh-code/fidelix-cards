@@ -447,108 +447,121 @@ const CustomerManagementPage = () => {
               </div>
             ) : null
           ) : (
-            <div className="grid gap-4">
+            <div className="space-y-4">
               {filteredCustomers.map((customer) => (
                 <Card 
                   key={customer.id} 
-                  className="p-6 cursor-pointer hover:shadow-md transition-shadow"
+                  className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => openCustomerManagement(customer)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <span className="text-primary font-bold text-lg">
-                          {customer.profiles.full_name.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{customer.profiles.full_name}</h3>
-                        <p className="text-sm text-muted-foreground">{customer.profiles.email}</p>
-                        <p className="text-xs text-muted-foreground font-mono">{customer.card_code}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                      {/* Progress Visual */}
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          {Array.from({ length: loyaltyCard.seal_count }).map((_, index) => (
-                            <SealIcon
-                              key={index}
-                              className={`w-5 h-5 ${
-                                index < customer.current_seals
-                                  ? 'text-primary fill-current'
-                                  : 'text-muted-foreground'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm font-medium">
-                          {customer.current_seals}/{loyaltyCard.seal_count}
-                        </span>
-                      </div>
-
-                      {/* Status */}
-                      <div className="flex flex-col items-center gap-1">
-                        {customer.current_seals >= loyaltyCard.seal_count ? (
-                          <Badge variant="default" className="bg-green-500">
-                            <Award className="w-3 h-3 mr-1" />
-                            Pronto para recompensa
-                          </Badge>
-                        ) : (
-                          <Badge variant="secondary">
-                            {loyaltyCard.seal_count - customer.current_seals} selos restantes
-                          </Badge>
-                        )}
-                        {customer.total_rewards_earned > 0 && (
-                          <span className="text-xs text-muted-foreground">
-                            {customer.total_rewards_earned} recompensa(s) recebida(s)
+                   <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                          <span className="text-primary font-bold text-sm sm:text-lg">
+                            {customer.profiles.full_name.charAt(0).toUpperCase()}
                           </span>
-                        )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-semibold text-sm sm:text-base truncate">{customer.profiles.full_name}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground truncate">{customer.profiles.email}</p>
+                          <p className="text-xs text-muted-foreground font-mono">{customer.card_code}</p>
+                        </div>
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openCustomerManagement(customer);
-                          }}
-                        >
-                          <User className="w-4 h-4 mr-1" />
-                          Gerir Cliente
-                        </Button>
-                        {customer.current_seals >= loyaltyCard.seal_count ? (
-                          <Button
-                            variant="default"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleFinalizarRecompensa(customer);
-                            }}
-                            className="bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            <Award className="w-4 h-4 mr-1" />
-                            Finalizar
-                          </Button>
-                        ) : (
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+                        {/* Progress Visual */}
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1 flex-wrap">
+                            {Array.from({ length: Math.min(loyaltyCard.seal_count, 8) }).map((_, index) => (
+                              <SealIcon
+                                key={index}
+                                className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                                  index < customer.current_seals
+                                    ? 'text-primary fill-current'
+                                    : 'text-muted-foreground'
+                                }`}
+                              />
+                            ))}
+                            {loyaltyCard.seal_count > 8 && (
+                              <span className="text-xs text-muted-foreground ml-1">
+                                +{loyaltyCard.seal_count - 8}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
+                            {customer.current_seals}/{loyaltyCard.seal_count}
+                          </span>
+                        </div>
+
+                        {/* Status */}
+                        <div className="flex flex-col items-start sm:items-center gap-1">
+                          {customer.current_seals >= loyaltyCard.seal_count ? (
+                            <Badge variant="default" className="bg-green-500 text-xs">
+                              <Award className="w-3 h-3 mr-1" />
+                              Pronto para recompensa
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="text-xs">
+                              {loyaltyCard.seal_count - customer.current_seals} selos restantes
+                            </Badge>
+                          )}
+                          {customer.total_rewards_earned > 0 && (
+                            <span className="text-xs text-muted-foreground">
+                              {customer.total_rewards_earned} recompensa(s) recebida(s)
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Actions - Mobile optimized */}
+                        <div className="flex gap-2 w-full sm:w-auto">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAddSeals(customer);
+                              openCustomerManagement(customer);
                             }}
+                            className="flex-1 sm:flex-none text-xs"
                           >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Adicionar Selos
+                            <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                            <span className="hidden sm:inline">Gerir</span>
+                            <span className="sm:hidden">Gerir</span>
                           </Button>
-                        )}
+                          
+                          {customer.current_seals >= loyaltyCard.seal_count ? (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleFinalizarRecompensa(customer);
+                              }}
+                              className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-xs"
+                            >
+                              <Award className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                              <span className="hidden sm:inline">Entregar</span>
+                              <span className="sm:hidden">Entregar</span>
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="default"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddSeals(customer);
+                              }}
+                              className="flex-1 sm:flex-none text-xs"
+                            >
+                              <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                              <span className="hidden sm:inline">Adicionar Selos</span>
+                              <span className="sm:hidden">Selos</span>
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>
