@@ -169,6 +169,18 @@ const CustomerManagementPage = () => {
     }
   };
 
+  // Filtrar clientes baseado na busca - MOVED BEFORE CONDITIONAL RETURNS
+  const filteredCustomers = useMemo(() => {
+    if (!searchTerm.trim()) return customers;
+    
+    const term = searchTerm.toLowerCase();
+    return customers.filter(customer => 
+      customer.card_code.toLowerCase().includes(term) ||
+      customer.profiles.full_name.toLowerCase().includes(term) ||
+      customer.profiles.email.toLowerCase().includes(term)
+    );
+  }, [customers, searchTerm]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
@@ -185,18 +197,6 @@ const CustomerManagementPage = () => {
   }
 
   const SealIcon = getSealIcon(loyaltyCard.seal_shape);
-
-  // Filtrar clientes baseado na busca
-  const filteredCustomers = useMemo(() => {
-    if (!searchTerm.trim()) return customers;
-    
-    const term = searchTerm.toLowerCase();
-    return customers.filter(customer => 
-      customer.card_code.toLowerCase().includes(term) ||
-      customer.profiles.full_name.toLowerCase().includes(term) ||
-      customer.profiles.email.toLowerCase().includes(term)
-    );
-  }, [customers, searchTerm]);
 
   const handleQRScanSuccess = (scannedCode: string) => {
     setShowQRScanner(false);
