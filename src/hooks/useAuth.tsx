@@ -155,29 +155,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signInWithGoogle = async () => {
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-        }
-      });
+  try {
+    const isLocalhost = window.location.hostname === 'localhost';
+    const redirectUrl = isLocalhost
+      ? 'http://localhost:3000/' // ou a rota local que você quer usar
+      : 'https://www.fidelix.app/'; // domínio público da sua app
 
-      if (error) {
-        console.error('Google sign in error:', error);
-        toast.error(error.message);
-        return { error };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
       }
+    });
 
-      return { error: null };
-    } catch (error: any) {
+    if (error) {
       console.error('Google sign in error:', error);
-      toast.error('Erro ao fazer login com Google');
+      toast.error(error.message);
       return { error };
     }
-  };
+
+    return { error: null };
+  } catch (error: any) {
+    console.error('Google sign in error:', error);
+    toast.error('Erro ao fazer login com Google');
+    return { error };
+  }
+};
+
 
   const signOut = async () => {
     try {
