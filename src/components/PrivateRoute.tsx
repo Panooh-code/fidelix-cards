@@ -1,5 +1,6 @@
+
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 interface PrivateRouteProps {
@@ -9,12 +10,15 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/auth?redirect=' + encodeURIComponent(window.location.pathname));
+      // Redirecionar para auth com a URL atual como redirect target
+      const redirectUrl = encodeURIComponent(location.pathname + location.search);
+      navigate(`/auth?redirect=${redirectUrl}`);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location]);
 
   if (loading) {
     return (

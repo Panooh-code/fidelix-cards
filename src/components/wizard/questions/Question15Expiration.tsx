@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,8 +48,10 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
 
   const handlePublish = async () => {
     if (!user) {
-      // Redirect to auth with current location as redirect target
-      navigate('/auth?redirect=/wizard');
+      // Redirecionar para auth com a URL atual como redirect target
+      // O estado do wizard já está salvo automaticamente
+      const currentUrl = window.location.pathname + window.location.search;
+      navigate(`/auth?redirect=${encodeURIComponent(currentUrl)}`);
       return;
     }
 
@@ -57,8 +60,10 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
       setPublished(true);
       // Limpar estado salvo após publicação bem-sucedida
       clearSavedState();
-      // Redirecionar imediatamente para área de cartões do lojista
-      navigate('/my-cards');
+      // Redirecionar para área de cartões do lojista
+      setTimeout(() => {
+        navigate('/my-cards');
+      }, 2000);
     }
   };
 
@@ -145,7 +150,7 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
             <p className="text-sm text-muted-foreground">
               {user ? 
                 'Clique em "Publicar" para salvar seu cartão de fidelidade' :
-                'Faça login para publicar seu cartão. Seu progresso será salvo automaticamente.'
+                'Para publicar seu cartão, você precisa fazer login. Seu progresso está salvo!'
               }
             </p>
             
@@ -153,6 +158,9 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
               <div className="flex items-center justify-center gap-2 text-green-600">
                 <CheckCircle className="w-5 h-5" />
                 <span className="font-medium">Cartão publicado com sucesso!</span>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Redirecionando para seus cartões...
+                </p>
               </div>
             ) : (
               <Button
@@ -174,6 +182,12 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
                   </>
                 )}
               </Button>
+            )}
+
+            {!user && (
+              <p className="text-xs text-muted-foreground italic">
+                Após o login, você voltará automaticamente para esta tela
+              </p>
             )}
           </div>
         </div>

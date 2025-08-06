@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
-import { useSmartRedirect } from '@/hooks/useSmartRedirect';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft } from 'lucide-react';
 import { formatPhoneNumber } from '@/utils/phoneMask';
 import { toast } from 'sonner';
@@ -23,18 +23,20 @@ export default function AuthPage() {
   const { user, signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { redirectUser } = useSmartRedirect();
 
   useEffect(() => {
     if (user) {
+      // Smart redirect - sempre voltar para onde o usuário estava
       const redirectPath = searchParams.get('redirect');
       if (redirectPath) {
+        console.log('Redirecting to:', redirectPath);
         navigate(redirectPath, { replace: true });
       } else {
-        redirectUser(user.id, '/');
+        // Se não há redirect específico, ir para home
+        navigate('/', { replace: true });
       }
     }
-  }, [user, navigate, searchParams, redirectUser]);
+  }, [user, navigate, searchParams]);
 
   const validateForm = () => {
     if (isResetPassword) {
@@ -118,6 +120,11 @@ export default function AuthPage() {
   const switchMode = () => {
     setIsLogin(!isLogin);
     resetForm();
+  };
+
+  const handleBackToHome = () => {
+    const redirectPath = searchParams.get('redirect') || '/';
+    navigate(redirectPath);
   };
 
   if (isResetPassword) {
@@ -352,15 +359,15 @@ export default function AuthPage() {
             </button>
           </div>
 
-          {/* Back to home */}
+          {/* Back button */}
           <Button
             type="button"
             variant="ghost"
             className="w-full"
-            onClick={() => navigate('/')}
+            onClick={handleBackToHome}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Voltar ao início
+            Voltar
           </Button>
         </CardContent>
       </Card>

@@ -1,4 +1,5 @@
 
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,7 +17,7 @@ import MyCardsPage from "./pages/MyCardsPage";
 import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
 import CustomerManagementPage from "./pages/CustomerManagementPage";
-import PublicCardPage from "./pages/PublicCardPage"; // Vamos usar este como o ficheiro principal
+import PublicCardPage from "./pages/PublicCardPage";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,8 @@ const App = () => (
               {/* Rotas Principais */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/wizard" element={<PrivateRoute><WizardPage /></PrivateRoute>} />
+              {/* Wizard agora é público - usuário só precisa logar na hora de publicar */}
+              <Route path="/wizard" element={<WizardPage />} />
 
               {/* Rotas Privadas */}
               <Route path="/my-cards" element={<PrivateRoute><MyCardsPage /></PrivateRoute>} />

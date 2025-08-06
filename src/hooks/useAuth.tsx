@@ -1,4 +1,5 @@
 
+
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,21 +31,27 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Function to get the correct redirect URL based on the environment
+// Function to get the correct redirect URL prioritizing fidelix.app
 const getRedirectUrl = () => {
   const currentUrl = window.location.origin;
   console.log('Current URL:', currentUrl);
   
-  // Check if we're in a Lovable environment
+  // First priority: if we're on fidelix.app, use it
+  if (currentUrl.includes('fidelix.app')) {
+    console.log('Using fidelix.app redirect URL:', currentUrl);
+    return currentUrl;
+  }
+  
+  // Second priority: if we're in Lovable environment, use it
   if (currentUrl.includes('lovableproject.com') || currentUrl.includes('lovable.app')) {
     console.log('Using Lovable redirect URL:', currentUrl);
     return currentUrl;
   }
   
-  // For any other environment, use the primary Lovable URL
-  const fallbackUrl = 'https://e2e36569-ab86-4909-9c45-dc2cebf78125.lovableproject.com';
-  console.log('Using fallback redirect URL:', fallbackUrl);
-  return fallbackUrl;
+  // Default to fidelix.app for production
+  const productionUrl = 'https://www.fidelix.app';
+  console.log('Using production redirect URL:', productionUrl);
+  return productionUrl;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
