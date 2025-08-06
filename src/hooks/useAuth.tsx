@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,6 +29,23 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Function to get the correct redirect URL based on the environment
+const getRedirectUrl = () => {
+  const currentUrl = window.location.origin;
+  console.log('Current URL:', currentUrl);
+  
+  // Check if we're in a Lovable environment
+  if (currentUrl.includes('lovableproject.com') || currentUrl.includes('lovable.app')) {
+    console.log('Using Lovable redirect URL:', currentUrl);
+    return currentUrl;
+  }
+  
+  // For any other environment, use the primary Lovable URL
+  const fallbackUrl = 'https://e2e36569-ab86-4909-9c45-dc2cebf78125.lovableproject.com';
+  console.log('Using fallback redirect URL:', fallbackUrl);
+  return fallbackUrl;
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -101,7 +119,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, fullName: string, whatsapp?: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = getRedirectUrl();
+      console.log('SignUp - Using redirect URL:', redirectUrl);
       
       const { error } = await supabase.auth.signUp({
         email,
@@ -162,7 +181,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithGoogle = async () => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = getRedirectUrl();
+      console.log('Google SignIn - Using redirect URL:', redirectUrl);
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -173,7 +193,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) {
         console.error('Google sign in error:', error);
-        toast.error(error.message);
+        toast.error(`Erro no login com Google: ${error.message}`);
         return { error };
       }
 
@@ -187,7 +207,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const resetPassword = async (email: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/auth`;
+      const redirectUrl = `${getRedirectUrl()}/auth`;
+      console.log('Reset Password - Using redirect URL:', redirectUrl);
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
