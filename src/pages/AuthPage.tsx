@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -26,13 +25,17 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (user) {
-      // Smart redirect - sempre voltar para onde o usuário estava
+      // CORREÇÃO: Sempre usar o parâmetro redirect se existir
       const redirectPath = searchParams.get('redirect');
+      console.log('User logged in, redirecting to:', redirectPath);
+      
       if (redirectPath) {
-        console.log('Redirecting to:', redirectPath);
-        navigate(redirectPath, { replace: true });
+        // Decodificar a URL e navegar para ela
+        const decodedPath = decodeURIComponent(redirectPath);
+        console.log('Decoded redirect path:', decodedPath);
+        navigate(decodedPath, { replace: true });
       } else {
-        // Se não há redirect específico, ir para home
+        // Só ir para home se não há redirect específico
         navigate('/', { replace: true });
       }
     }
