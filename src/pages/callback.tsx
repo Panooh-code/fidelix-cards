@@ -9,16 +9,20 @@ const CallbackPage = () => {
 
   useEffect(() => {
     const handleOAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
 
       if (error) {
         toast.error('Erro ao autenticar');
         console.error('Erro ao obter sessão:', error);
-        return navigate('/'); // ou redirecione para página de erro
+        return navigate('/'); // fallback em caso de erro
       }
 
-      // Redirecionar para a página principal ou para onde o usuário estava
-      navigate('/');
+      // 🔁 Recupera o caminho salvo antes do login
+      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/';
+
+      sessionStorage.removeItem('redirectAfterLogin'); // limpa após redirecionar
+
+      navigate(redirectPath);
     };
 
     handleOAuthCallback();
@@ -32,4 +36,3 @@ const CallbackPage = () => {
 };
 
 export default CallbackPage;
-
