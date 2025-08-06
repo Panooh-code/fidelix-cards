@@ -18,9 +18,13 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { customerCardCode, customer_card_id, businessOwnerId, sealsToGive, notes } = await req.json()
+    const requestBody = await req.json()
+    console.log('Request body received:', JSON.stringify(requestBody, null, 2))
+    
+    const { customerCardCode, customer_card_id, businessOwnerId, sealsToGive, notes } = requestBody
 
     if ((!customerCardCode && !customer_card_id) || !businessOwnerId || sealsToGive === undefined || sealsToGive === null) {
+      console.error('Validation failed:', { customerCardCode, customer_card_id, businessOwnerId, sealsToGive })
       throw new Error('Código do cartão ou ID do cartão, ID do lojista e número de selos são obrigatórios')
     }
 

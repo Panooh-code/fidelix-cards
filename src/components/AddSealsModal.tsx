@@ -54,7 +54,7 @@ export const AddSealsModal = ({ isOpen, onClose, customer, loyaltyCard, onSucces
         body: {
           customer_card_id: customer.id,
           businessOwnerId: user.id,
-          seals_given: finalSealsAmount,
+          sealsToGive: finalSealsAmount,
           notes: notes || `Selos ${isAddingSeals ? 'adicionados' : 'removidos'} manualmente pelo lojista`,
         }
       });
