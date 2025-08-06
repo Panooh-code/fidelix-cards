@@ -19,10 +19,11 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, whatsapp?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -98,7 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, whatsapp?: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -109,13 +110,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
+            phone_number: whatsapp,
           }
         }
       });
 
       if (error) {
         console.error('Sign up error:', error);
-        toast.error(error.message);
+        if (error.message.includes('User already registered')) {
+          toast.error('Este email já está cadastrado. Tente fazer login.');
+        } else {
+          toast.error(error.message);
+        }
         return { error };
       }
 
@@ -179,6 +185,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const redirectUrl = `${window.location.origin}/auth`;
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        console.error('Reset password error:', error);
+        toast.error(error.message);
+        return { error };
+      }
+
+      toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Reset password error:', error);
+      toast.error('Erro ao enviar email de recuperação');
+      return { error };
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -205,6 +234,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         signIn,
         signInWithGoogle,
         signOut,
+        resetPassword,
         refreshProfile,
       }}
     >
