@@ -156,16 +156,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInWithGoogle = async () => {
   try {
-    const isLocalhost = window.location.hostname === 'localhost';
-    const redirectUrl = isLocalhost
-      ? 'http://localhost:3000/' // ou a rota local que você quer usar
-      : 'https://www.fidelix.app/'; // domínio público da sua app
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: redirectUrl,
-      }
+        redirectTo: 'https://www.fedelix.app/auth/callback', // ou uma rota de sua escolha
+      },
     });
 
     if (error) {
@@ -181,6 +176,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error };
   }
 };
+
 
 
 
