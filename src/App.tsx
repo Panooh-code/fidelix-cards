@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import PrivateRoute from "@/components/PrivateRoute";
 
-// Páginas
+// Apenas importamos as páginas que sabemos que existem
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WizardPage from "./pages/WizardPage";
@@ -15,10 +16,7 @@ import MyCardsPage from "./pages/MyCardsPage";
 import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
 import CustomerManagementPage from "./pages/CustomerManagementPage";
-import PublicCardPage from "./pages/PublicCardPage";
-
-// ✅ Nova página de callback do OAuth
-import CallbackPage from "./pages/callback";
+import PublicCardPage from "./pages/PublicCardPage"; // Vamos usar este como o ficheiro principal
 
 const queryClient = new QueryClient();
 
@@ -33,7 +31,6 @@ const App = () => (
               {/* Rotas Principais */}
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="/callback" element={<CallbackPage />} /> {/* ✅ NOVA ROTA */}
               <Route path="/wizard" element={<PrivateRoute><WizardPage /></PrivateRoute>} />
 
               {/* Rotas Privadas */}
@@ -41,10 +38,10 @@ const App = () => (
               <Route path="/my-cards/:cardId/customers" element={<PrivateRoute><CustomerManagementPage /></PrivateRoute>} />
               <Route path="/my-customer-cards" element={<PrivateRoute><MyCustomerCardsPage /></PrivateRoute>} />
               <Route path="/my-card/:cardCode" element={<PrivateRoute><MyCustomerCardPage /></PrivateRoute>} />
-
-              {/* Rota Pública para Cartão */}
+              
+              {/* Rota Pública ÚNICA para o cartão */}
               <Route path="/card/:publicCode" element={<PublicCardPage />} />
-
+              
               {/* Rota "Catch-all" */}
               <Route path="*" element={<NotFound />} />
             </Routes>

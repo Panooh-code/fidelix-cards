@@ -1,5 +1,3 @@
-// CAMINHO DO FICHEIRO: src/hooks/useAuth.tsx
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -45,12 +43,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .single();
 
       if (error) {
-        console.error('Erro ao buscar perfil:', error);
+        console.error('Error fetching profile:', error);
         return null;
       }
+
       return data as Profile;
     } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
+      console.error('Error fetching profile:', error);
       return null;
     }
   };
@@ -63,46 +62,68 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log(`Auth event: ${event}`);
+      (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-
-        if (currentUser) {
-          const profileData = await fetchProfile(currentUser.id);
-          setProfile(profileData);
+        setUser(session?.user ?? null);
+        
+        // Fetch profile when user logs in
+        if (session?.user) {
+          setTimeout(() => {
+            fetchProfile(session.user.id).then(setProfile);
+          }, 0);
         } else {
           setProfile(null);
         }
+        
         setLoading(false);
       }
     );
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      // Fetch profile for existing session
+      if (session?.user) {
+        fetchProfile(session.user.id).then(setProfile);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
           }
         }
       });
 
-      if (error) throw error;
-      toast.success('Conta criada com sucesso! Já pode fazer login.');
+      if (error) {
+        console.error('Sign up error:', error);
+        toast.error(error.message);
+        return { error };
+      }
+
+      toast.success('Conta criada com sucesso! Você já está logado.');
       return { error: null };
     } catch (error: any) {
-      console.error('Erro no registo:', error);
-      toast.error(error.message || 'Erro ao criar conta');
+      console.error('Sign up error:', error);
+      toast.error('Erro ao criar conta');
       return { error };
     }
   };
@@ -114,34 +135,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Sign in error:', error);
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Email ou senha incorretos');
+        } else {
+          toast.error(error.message);
+        }
+        return { error };
+      }
+
+      toast.success('Login realizado com sucesso!');
       return { error: null };
     } catch (error: any) {
-      console.error('Erro no login:', error);
-      toast.error(error.message || 'Email ou senha incorretos');
+      console.error('Sign in error:', error);
+      toast.error('Erro ao fazer login');
       return { error };
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      const currentPath = window.location.pathname;
-      sessionStorage.setItem('redirectAfterLogin', currentPath); // salva para redirecionar depois
-
-      const redirectUrl = `${window.location.origin}/callback`; // ✅ atualizado
-
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-        },
+        }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Google sign in error:', error);
+        toast.error(error.message);
+        return { error };
+      }
+
       return { error: null };
     } catch (error: any) {
-      console.error('Erro no login com Google:', error);
-      toast.error(error.message || 'Erro ao fazer login com Google');
+      console.error('Google sign in error:', error);
+      toast.error('Erro ao fazer login com Google');
       return { error };
     }
   };
@@ -149,11 +182,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      toast.success('Sessão terminada com sucesso!');
+      if (error) {
+        console.error('Sign out error:', error);
+        toast.error('Erro ao fazer logout');
+      } else {
+        toast.success('Logout realizado com sucesso!');
+      }
     } catch (error: any) {
-      console.error('Erro ao sair:', error);
-      toast.error(error.message || 'Erro ao terminar a sessão');
+      console.error('Sign out error:', error);
+      toast.error('Erro ao fazer logout');
     }
   };
 
