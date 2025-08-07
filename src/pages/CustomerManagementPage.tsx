@@ -76,6 +76,9 @@ const CustomerManagementPage = () => {
   const { cardId } = useParams<{ cardId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  
+  console.log('CustomerManagementPage - cardId:', cardId);
+  console.log('CustomerManagementPage - user:', user?.id);
   const [customers, setCustomers] = useState<CustomerCard[]>([]);
   const [loyaltyCard, setLoyaltyCard] = useState<LoyaltyCard | null>(null);
   const [loading, setLoading] = useState(true);

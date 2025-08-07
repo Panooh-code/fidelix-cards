@@ -264,7 +264,10 @@ const MyCardsPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => navigate(`/my-cards/${card.id}/customers`)}
+                        onClick={() => {
+                          console.log('Navegando para:', `/my-cards/${card.id}/customers`);
+                          navigate(`/my-cards/${card.id}/customers`);
+                        }}
                       >
                         <Users className="w-4 h-4 mr-1" />
                         Clientes
