@@ -70,7 +70,7 @@ const PublicCardPage = () => {
   // Redirect unauthenticated users to auth page
   useEffect(() => {
     if (!loading && !user && !error) {
-      const redirectUrl = encodeURIComponent(window.location.pathname);
+      const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search);
       navigate(`/auth?redirect=${redirectUrl}`);
     }
   }, [loading, user, error, navigate]);
