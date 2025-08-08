@@ -121,7 +121,7 @@ const CustomerManagementPage = () => {
         .from('customer_cards')
         .select(`
           id, card_code, customer_id, current_seals, total_rewards_earned, is_active, created_at,
-          profiles(user_id, full_name, email, phone_number, address, birth_date, is_whatsapp)
+          profiles!customer_id(full_name, email, phone_number, address, birth_date, is_whatsapp)
         `)
         .eq('loyalty_card_id', cardId)
         .eq('is_active', true);
