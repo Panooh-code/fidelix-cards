@@ -116,23 +116,63 @@ const CustomerManagementPage = () => {
 
       setLoyaltyCard(cardData);
 
-      // Buscar clientes participantes
-      const { data: customersData, error: customersError } = await supabase
+      // Buscar clientes participantes (em duas etapas para evitar problemas de JOIN e RLS)
+      const { data: rawCustomers, error: customersError } = await supabase
         .from('customer_cards')
-        .select(`
-          id, card_code, customer_id, current_seals, total_rewards_earned, is_active, created_at,
-          profiles!customer_id(full_name, email, phone_number, address, birth_date, is_whatsapp)
-        `)
+        .select(
+          'id, card_code, customer_id, current_seals, total_rewards_earned, is_active, created_at'
+        )
         .eq('loyalty_card_id', cardId)
         .eq('is_active', true);
 
       if (customersError) {
         console.error('Erro ao buscar clientes:', customersError);
         toast.error('Erro ao carregar clientes');
-        return;
-      }
+        setCustomers([]);
+      } else {
+        const customerIds = Array.from(
+          new Set((rawCustomers || []).map((c) => c.customer_id).filter(Boolean))
+        );
 
-      setCustomers(customersData || []);
+        let profilesByUserId: Record<string, CustomerCard['profiles']> = {};
+
+        if (customerIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select(
+              'user_id, full_name, email, phone_number, address, birth_date, is_whatsapp'
+            )
+            .in('user_id', customerIds);
+
+          if (profilesError) {
+            console.error('Erro ao buscar perfis dos clientes:', profilesError);
+            toast.error('Erro ao carregar perfis dos clientes');
+          } else if (profilesData) {
+            profilesByUserId = profilesData.reduce((acc, p) => {
+              acc[p.user_id as string] = {
+                full_name: p.full_name,
+                email: p.email,
+                phone_number: p.phone_number || undefined,
+                address: p.address || undefined,
+                birth_date: p.birth_date || undefined,
+                is_whatsapp: p.is_whatsapp || undefined,
+              };
+              return acc;
+            }, {} as Record<string, CustomerCard['profiles']>);
+          }
+        }
+
+        const mergedCustomers: CustomerCard[] = (rawCustomers || []).map((c) => ({
+          ...c,
+          profiles:
+            profilesByUserId[c.customer_id] || ({
+              full_name: 'Cliente',
+              email: '—',
+            } as CustomerCard['profiles']),
+        }));
+
+        setCustomers(mergedCustomers);
+      }
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
       toast.error('Erro ao carregar dados');
