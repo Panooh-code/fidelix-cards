@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, RotateCcw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { CardPreview, CardData } from '@/components/wizard/CardPreview';
@@ -20,6 +20,7 @@ const PublicCardPage = () => {
   const [card, setCard] = useState<LoyaltyCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
 
   useEffect(() => {
     const fetchAndCheckData = async () => {
@@ -149,8 +150,15 @@ const cardData: CardData = {
           </p>
         </div>
 
-        <div className="flex justify-center mb-8">
-          <CardPreview cardData={cardData} size="md" />
+        <div className="flex flex-col items-center mb-8 space-y-4">
+          <CardPreview cardData={cardData} size="md" isFlipped={isCardFlipped} />
+          <button
+            onClick={() => setIsCardFlipped(!isCardFlipped)}
+            className="flex items-center gap-2 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full transition-colors shadow-sm backdrop-blur-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Girar cartão
+          </button>
         </div>
         
         <OneClickAdhesionBox

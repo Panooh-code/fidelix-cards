@@ -27,6 +27,7 @@ export interface CardPreviewProps {
   cardData: CardData;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  isFlipped?: boolean;
 }
 
 // Função para detectar se a cor é clara ou escura
@@ -39,15 +40,16 @@ const isLightColor = (color: string) => {
   return brightness > 128;
 };
 
-export const CardPreview = ({ cardData, className = "", size = "md" }: CardPreviewProps) => {
-  const [isFlipped, setIsFlipped] = useState(true);
+export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: externalIsFlipped }: CardPreviewProps) => {
+  const [internalIsFlipped, setInternalIsFlipped] = useState(true);
+  const isFlipped = externalIsFlipped !== undefined ? externalIsFlipped : internalIsFlipped;
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
 
   // Listen for flip events from wizard questions
   useEffect(() => {
-    const handleFlipToSeals = () => setIsFlipped(false);
-    const handleFlipToQR = () => setIsFlipped(true);
+    const handleFlipToSeals = () => setInternalIsFlipped(false);
+    const handleFlipToQR = () => setInternalIsFlipped(true);
     
     window.addEventListener('flipCardToSeals', handleFlipToSeals);
     window.addEventListener('flipCardToQR', handleFlipToQR);
@@ -391,16 +393,6 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
         </div>
       </div>
 
-      {/* Botão Discreto para Girar */}
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => setIsFlipped(!isFlipped)}
-          className="flex items-center gap-2 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-full transition-colors shadow-sm"
-        >
-          <RotateCcw className="w-4 h-4" />
-          Girar cartão
-        </button>
-      </div>
 
       {/* Popup de Contato */}
       {showContactPopup && (
