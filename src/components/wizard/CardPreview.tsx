@@ -20,6 +20,7 @@ export interface CardData {
   sealCount: number;
   sealShape: 'star' | 'circle' | 'square' | 'heart';
   instructions?: string;
+  qrCodeUrl?: string;
 }
 
 export interface CardPreviewProps {
@@ -364,8 +365,8 @@ export const CardPreview = ({ cardData, className = "", size = "md" }: CardPrevi
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center paper-qr-effect backdrop-blur-sm aspect-square p-2">
                     <img 
-                      src="https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png" 
-                      alt="QR Code" 
+                      src={cardData.qrCodeUrl || "https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png"}
+                      alt="QR Code do programa de fidelidade"
                       className="w-full h-full object-contain rounded-lg"
                     />
                   </div>

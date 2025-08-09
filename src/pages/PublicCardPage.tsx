@@ -11,7 +11,7 @@ import { CardPreview, CardData } from '@/components/wizard/CardPreview';
 import { OneClickAdhesionBox } from '@/components/OneClickAdhesionBox';
 import { toast } from 'sonner';
 
-interface LoyaltyCard { id: string; business_name: string; reward_description: string; logo_url: string; primary_color: string; background_color: string; background_pattern: string; seal_shape: string; seal_count: number; instructions: string; business_phone: string; business_email: string; }
+interface LoyaltyCard { id: string; business_name: string; reward_description: string; logo_url: string; primary_color: string; background_color: string; background_pattern: string; seal_shape: string; seal_count: number; instructions: string; business_phone: string; business_email: string; public_code?: string; qr_code_url?: string; business_address?: string; social_network?: string; is_whatsapp?: boolean; client_code?: string; }
 
 const PublicCardPage = () => {
   const { publicCode } = useParams<{ publicCode: string }>();
@@ -115,20 +115,24 @@ const PublicCardPage = () => {
     );
   }
 
-  const cardData: CardData = { 
-    logo_url: card.logo_url, 
-    business_name: card.business_name, 
-    reward_description: card.reward_description, 
-    primary_color: card.primary_color, 
-    backgroundColor: card.background_color, 
-    pattern: card.background_pattern as any, 
-    clientCode: '', 
-    phone: card.business_phone, 
-    email: card.business_email, 
-    sealCount: card.seal_count, 
-    sealShape: card.seal_shape as any, 
-    instructions: card.instructions 
-  };
+const cardData: CardData = { 
+  logo_url: card.logo_url, 
+  business_name: card.business_name, 
+  reward_description: card.reward_description, 
+  primary_color: card.primary_color, 
+  backgroundColor: card.background_color, 
+  pattern: card.background_pattern as any, 
+  clientCode: (card.public_code || card.client_code || ''), 
+  phone: card.business_phone, 
+  email: card.business_email, 
+  address: (card as any).business_address, 
+  socialNetwork: (card as any).social_network, 
+  whatsapp: card.is_whatsapp ? card.business_phone : undefined,
+  sealCount: card.seal_count, 
+  sealShape: card.seal_shape as any, 
+  instructions: card.instructions,
+  qrCodeUrl: card.qr_code_url || undefined,
+};
 
   return (
     <div className="min-h-screen bg-gradient-hero-new py-12">
@@ -143,6 +147,10 @@ const PublicCardPage = () => {
           <p className="text-white/80">
             Adira ao programa de fidelidade com apenas um clique
           </p>
+        </div>
+
+        <div className="flex justify-center mb-8">
+          <CardPreview cardData={cardData} size="md" />
         </div>
         
         <OneClickAdhesionBox
