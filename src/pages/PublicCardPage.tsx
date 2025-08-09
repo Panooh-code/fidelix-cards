@@ -159,6 +159,7 @@ const cardData: CardData = {
           businessName={card.business_name}
           onSuccess={handleAdhesionSuccess}
           userId={user.id}
+          showCardPreview={false}
         />
       </main>
     </div>

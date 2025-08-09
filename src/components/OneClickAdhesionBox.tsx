@@ -14,6 +14,7 @@ interface OneClickAdhesionBoxProps {
   businessName: string;
   onSuccess: () => void;
   userId: string;
+  showCardPreview?: boolean;
 }
 
 export const OneClickAdhesionBox = ({ 
@@ -21,7 +22,8 @@ export const OneClickAdhesionBox = ({
   publicCode, 
   businessName, 
   onSuccess, 
-  userId 
+  userId, 
+  showCardPreview = true,
 }: OneClickAdhesionBoxProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -57,8 +59,10 @@ export const OneClickAdhesionBox = ({
 
   return (
     <div className="max-w-md mx-auto space-y-6">
-      {/* Card Preview */}
-      <CardPreview cardData={cardData} size="lg" className="shadow-elegant" />
+      {/* Card Preview (optional) */}
+      {showCardPreview && (
+        <CardPreview cardData={cardData} size="lg" className="shadow-elegant" />
+      )}
       
       {/* Adhesion Box */}
       <Card className="bg-white/95 backdrop-blur-lg border-primary/20">
