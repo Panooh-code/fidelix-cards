@@ -203,11 +203,15 @@ const MyCustomerCardPage = () => {
     phone: cardInfo.loyaltyCard.businessPhone,
     email: cardInfo.loyaltyCard.businessEmail,
     address: cardInfo.loyaltyCard.businessAddress,
+    whatsapp: cardInfo.loyaltyCard.isWhatsapp ? cardInfo.loyaltyCard.businessPhone : undefined,
     socialNetwork: cardInfo.loyaltyCard.socialNetwork,
     sealCount: cardInfo.loyaltyCard.sealCount,
     sealShape: cardInfo.loyaltyCard.sealShape as any,
     instructions: cardInfo.loyaltyCard.instructions,
+    qrCodeUrl: cardInfo.qrCodeUrl,
   };
+
+  console.log('CardData para MyCustomerCardPage:', cardData);
 
   const progressPercentage = (cardInfo.currentSeals / cardInfo.loyaltyCard.sealCount) * 100;
   const sealsRemaining = cardInfo.loyaltyCard.sealCount - cardInfo.currentSeals;
