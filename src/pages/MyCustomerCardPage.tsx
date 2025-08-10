@@ -211,7 +211,13 @@ const MyCustomerCardPage = () => {
     qrCodeUrl: cardInfo.qrCodeUrl,
   };
 
-  console.log('CardData para MyCustomerCardPage:', cardData);
+  // Debug: verificar se os dados estão corretos
+  useEffect(() => {
+    if (cardInfo) {
+      console.log('CardInfo completo:', cardInfo);
+      console.log('CardData montado:', cardData);
+    }
+  }, [cardInfo]);
 
   const progressPercentage = (cardInfo.currentSeals / cardInfo.loyaltyCard.sealCount) * 100;
   const sealsRemaining = cardInfo.loyaltyCard.sealCount - cardInfo.currentSeals;
