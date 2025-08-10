@@ -310,89 +310,36 @@ const MyCustomerCardPage = () => {
             </CardContent>
           </Card>
 
-          {/* Card Preview with Rotation */}
+          {/* Meu Cartão */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="w-5 h-5" />
-                  Meu Cartão
-                </CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5" />
+                Meu Cartão
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-center space-y-4">
+                <CardPreview 
+                  cardData={{
+                    ...cardData,
+                    qrCodeUrl: cardInfo.qrCodeUrl,
+                    clientCode: cardInfo.cardCode
+                  }} 
+                  size="lg"
+                  isFlipped={isFlipped}
+                  showFlipButton={false}
+                />
+                
                 <Button 
                   onClick={() => setIsFlipped(!isFlipped)}
                   variant="outline"
                   size="sm"
+                  className="flex items-center gap-2"
                 >
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Girar
+                  <RotateCcw className="w-4 h-4" />
+                  Girar cartão
                 </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-center">
-                <div 
-                  className="relative w-full max-w-sm h-64"
-                  style={{ perspective: '1000px' }}
-                >
-                  <div 
-                    className={`relative w-full h-full transition-transform duration-700 ${
-                      isFlipped ? 'rotate-y-180' : ''
-                    }`}
-                    style={{ transformStyle: 'preserve-3d' }}
-                  >
-                    {/* Front of Card */}
-                    <div 
-                      className="absolute inset-0"
-                      style={{ backfaceVisibility: 'hidden' }}
-                    >
-                      <CardPreview 
-                        cardData={cardData} 
-                        size="lg"
-                        className="w-full h-full"
-                      />
-                    </div>
-                    
-                    {/* Back of Card with Business Info */}
-                    <div 
-                      className="absolute inset-0 rotate-y-180"
-                      style={{ backfaceVisibility: 'hidden' }}
-                    >
-                      <Card className="w-full h-full">
-                        <CardContent className="p-6 h-full flex flex-col justify-center space-y-3">
-                          <div className="text-center mb-3">
-                            <h3 className="font-bold text-base">Informações do Estabelecimento</h3>
-                          </div>
-                          <div className="space-y-3 text-sm">
-                            <div className="flex items-center gap-2">
-                              <Info className="w-4 h-4 text-muted-foreground" />
-                              <span>{cardInfo.loyaltyCard.businessSegment}</span>
-                            </div>
-                            {cardInfo.loyaltyCard.businessAddress && (
-                              <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-xs">{cardInfo.loyaltyCard.businessAddress}</span>
-                              </div>
-                            )}
-                            <div className="flex items-center gap-2">
-                              <Phone className="w-4 h-4 text-muted-foreground" />
-                              <span>{cardInfo.loyaltyCard.businessPhone}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Mail className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-xs">{cardInfo.loyaltyCard.businessEmail}</span>
-                            </div>
-                            {cardInfo.loyaltyCard.socialNetwork && (
-                              <div className="flex items-center gap-2">
-                                <Globe className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-xs">{cardInfo.loyaltyCard.socialNetwork}</span>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>
