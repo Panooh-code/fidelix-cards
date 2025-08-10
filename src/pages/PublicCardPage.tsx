@@ -151,7 +151,7 @@ const cardData: CardData = {
         </div>
 
         <div className="flex flex-col items-center mb-8 space-y-4">
-          <CardPreview cardData={cardData} size="md" isFlipped={isCardFlipped} />
+          <CardPreview cardData={cardData} size="md" isFlipped={isCardFlipped} showFlipButton={false} />
           <button
             onClick={() => setIsCardFlipped(!isCardFlipped)}
             className="flex items-center gap-2 px-4 py-2 text-sm bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-full transition-colors shadow-sm backdrop-blur-sm"
