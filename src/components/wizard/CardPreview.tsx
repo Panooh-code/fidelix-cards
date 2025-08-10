@@ -206,10 +206,6 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
     }
   };
 
-  // Debug: verificar se o componente está sendo renderizado
-  console.log('CardPreview renderizando com cardData:', cardData);
-  console.log('CardPreview props:', { size, isFlipped, showFlipButton });
-
   return (
     <>
       <div className={cn("perspective-1000", className)}>
