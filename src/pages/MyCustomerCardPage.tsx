@@ -65,20 +65,31 @@ const MyCustomerCardPage = () => {
 
   const fetchCardInfo = async () => {
     try {
-      // First get the customer card
+      console.log('Fetching card info for cardCode:', cardCode, 'user:', user?.id);
+      
+      // First get the customer card with a simpler query to debug
       const { data: customerCard, error: cardError } = await supabase
         .from('customer_cards')
         .select(`
           *,
-          loyalty_cards!inner(*)
+          loyalty_cards(*)
         `)
         .eq('card_code', cardCode)
         .eq('customer_id', user?.id)
-        .single();
+        .maybeSingle();
+
+      console.log('Customer card query result:', { customerCard, cardError });
 
       if (cardError) {
         console.error('Error fetching customer card:', cardError);
+        console.log('Query details - cardCode:', cardCode, 'user.id:', user?.id);
         setError('Cartão não encontrado ou você não tem permissão para visualizá-lo');
+        return;
+      }
+
+      if (!customerCard) {
+        console.error('No customer card data returned');
+        setError('Cartão não encontrado');
         return;
       }
 

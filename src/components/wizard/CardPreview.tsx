@@ -48,6 +48,8 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
 
+  console.log('CardPreview rendering with cardData:', cardData, 'isFlipped:', isFlipped);
+
   // Listen for flip events from wizard questions
   useEffect(() => {
     const handleFlipToSeals = () => setInternalIsFlipped(false);
