@@ -21,6 +21,7 @@ export interface CardData {
   sealShape: 'star' | 'circle' | 'square' | 'heart';
   instructions?: string;
   qrCodeUrl?: string;
+  currentSeals?: number;
 }
 
 export interface CardPreviewProps {
@@ -78,7 +79,7 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
   };
 
   const renderSeals = () => {
-    const { sealCount, sealShape } = cardData;
+    const { sealCount, sealShape, currentSeals = 0 } = cardData;
     const seals = [];
     const { cols, rows } = getOptimalGrid(sealCount);
     
@@ -88,6 +89,7 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
     
     for (let i = 0; i < sealCount; i++) {
       const isFirst = i === 0;
+      const isFilled = i < currentSeals;
       
       seals.push(
         <div key={i} className="flex justify-center">
@@ -96,12 +98,12 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
               sealSize,
               "relative rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg",
               "paper-seal-effect backdrop-blur-sm",
-              isFirst 
+              isFilled 
                 ? "border-current bg-white/95 shadow-lg" 
                 : "border-white/30 bg-white/20 cursor-pointer"
             )}
             style={{ 
-              borderColor: isFirst ? cardData.primary_color : undefined,
+              borderColor: isFilled ? cardData.primary_color : undefined,
               color: cardData.primary_color 
             }}
             onClick={(e) => handleSealClick(e, i)}
@@ -113,17 +115,17 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
                 className="w-full h-full rounded-full object-cover"
               />
             ) : sealShape === 'star' ? (
-              <Star className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+              <Star className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
             ) : sealShape === 'heart' ? (
-              <Heart className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+              <Heart className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
             ) : sealShape === 'square' ? (
-              <Square className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+              <Square className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
             ) : (
-              <Circle className={cn(iconSize, isFirst ? "text-current" : "text-white/90", "fill-current")} />
+              <Circle className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
             )}
-            {!isFirst && (
+            {!isFilled && (
               <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white/60">
-                {i}
+                {i + 1}
               </span>
             )}
           </div>

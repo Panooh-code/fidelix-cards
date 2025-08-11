@@ -209,6 +209,7 @@ const MyCustomerCardPage = () => {
     sealShape: cardInfo.loyaltyCard.sealShape as any,
     instructions: cardInfo.loyaltyCard.instructions,
     qrCodeUrl: cardInfo.qrCodeUrl,
+    currentSeals: cardInfo.currentSeals,
   };
 
   console.log('CardData para MyCustomerCardPage:', cardData);

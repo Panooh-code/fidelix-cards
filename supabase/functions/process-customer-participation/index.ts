@@ -31,7 +31,7 @@ serve(async (req) => {
     // Buscar o cartão de fidelidade
     const { data: loyaltyCard, error: cardError } = await supabaseClient
       .from('loyalty_cards')
-      .select('id, business_name, is_active')
+      .select('id, business_name, is_active, user_id')
       .eq('public_code', publicCode)
       .single()
 
@@ -106,20 +106,36 @@ serve(async (req) => {
       throw new Error('Erro ao registrar participação')
     }
 
-    // Criar cartão do cliente
+    // Criar cartão do cliente com primeiro selo
     const { data: customerCard, error: customerCardError } = await supabaseClient
       .from('customer_cards')
       .insert({
         loyalty_card_id: loyaltyCard.id,
         customer_id: customerId,
         card_code: customerCardCode,
-        qr_code_url: customerQrCodeUrl
+        qr_code_url: customerQrCodeUrl,
+        current_seals: 1
       })
       .select()
       .single()
 
     if (customerCardError) {
       throw new Error('Erro ao criar seu cartão de fidelidade')
+    }
+
+    // Criar transação do primeiro selo
+    const { error: transactionError } = await supabaseClient
+      .from('seal_transactions')
+      .insert({
+        customer_card_id: customerCard.id,
+        business_owner_id: loyaltyCard.user_id,
+        seals_given: 1,
+        notes: 'Primeiro selo - Boas-vindas!'
+      })
+
+    if (transactionError) {
+      console.error('Error creating welcome transaction:', transactionError)
+      // Não falha a operação se não conseguir criar a transação
     }
 
     // Atualizar número de telefone no perfil se fornecido

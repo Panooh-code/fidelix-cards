@@ -36,7 +36,7 @@ export const OneClickAdhesionBox = ({
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.functions.invoke('process-customer-participation', {
+      const { data, error } = await supabase.functions.invoke('process-customer-participation', {
         body: { 
           publicCode: publicCode, 
           customerId: userId, 
@@ -48,8 +48,14 @@ export const OneClickAdhesionBox = ({
         throw new Error("A função de adesão falhou: " + error.message);
       }
 
-      toast.success(`Parabéns! Já faz parte do cartão fidelidade ${businessName}!`);
-      onSuccess();
+      toast.success(`Parabéns! Já faz parte do cartão fidelidade ${businessName}! Você ganhou seu primeiro selo!`);
+      
+      // Redirecionar para a página do cartão do cliente
+      if (data?.customerCard?.cardCode) {
+        window.location.href = `/my-card/${data.customerCard.cardCode}`;
+      } else {
+        onSuccess();
+      }
     } catch (err: any) {
       toast.error(err.message || "Ocorreu um erro desconhecido.");
     } finally {
