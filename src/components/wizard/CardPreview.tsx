@@ -48,7 +48,7 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRulesPopup, setShowRulesPopup] = useState(false);
 
-  console.log('CardPreview rendering with cardData:', cardData, 'isFlipped:', isFlipped);
+  
 
   // Listen for flip events from wizard questions
   useEffect(() => {
@@ -189,7 +189,7 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
   const sizeConfig = {
     sm: { width: 'w-60', height: 'h-60', padding: 'p-4', textSizes: { title: 'text-base', subtitle: 'text-xs', body: 'text-xs' } },
     md: { width: 'w-72', height: 'h-72', padding: 'p-6', textSizes: { title: 'text-lg', subtitle: 'text-sm', body: 'text-sm' } },
-    lg: { width: 'w-84', height: 'h-84', padding: 'p-8', textSizes: { title: 'text-xl', subtitle: 'text-base', body: 'text-base' } }
+    lg: { width: 'w-80', height: 'h-80', padding: 'p-8', textSizes: { title: 'text-xl', subtitle: 'text-base', body: 'text-base' } }
   };
 
   const currentSize = sizeConfig[size];
@@ -218,6 +218,7 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
             "relative transition-transform duration-700 transform-style-preserve-3d",
             currentSize.width,
             currentSize.height,
+            'aspect-square',
             isFlipped ? 'rotate-y-180' : ''
           )}
         >
