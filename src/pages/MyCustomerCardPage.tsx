@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 interface CustomerCardInfo {
   cardCode: string;
   qrCodeUrl: string;
+  customerCardId: string;
   currentSeals: number;
   totalRewardsEarned: number;
   isActive: boolean;
@@ -61,7 +62,25 @@ const MyCustomerCardPage = () => {
     if (user && cardCode) {
       fetchCardInfo();
     }
-  }, [user, authLoading, cardCode, navigate]);
+}, [user, authLoading, cardCode, navigate]);
+
+  // Realtime updates for this card (seals and transactions)
+  useEffect(() => {
+    if (!cardInfo?.customerCardId) return;
+    const channel = supabase
+      .channel(`my-card-${cardInfo.customerCardId}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'customer_cards', filter: `id=eq.${cardInfo.customerCardId}` }, () => {
+        fetchCardInfo();
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'seal_transactions', filter: `customer_card_id=eq.${cardInfo.customerCardId}` }, () => {
+        fetchCardInfo();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [cardInfo?.customerCardId]);
 
   const fetchCardInfo = async () => {
     try {
@@ -108,9 +127,10 @@ const MyCustomerCardPage = () => {
 
       const loyaltyCard = customerCard.loyalty_cards;
       
-      setCardInfo({
+setCardInfo({
         cardCode: customerCard.card_code,
         qrCodeUrl: customerCard.qr_code_url,
+        customerCardId: customerCard.id,
         currentSeals: customerCard.current_seals,
         totalRewardsEarned: customerCard.total_rewards_earned,
         isActive: customerCard.is_active,
@@ -345,6 +365,7 @@ const MyCustomerCardPage = () => {
                   size="lg"
                   isFlipped={isFlipped}
                   showFlipButton={false}
+                  sealStyle="logo"
                 />
                 
                 <Button 
