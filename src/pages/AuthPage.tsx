@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft } from 'lucide-react';
 import { formatPhoneNumber } from '@/utils/phoneMask';
 import { toast } from 'sonner';
+import Logo from '@/components/Logo';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -132,7 +133,11 @@ export default function AuthPage() {
 
   if (isResetPassword) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero p-4">
+        {/* Logo centralizado */}
+        <div className="mb-8">
+          <Logo className="h-12 w-auto" />
+        </div>
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="space-y-4 text-center">
             <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -185,7 +190,11 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero p-4">
+      {/* Logo centralizado */}
+      <div className="mb-8">
+        <Logo className="h-12 w-auto" />
+      </div>
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="space-y-4 text-center">
           <div>

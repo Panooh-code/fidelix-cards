@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRoles } from "@/hooks/useUserRoles";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, LogOut, Store, Gift, ChevronDown } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, User, LogOut, Store, Gift, ChevronDown, Plus } from "lucide-react";
 import Logo from "@/components/Logo";
 import ThemeToggle from "@/components/ThemeToggle";
 import {
@@ -17,6 +17,10 @@ const MinimalHeader = () => {
   const { user, signOut } = useAuth();
   const { canAccessMerchantArea, canAccessCustomerArea, firstName } = useUserRoles();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Show CTA button on /my-cards page
+  const showCTA = location.pathname === '/my-cards';
 
   const handleGoBack = () => {
     if (window.history.length > 1) {
@@ -43,7 +47,7 @@ const MinimalHeader = () => {
             <Logo className="h-7 w-auto" />
           </a>
 
-          {/* Desktop: Back Button + User Menu */}
+          {/* Desktop: Back Button + CTA + User Menu */}
           <div className="hidden lg:flex items-center gap-4">
             <Button
               variant="ghost"
@@ -54,6 +58,17 @@ const MinimalHeader = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Voltar
             </Button>
+
+            {showCTA && (
+              <Button 
+                onClick={() => navigate('/wizard')}
+                variant="hero"
+                size="sm"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Novo Cartão
+              </Button>
+            )}
 
             {user ? (
               <DropdownMenu>
@@ -107,7 +122,7 @@ const MinimalHeader = () => {
             )}
           </div>
 
-          {/* Mobile: Back Button + User Menu */}
+          {/* Mobile: Back Button + CTA + User Menu */}
           <div className="flex lg:hidden items-center gap-2">
             <Button
               variant="ghost"
@@ -117,6 +132,18 @@ const MinimalHeader = () => {
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
+
+            {showCTA && (
+              <Button 
+                onClick={() => navigate('/wizard')}
+                variant="hero"
+                size="sm"
+                className="px-3"
+              >
+                <Plus className="w-4 h-4" />
+                <span className="hidden xs:inline ml-2">Novo Cartão</span>
+              </Button>
+            )}
 
             {user ? (
               <DropdownMenu>

@@ -131,44 +131,6 @@ const MyCardsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </Button>
-              <div className="flex items-center gap-3">
-                <img 
-                  src={imageUrls.logoIcon} 
-                  alt="Fidelix mascote" 
-                  className="w-8 h-8"
-                />
-                <img 
-                  src={imageUrls.logoText} 
-                  alt="Fidelix" 
-                  className="h-6"
-                />
-              </div>
-            </div>
-            
-            <Button 
-              onClick={() => navigate('/wizard')}
-              variant="hero"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Novo Cartão
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="space-y-6">
