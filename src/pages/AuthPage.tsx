@@ -134,12 +134,21 @@ export default function AuthPage() {
   if (isResetPassword) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero p-4">
-        {/* Logo centralizado */}
-        <div className="mb-8">
-          <Logo className="h-12 w-auto" />
+        {/* Logo branco centralizado */}
+        <div className="mb-6">
+          <img
+            className="h-10 w-auto"
+            src="https://i.imgur.com/ZaW7mB9.png"
+            alt="Logo do Fidelix"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = 'https://placehold.co/150x40/FFFFFF/1E1B4B?text=Fidelix';
+            }}
+          />
         </div>
         <Card className="w-full max-w-md shadow-xl">
-          <CardHeader className="space-y-4 text-center">
+          <CardHeader className="space-y-2 text-center pb-4">
             <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
               <Mail className="w-6 h-6 text-primary" />
             </div>
@@ -150,8 +159,8 @@ export default function AuthPage() {
               </CardDescription>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div className="space-y-2">
                 <Label htmlFor="reset-email">Email</Label>
                 <div className="relative">
@@ -191,17 +200,26 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero p-4">
-      {/* Logo centralizado */}
-      <div className="mb-8">
-        <Logo className="h-12 w-auto" />
+      {/* Logo branco centralizado */}
+      <div className="mb-6">
+        <img
+          className="h-10 w-auto"
+          src="https://i.imgur.com/ZaW7mB9.png"
+          alt="Logo do Fidelix"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = 'https://placehold.co/150x40/FFFFFF/1E1B4B?text=Fidelix';
+          }}
+        />
       </div>
       <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="space-y-4 text-center">
+        <CardHeader className="space-y-2 text-center pb-4">
           <div>
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-xl">
               {isLogin ? 'Bem-vindo de volta' : 'Criar conta'}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm">
               {isLogin 
                 ? 'Entre na sua conta para continuar' 
                 : 'Crie sua conta para começar'
@@ -209,12 +227,12 @@ export default function AuthPage() {
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           {/* Google Login Button */}
           <Button
             type="button"
             variant="outline"
-            className="w-full h-12 text-base font-medium"
+            className="w-full h-10 text-sm font-medium"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
@@ -249,7 +267,7 @@ export default function AuthPage() {
           </div>
 
           {/* Email/Password Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {!isLogin && (
               <div className="space-y-2">
                 <Label htmlFor="fullName">Nome completo</Label>
@@ -347,7 +365,7 @@ export default function AuthPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
+            <Button type="submit" className="w-full h-10 text-sm font-medium" disabled={isLoading}>
               {isLoading 
                 ? 'Carregando...' 
                 : isLogin 

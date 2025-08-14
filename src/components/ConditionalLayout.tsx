@@ -12,8 +12,7 @@ const ConditionalLayout: React.FC<ConditionalLayoutProps> = ({ children }) => {
   const showMinimalHeader = [
     '/wizard',
     '/my-cards',
-    '/my-customer-cards', 
-    '/auth'
+    '/my-customer-cards'
   ].some(route => location.pathname.startsWith(route)) ||
   // Dynamic routes patterns
   /^\/my-card\//.test(location.pathname) ||  // /my-card/:cardCode
