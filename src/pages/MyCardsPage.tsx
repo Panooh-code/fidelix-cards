@@ -169,7 +169,7 @@ const MyCardsPage = () => {
                 <Card key={card.id} className="group hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-3">
                     {/* Card Preview */}
-                    <div className="flex justify-center mb-4 h-48">
+                    <div className="flex justify-center mb-4">
                       <CardPreviewThumbnail card={card} />
                     </div>
                     

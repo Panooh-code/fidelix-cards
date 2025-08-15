@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { CardPreview, CardData } from './wizard/CardPreview';
+import { RotateCcw } from 'lucide-react';
 
 interface CardPreviewThumbnailProps {
   card: {
@@ -18,10 +20,13 @@ interface CardPreviewThumbnailProps {
     business_address?: string;
     social_network?: string;
     instructions?: string;
+    qr_code_url?: string;
   };
 }
 
 export const CardPreviewThumbnail = ({ card }: CardPreviewThumbnailProps) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const cardData: CardData = {
     logo_url: card.logo_url,
     business_name: card.business_name,
@@ -37,11 +42,21 @@ export const CardPreviewThumbnail = ({ card }: CardPreviewThumbnailProps) => {
     sealCount: card.seal_count,
     sealShape: card.seal_shape as 'star' | 'circle' | 'square' | 'heart',
     instructions: card.instructions,
+    qrCodeUrl: card.qr_code_url,
   };
 
   return (
-    <div className="w-48 h-48 flex items-center justify-center overflow-visible">
-      <CardPreview cardData={cardData} size="sm" />
+    <div className="flex flex-col items-center space-y-3">
+      <div className="w-72 h-72 flex items-center justify-center">
+        <CardPreview cardData={cardData} size="md" isFlipped={isFlipped} showFlipButton={false} />
+      </div>
+      <button
+        onClick={() => setIsFlipped(!isFlipped)}
+        className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 text-muted-foreground border border-border rounded-full transition-colors shadow-sm"
+      >
+        <RotateCcw className="w-3 h-3" />
+        Girar cartão
+      </button>
     </div>
   );
 };
