@@ -250,44 +250,6 @@ setCardInfo({
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/my-customer-cards')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar
-              </Button>
-              <div className="flex items-center gap-3">
-                <img 
-                  src={imageUrls.logoIcon} 
-                  alt="Fidelix mascote" 
-                  className="w-8 h-8"
-                />
-                <img 
-                  src={imageUrls.logoText} 
-                  alt="Fidelix" 
-                  className="h-6"
-                />
-              </div>
-            </div>
-            
-            <Button 
-              onClick={handleShareCard}
-              variant="outline"
-              size="sm"
-            >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Compartilhar
-            </Button>
-          </div>
-        </div>
-      </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
@@ -355,28 +317,28 @@ setCardInfo({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center space-y-4">
-                <CardPreview 
-                  cardData={{
-                    ...cardData,
-                    qrCodeUrl: cardInfo.qrCodeUrl,
-                    clientCode: cardInfo.cardCode
-                  }} 
-                  size="lg"
-                  isFlipped={isFlipped}
-                  showFlipButton={false}
-                  sealStyle="logo"
-                />
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-72 h-72 flex items-center justify-center">
+                  <CardPreview 
+                    cardData={{
+                      ...cardData,
+                      qrCodeUrl: cardInfo.qrCodeUrl,
+                      clientCode: cardInfo.cardCode
+                    }} 
+                    size="md"
+                    isFlipped={isFlipped}
+                    showFlipButton={false}
+                    sealStyle="logo"
+                  />
+                </div>
                 
-                <Button 
+                <button
                   onClick={() => setIsFlipped(!isFlipped)}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs bg-muted hover:bg-muted/80 text-muted-foreground border border-border rounded-full transition-colors shadow-sm"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3 h-3" />
                   Girar cartão
-                </Button>
+                </button>
               </div>
             </CardContent>
           </Card>
