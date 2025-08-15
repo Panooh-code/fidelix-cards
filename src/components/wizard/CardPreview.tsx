@@ -200,7 +200,7 @@ const renderSeals = () => {
 
   // Configurações de tamanho
   const sizeConfig = {
-    sm: { width: 'w-60', height: 'h-60', padding: 'p-4', textSizes: { title: 'text-base', subtitle: 'text-xs', body: 'text-xs' } },
+    sm: { width: 'w-48', height: 'h-48', padding: 'p-3', textSizes: { title: 'text-sm', subtitle: 'text-xs', body: 'text-xs' } },
     md: { width: 'w-72', height: 'h-72', padding: 'p-6', textSizes: { title: 'text-lg', subtitle: 'text-sm', body: 'text-sm' } },
     lg: { width: 'w-80', height: 'h-80', padding: 'p-8', textSizes: { title: 'text-xl', subtitle: 'text-base', body: 'text-base' } }
   };
@@ -247,21 +247,27 @@ const renderSeals = () => {
             <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
               {/* Header - Logo e Textos */}
               <div className="flex items-start gap-3 mb-4">
-                {/* Logo no canto superior esquerdo */}
+                 {/* Logo no canto superior esquerdo */}
                 <div className="flex-shrink-0">
                   {cardData.logo_url ? (
                     <img 
                       src={cardData.logo_url} 
                       alt="Logo" 
-                      className="w-12 h-12 rounded-full object-cover border-3 shadow-card-elegant"
+                      className={cn(
+                        "rounded-full object-cover border-2 shadow-card-elegant",
+                        size === 'sm' ? 'w-8 h-8' : 'w-12 h-12'
+                      )}
                       style={{ borderColor: cardData.primary_color }}
                     />
                   ) : (
                     <div 
-                      className="w-12 h-12 rounded-full flex items-center justify-center border-3 shadow-card-elegant bg-white/10"
+                      className={cn(
+                        "rounded-full flex items-center justify-center border-2 shadow-card-elegant bg-white/10",
+                        size === 'sm' ? 'w-8 h-8' : 'w-12 h-12'
+                      )}
                       style={{ borderColor: cardData.primary_color }}
                     >
-                      <Building2 className={cn("w-6 h-6", textColor)} />
+                      <Building2 className={cn(size === 'sm' ? 'w-4 h-4' : 'w-6 h-6', textColor)} />
                     </div>
                   )}
                 </div>
@@ -277,9 +283,9 @@ const renderSeals = () => {
                 </div>
               </div>
 
-              {/* Grid de Selos - Centralizado */}
+               {/* Grid de Selos - Centralizado */}
               <div className="flex-1 flex items-center justify-center">
-                <div className="w-full max-w-[200px]">
+                <div className={cn("w-full", size === 'sm' ? 'max-w-[140px]' : 'max-w-[200px]')}>
                   {renderSeals()}
                 </div>
               </div>
@@ -318,22 +324,35 @@ const renderSeals = () => {
           >
             <div className={cn("h-full flex flex-col relative", currentSize.padding)}>
               {/* Logo Bem Centralizado */}
-              <div className="flex justify-center mb-3">
+              <div className={cn("flex justify-center", size === 'sm' ? 'mb-2' : 'mb-3')}>
                 {cardData.logo_url ? (
                   <img 
                     src={cardData.logo_url} 
                     alt="Logo" 
-                    className="w-20 h-20 rounded-full object-cover border-4 border-white/50 shadow-card-elegant aspect-square"
+                    className={cn(
+                      "rounded-full object-cover border-4 border-white/50 shadow-card-elegant aspect-square",
+                      size === 'sm' ? 'w-12 h-12' : 'w-20 h-20'
+                    )}
                   />
                 ) : (
-                  <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center border-4 border-white/50 shadow-card-elegant aspect-square">
-                    <Building2 className="w-10 h-10 text-white/80" />
+                  <div className={cn(
+                    "rounded-full bg-white/20 flex items-center justify-center border-4 border-white/50 shadow-card-elegant aspect-square",
+                    size === 'sm' ? 'w-12 h-12' : 'w-20 h-20'
+                  )}>
+                    <Building2 className={cn(
+                      "text-white/80",
+                      size === 'sm' ? 'w-6 h-6' : 'w-10 h-10'
+                    )} />
                   </div>
                 )}
               </div>
 
               {/* Nome do Negócio */}
-              <h3 className={cn("font-poppins font-bold text-center mb-2 drop-shadow-md text-white", currentSize.textSizes.title)}>
+              <h3 className={cn(
+                "font-poppins font-bold text-center drop-shadow-md text-white",
+                currentSize.textSizes.title,
+                size === 'sm' ? 'mb-1' : 'mb-2'
+              )}>
                 {cardData.business_name}
               </h3>
 
@@ -384,7 +403,10 @@ const renderSeals = () => {
 
                 {/* QR Code + Código do Cliente - Centro Absoluto */}
                 <div className="flex flex-col items-center gap-2">
-                  <div className="w-24 h-24 bg-white/95 rounded-2xl flex items-center justify-center paper-qr-effect backdrop-blur-sm aspect-square p-2">
+                  <div className={cn(
+                    "bg-white/95 rounded-2xl flex items-center justify-center paper-qr-effect backdrop-blur-sm aspect-square p-2",
+                    size === 'sm' ? 'w-16 h-16' : 'w-24 h-24'
+                  )}>
                     <img 
                       src={cardData.qrCodeUrl || "https://jpkogupeanqhhwujvkxh.supabase.co/storage/v1/object/public/assets/qr-code-default.png"}
                       alt="QR Code do programa de fidelidade"
@@ -393,7 +415,10 @@ const renderSeals = () => {
                   </div>
                   
                   {/* Código do Cliente - Imediatamente Abaixo do QR */}
-                  <p className="text-white/90 font-mono text-lg font-bold tracking-widest drop-shadow-md">
+                  <p className={cn(
+                    "text-white/90 font-mono font-bold tracking-widest drop-shadow-md",
+                    size === 'sm' ? 'text-xs' : 'text-lg'
+                  )}>
                     {cardData.clientCode}
                   </p>
                 </div>

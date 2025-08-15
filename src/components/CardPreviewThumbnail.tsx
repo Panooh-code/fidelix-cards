@@ -40,7 +40,7 @@ export const CardPreviewThumbnail = ({ card }: CardPreviewThumbnailProps) => {
   };
 
   return (
-    <div className="scale-75 origin-top-left">
+    <div className="w-48 h-48 flex items-center justify-center overflow-visible">
       <CardPreview cardData={cardData} size="sm" />
     </div>
   );
