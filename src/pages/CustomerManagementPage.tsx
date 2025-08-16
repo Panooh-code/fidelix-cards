@@ -370,47 +370,11 @@ const CustomerManagementPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      {/* Header */}
-      <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Left side - Logo and Back */}
-            <div className="flex items-center gap-4">
-              <div 
-                className="cursor-pointer" 
-                onClick={() => navigate('/')}
-              >
-                <Logo />
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate(-1)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Voltar</span>
-              </Button>
-            </div>
-
-            {/* Center - Title (hidden on mobile) */}
-            <div className="hidden md:block text-center">
-              <h1 className="text-xl font-bold">Clientes - {loyaltyCard.business_name}</h1>
-              <p className="text-sm text-muted-foreground">
-                Gestão de clientes do programa de fidelidade
-              </p>
-            </div>
-
-            {/* Mobile title */}
-            <div className="md:hidden flex-1 ml-4">
-              <h1 className="text-lg font-bold truncate">Clientes</h1>
-              <p className="text-xs text-muted-foreground truncate">
-                {loyaltyCard.business_name}
-              </p>
-            </div>
-
-            {/* Right side - empty for balance */}
-            <div className="w-20"></div>
+      {/* Header - Simplified */}
+      <header className="bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center">
+            <h1 className="text-xl md:text-2xl font-bold">{loyaltyCard.business_name} - Gestão de clientes</h1>
           </div>
         </div>
       </header>

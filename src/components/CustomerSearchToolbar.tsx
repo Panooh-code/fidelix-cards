@@ -65,10 +65,11 @@ export const CustomerSearchToolbar = ({
           variant="outline"
           onClick={onOpenQRScanner}
           disabled={isSearching}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-3"
         >
           <QrCode className="w-4 h-4" />
-          Escanear Cartão do Cliente
+          <span className="hidden sm:inline">Escanear Cartão do Cliente</span>
+          <span className="sm:hidden">Escanear</span>
         </Button>
       </div>
 
