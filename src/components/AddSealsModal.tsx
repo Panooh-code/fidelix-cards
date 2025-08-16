@@ -82,7 +82,7 @@ export const AddSealsModal = ({ isOpen, onClose, customer, loyaltyCard, onSucces
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[95vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             Gerir Selos - {customer.profiles.full_name}
@@ -168,19 +168,19 @@ export const AddSealsModal = ({ isOpen, onClose, customer, loyaltyCard, onSucces
             />
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex flex-col sm:flex-row gap-2 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1"
+              className="flex-1 min-h-[44px]"
               disabled={loading}
             >
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="flex-1"
+              className="flex-1 min-h-[44px]"
               disabled={loading || sealsAmount <= 0 || sealsAmount > (isAddingSeals ? maxSealsToAdd : maxSealsToRemove)}
             >
               {loading 

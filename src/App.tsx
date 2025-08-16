@@ -19,6 +19,7 @@ import MyCustomerCardsPage from "./pages/MyCustomerCardsPage";
 import MyCustomerCardPage from "./pages/MyCustomerCardPage";
 import CustomerManagementPage from "./pages/CustomerManagementPage";
 import PublicCardPage from "./pages/PublicCardPage";
+import CustomerScanPage from "./pages/CustomerScanPage";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,9 @@ const App = () => (
                 
                 {/* Rota Pública ÚNICA para o cartão */}
                 <Route path="/card/:publicCode" element={<PublicCardPage />} />
+                
+                {/* Rota para escaneamento de QR codes por lojistas */}
+                <Route path="/customer-scan/:cardCode" element={<CustomerScanPage />} />
                 
                 {/* Rota "Catch-all" */}
                 <Route path="*" element={<NotFound />} />

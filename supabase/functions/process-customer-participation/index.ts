@@ -89,8 +89,8 @@ serve(async (req) => {
       throw new Error('Não foi possível gerar um código único para seu cartão')
     }
 
-    // Gerar QR code para o cartão do cliente
-    const customerCardUrl = `https://jpkogupeanqhhwujvkxh.supabase.co/my-card/${customerCardCode}`
+    // Gerar QR code para o cartão do cliente - para escaneio por lojistas
+    const customerCardUrl = `${req.headers.get('origin') || 'https://lovable.app'}/customer-scan/${customerCardCode}`
     const customerQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(customerCardUrl)}`
 
     // Iniciar transação

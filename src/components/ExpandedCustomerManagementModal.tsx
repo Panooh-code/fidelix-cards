@@ -209,7 +209,7 @@ export const ExpandedCustomerManagementModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl max-h-[95vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-3xl max-h-[95vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <User className="w-5 h-5" />
@@ -219,7 +219,7 @@ export const ExpandedCustomerManagementModal = ({
 
         <div className="space-y-6">
           {/* Customer Profile Section */}
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center justify-between">
@@ -408,16 +408,16 @@ export const ExpandedCustomerManagementModal = ({
           <Separator />
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            <Button onClick={onAddSeals} variant="default">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 justify-center">
+            <Button onClick={onAddSeals} variant="default" className="w-full sm:w-auto min-h-[44px]">
               Gerir Selos
             </Button>
 
             {isReadyForReward && (
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">
+                    <Button className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto min-h-[44px]">
                       <RotateCcw className="w-4 h-4 mr-2" />
                       Zerar Cartão
                     </Button>
@@ -441,7 +441,7 @@ export const ExpandedCustomerManagementModal = ({
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+                    <Button variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50 w-full sm:w-auto min-h-[44px]">
                       <Trash2 className="w-4 h-4 mr-2" />
                       Excluir Cartão
                     </Button>
