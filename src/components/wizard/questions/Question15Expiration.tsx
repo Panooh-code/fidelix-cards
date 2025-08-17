@@ -47,10 +47,9 @@ export const Question15Expiration = ({ onNext, onPrev }: QuestionProps) => {
 
   const handlePublish = async () => {
     if (!user) {
-      // CORREÇÃO: Construir a URL correta para retornar ao wizard na pergunta 15
-      const currentUrl = `/wizard`; // Sempre retornar para o wizard
-      const redirectUrl = encodeURIComponent(currentUrl);
-      console.log('User not authenticated, redirecting to auth with redirect:', redirectUrl);
+      // Salvar estado atual antes de redirecionar para login
+      // O WizardContext já salva automaticamente no localStorage
+      const redirectUrl = encodeURIComponent('/wizard');
       navigate(`/auth?redirect=${redirectUrl}`);
       return;
     }

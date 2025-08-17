@@ -124,27 +124,30 @@ export const QuestionWizard = () => {
         {renderQuestion()}
       </div>
 
-      <div className="px-4 py-3 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
-        <Button
-          onClick={handlePrev}
-          variant="ghost"
-          size="sm"
-        >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          Voltar
-        </Button>
-          
-        <Button
-          onClick={handleNext}
-          variant="default"
-          size="sm"
-          disabled={!canAdvance()}
-          className="bg-primary hover:bg-primary-glow"
-        >
-          {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
-          <ArrowRight className="w-4 h-4 ml-1" />
-        </Button>
-      </div>
+      {/* Botões de navegação - ocultos na pergunta 15 para evitar redundância */}
+      {state.currentQuestion !== 15 && (
+        <div className="px-4 py-3 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
+          <Button
+            onClick={handlePrev}
+            variant="ghost"
+            size="sm"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Voltar
+          </Button>
+            
+          <Button
+            onClick={handleNext}
+            variant="default"
+            size="sm"
+            disabled={!canAdvance()}
+            className="bg-primary hover:bg-primary-glow"
+          >
+            {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+      )}
     </Card>
   );
 };
