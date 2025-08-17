@@ -2,6 +2,7 @@
 export interface ExtractedColors {
   primaryColor: string; // Cor mais escura (para face QR)
   backgroundColor: string; // Cor mais clara (para face selos)
+  dominantColors: string[]; // Top 10 cores dominantes
 }
 
 // Converte RGB para luminância (0-1, onde 1 é mais claro)
@@ -98,11 +99,15 @@ export async function extractColorsFromImage(imageFile: File): Promise<Extracted
           .sort((a, b) => b[1].count - a[1].count)
           .slice(0, 10); // Top 10 cores
 
+        // Converter as cores dominantes para array de hex
+        const dominantColors = colors.map(([_, color]) => rgbToHex(color.r, color.g, color.b));
+
         if (colors.length === 0) {
           // Fallback para cores padrão
           resolve({
             primaryColor: "#8B5CF6", // Roxo
-            backgroundColor: "#F3F4F6" // Cinza claro
+            backgroundColor: "#F3F4F6", // Cinza claro
+            dominantColors: ["#8B5CF6", "#F3F4F6", "#3B82F6", "#10B981", "#F97316", "#EF4444", "#EC4899", "#6366F1", "#14B8A6", "#1F2937"]
           });
           return;
         }
@@ -120,7 +125,8 @@ export async function extractColorsFromImage(imageFile: File): Promise<Extracted
                 Math.max(0, color.g - 60),
                 Math.max(0, color.b - 60)
               ),
-              backgroundColor: rgbToHex(color.r, color.g, color.b)
+              backgroundColor: rgbToHex(color.r, color.g, color.b),
+              dominantColors
             });
           } else {
             // Cor é escura, criar uma versão mais clara para background
@@ -130,7 +136,8 @@ export async function extractColorsFromImage(imageFile: File): Promise<Extracted
                 Math.min(255, color.r + 60),
                 Math.min(255, color.g + 60),
                 Math.min(255, color.b + 60)
-              )
+              ),
+              dominantColors
             });
           }
           return;
@@ -163,7 +170,8 @@ export async function extractColorsFromImage(imageFile: File): Promise<Extracted
 
         resolve({
           primaryColor: rgbToHex(darkerColor.r, darkerColor.g, darkerColor.b),
-          backgroundColor: rgbToHex(lighterColor.r, lighterColor.g, lighterColor.b)
+          backgroundColor: rgbToHex(lighterColor.r, lighterColor.g, lighterColor.b),
+          dominantColors
         });
 
       } catch (error) {
@@ -171,7 +179,8 @@ export async function extractColorsFromImage(imageFile: File): Promise<Extracted
         // Fallback para cores padrão
         resolve({
           primaryColor: "#8B5CF6",
-          backgroundColor: "#F3F4F6"
+          backgroundColor: "#F3F4F6",
+          dominantColors: ["#8B5CF6", "#F3F4F6", "#3B82F6", "#10B981", "#F97316", "#EF4444", "#EC4899", "#6366F1", "#14B8A6", "#1F2937"]
         });
       }
     };

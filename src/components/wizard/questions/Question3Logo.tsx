@@ -40,11 +40,12 @@ export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
         const extractedColors = await extractColorsFromImage(file);
         
         // Aplicar as cores extraídas automaticamente
-        updateCustomization({
-          primaryColor: extractedColors.primaryColor,
-          backgroundColor: extractedColors.backgroundColor,
-          autoExtractedColors: true
-        });
+          updateCustomization({ 
+            primaryColor: extractedColors.primaryColor, 
+            backgroundColor: extractedColors.backgroundColor,
+            autoExtractedColors: true,
+            extractedColors: extractedColors.dominantColors
+          });
         
         toast.success("Cores aplicadas automaticamente!", { id: "extracting-colors" });
       } catch (error) {

@@ -11,22 +11,17 @@ interface QuestionProps {
   onPrev: () => void;
 }
 
-const presetColors = [
-  { name: 'Roxo Elegante', color: '#480da2' },
-  { name: 'Azul Profissional', color: '#3b82f6' },
-  { name: 'Verde Sucesso', color: '#10b981' },
-  { name: 'Laranja Vibrante', color: '#f97316' },
-  { name: 'Vermelho Paixão', color: '#ef4444' },
-  { name: 'Rosa Moderno', color: '#ec4899' },
-  { name: 'Índigo Criativo', color: '#6366f1' },
-  { name: 'Turquesa Fresh', color: '#14b8a6' },
-  { name: 'Âmbar Quente', color: '#f59e0b' },
-  { name: 'Preto Clássico', color: '#1f2937' },
-];
-
-export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
+const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
   const { state, updateCustomization } = useWizard();
   const [customColor, setCustomColor] = useState(state.customization.primaryColor);
+
+  // Usar cores extraídas da logo se disponíveis, senão usar cores predefinidas
+  const presetColors = state.customization.extractedColors && state.customization.extractedColors.length > 0 
+    ? state.customization.extractedColors.slice(0, 10)
+    : [
+        '#480da2', '#3b82f6', '#10b981', '#f97316', '#ef4444',
+        '#ec4899', '#6366f1', '#14b8a6', '#f59e0b', '#1f2937'
+      ];
 
   // Auto-flip card to QR code side when this question loads
   useEffect(() => {
@@ -52,7 +47,7 @@ export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
         Cor principal *
         {state.customization.autoExtractedColors && (
           <span className="block text-xs text-muted-foreground font-normal mt-1">
-            ✨ Cor extraída automaticamente da logo
+            ✨ {state.customization.extractedColors ? 'Cores extraídas da logo' : 'Cor extraída automaticamente da logo'}
           </span>
         )}
       </h2>
@@ -60,21 +55,21 @@ export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
       <div className="flex-1 flex flex-col justify-center space-y-3">
         <div className="mx-auto w-full max-w-xs">
           <div className="grid grid-cols-5 gap-2 mb-3">
-            {presetColors.map((preset) => {
-              const isSelected = state.customization.primaryColor === preset.color;
+            {presetColors.map((color, index) => {
+              const isSelected = state.customization.primaryColor === color;
               
               return (
                 <button
-                  key={preset.color}
-                  onClick={() => handleColorSelect(preset.color)}
+                  key={color}
+                  onClick={() => handleColorSelect(color)}
                   className={cn(
                     "w-8 h-8 rounded-full border-2 transition-all",
                     isSelected 
                       ? "border-foreground" 
                       : "border-white hover:border-muted-foreground"
                   )}
-                  style={{ backgroundColor: preset.color }}
-                  title={preset.name}
+                  style={{ backgroundColor: color }}
+                  title={state.customization.extractedColors ? `Cor ${index + 1} da logo` : `Cor ${index + 1}`}
                 />
               );
             })}
@@ -100,3 +95,5 @@ export const Question7PrimaryColor = ({ onNext, onPrev }: QuestionProps) => {
     </div>
   );
 };
+
+export { Question7PrimaryColor };

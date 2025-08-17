@@ -22,6 +22,7 @@ export interface CustomizationData {
   backgroundColor: string;
   backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none';
   autoExtractedColors?: boolean;
+  extractedColors?: string[]; // Top 10 cores extraídas da logo
 }
 
 export interface RewardConfig {
