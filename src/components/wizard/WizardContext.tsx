@@ -21,6 +21,7 @@ export interface CustomizationData {
   primaryColor: string;
   backgroundColor: string;
   backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none';
+  autoExtractedColors?: boolean;
 }
 
 export interface RewardConfig {

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useWizard } from "../WizardContext";
-import { Upload, Image as ImageIcon, AlertCircle } from "lucide-react";
+import { Upload, Image as ImageIcon, AlertCircle, Palette } from "lucide-react";
 import { toast } from "sonner";
+import { extractColorsFromImage } from "@/utils/colorExtractor";
 
 interface QuestionProps {
   onNext: () => void;
@@ -10,11 +11,12 @@ interface QuestionProps {
 }
 
 export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
-  const { state, updateBusinessData } = useWizard();
+  const { state, updateBusinessData, updateCustomization } = useWizard();
   const [logoPreview, setLogoPreview] = useState<string>(state.businessData.logoUrl || "");
   const [isDragging, setIsDragging] = useState(false);
+  const [isExtractingColors, setIsExtractingColors] = useState(false);
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = async (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Arquivo muito grande. Máximo 5MB.");
       return;
@@ -26,11 +28,31 @@ export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const result = e.target?.result as string;
       setLogoPreview(result);
       updateBusinessData({ logoFile: file, logoUrl: result });
-      // Don't auto-advance - user needs to click "Avançar"
+      
+      // Extrair cores automaticamente
+      setIsExtractingColors(true);
+      try {
+        toast.loading("Analisando cores da logo...", { id: "extracting-colors" });
+        const extractedColors = await extractColorsFromImage(file);
+        
+        // Aplicar as cores extraídas automaticamente
+        updateCustomization({
+          primaryColor: extractedColors.primaryColor,
+          backgroundColor: extractedColors.backgroundColor,
+          autoExtractedColors: true
+        });
+        
+        toast.success("Cores aplicadas automaticamente!", { id: "extracting-colors" });
+      } catch (error) {
+        console.error('Error extracting colors:', error);
+        toast.error("Erro ao extrair cores. Usando cores padrão.", { id: "extracting-colors" });
+      } finally {
+        setIsExtractingColors(false);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -82,9 +104,16 @@ export const Question3Logo = ({ onNext, onPrev }: QuestionProps) => {
                       alt="Logo preview"
                       className="w-16 h-16 object-cover rounded-lg mx-auto mb-1"
                     />
-                    <p className="text-xs text-primary font-medium">
-                      ✅ Carregado!
-                    </p>
+                    {isExtractingColors ? (
+                      <div className="flex items-center justify-center text-xs text-primary">
+                        <Palette className="w-3 h-3 mr-1 animate-spin" />
+                        Extraindo cores...
+                      </div>
+                    ) : (
+                      <p className="text-xs text-primary font-medium">
+                        ✅ Carregado!
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <>

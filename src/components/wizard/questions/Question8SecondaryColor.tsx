@@ -50,6 +50,11 @@ export const Question8SecondaryColor = ({ onNext, onPrev }: QuestionProps) => {
     <div className="h-full flex flex-col p-4">
       <h2 className="text-lg font-semibold text-center mb-3">
         Cor de fundo *
+        {state.customization.autoExtractedColors && (
+          <span className="block text-xs text-muted-foreground font-normal mt-1">
+            ✨ Cor extraída automaticamente da logo
+          </span>
+        )}
       </h2>
       
       <div className="flex-1 flex flex-col justify-center space-y-3">
