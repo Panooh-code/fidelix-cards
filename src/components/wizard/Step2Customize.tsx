@@ -137,37 +137,6 @@ export const Step2Customize = ({ onNext, onBack }: Step2Props) => {
           />
         </div>
 
-        {/* Padrão de Fundo */}
-        <div className="space-y-3">
-          <Label className="text-base font-medium">Padrão de Fundo</Label>
-          <p className="text-sm text-muted-foreground">
-            Adicione um padrão sutil como marca d'água
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {patterns.map((pattern) => (
-              <button
-                key={pattern.value}
-                onClick={() => updateCustomization({ backgroundPattern: pattern.value })}
-                className={cn(
-                  "p-4 rounded-xl border-2 transition-all hover:scale-105",
-                  state.customization.backgroundPattern === pattern.value
-                    ? "border-primary bg-primary/10 shadow-md"
-                    : "border-muted hover:border-primary/50"
-                )}
-              >
-                <div 
-                  className="w-full h-8 rounded mb-2 border"
-                  style={{
-                    backgroundImage: pattern.preview,
-                    backgroundSize: pattern.value === 'grid' ? '10px 10px' : '10px 10px',
-                    color: `${state.customization.primaryColor}20`
-                  }}
-                />
-                <div className="text-sm font-medium">{pattern.name}</div>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <div className="flex justify-between">

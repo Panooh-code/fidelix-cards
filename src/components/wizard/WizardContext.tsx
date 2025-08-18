@@ -20,13 +20,11 @@ export interface BusinessData {
 export interface CustomizationData {
   primaryColor: string;
   backgroundColor: string;
-  backgroundPattern: 'dots' | 'lines' | 'waves' | 'grid' | 'none';
   autoExtractedColors?: boolean;
   extractedColors?: string[]; // Top 10 cores extraídas da logo
 }
 
 export interface RewardConfig {
-  sealShape: 'star' | 'circle' | 'square' | 'heart';
   sealCount: number;
   maxCards?: number;
   rewardDescription: string;
@@ -76,10 +74,8 @@ const initialState: WizardState = {
   customization: {
     primaryColor: "#480da2",
     backgroundColor: "#ffffff",
-    backgroundPattern: 'none',
   },
   rewardConfig: {
-    sealShape: 'star',
     sealCount: 9,
     rewardDescription: "Complete a cartela e ganhe um café grátis*",
     instructions: "A cada compra acima de $100 você ganha um selo",
@@ -241,10 +237,8 @@ export const WizardProvider = ({ children }: { children: ReactNode }) => {
           customization: {
             primaryColor: data.primary_color,
             backgroundColor: data.background_color,
-            backgroundPattern: data.background_pattern as any,
           },
           rewardConfig: {
-            sealShape: data.seal_shape as any,
             sealCount: data.seal_count,
             maxCards: data.max_cards || undefined,
             rewardDescription: data.reward_description,

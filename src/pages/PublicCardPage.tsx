@@ -122,7 +122,6 @@ const cardData: CardData = {
   reward_description: card.reward_description, 
   primary_color: card.primary_color, 
   backgroundColor: card.background_color, 
-  pattern: card.background_pattern as any, 
   clientCode: (card.public_code || card.client_code || ''), 
   phone: card.business_phone, 
   email: card.business_email, 
@@ -130,7 +129,6 @@ const cardData: CardData = {
   socialNetwork: (card as any).social_network, 
   whatsapp: card.is_whatsapp ? card.business_phone : undefined,
   sealCount: card.seal_count, 
-  sealShape: card.seal_shape as any, 
   instructions: card.instructions,
   qrCodeUrl: card.qr_code_url || undefined,
 };

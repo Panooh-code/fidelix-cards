@@ -9,7 +9,6 @@ export interface CardData {
   reward_description: string;
   primary_color: string;
   backgroundColor: string;
-  pattern: 'waves' | 'dots' | 'lines' | 'grid' | 'none';
   clientCode: string;
   clientName?: string;
   phone?: string;
@@ -18,7 +17,6 @@ export interface CardData {
   whatsapp?: string;
   socialNetwork?: string;
   sealCount: number;
-  sealShape: 'star' | 'circle' | 'square' | 'heart';
   instructions?: string;
   qrCodeUrl?: string;
   currentSeals?: number;
@@ -30,7 +28,6 @@ export interface CardPreviewProps {
   size?: 'sm' | 'md' | 'lg';
   isFlipped?: boolean;
   showFlipButton?: boolean;
-  sealStyle?: 'shape' | 'logo';
 }
 
 // Função para detectar se a cor é clara ou escura
@@ -43,7 +40,7 @@ const isLightColor = (color: string) => {
   return brightness > 128;
 };
 
-export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: externalIsFlipped, showFlipButton = true, sealStyle = 'shape' }: CardPreviewProps) => {
+export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: externalIsFlipped, showFlipButton = true }: CardPreviewProps) => {
   const [internalIsFlipped, setInternalIsFlipped] = useState(true);
   const isFlipped = externalIsFlipped !== undefined ? externalIsFlipped : internalIsFlipped;
   const [showContactPopup, setShowContactPopup] = useState(false);
@@ -82,9 +79,12 @@ export const CardPreview = ({ cardData, className = "", size = "md", isFlipped: 
   };
 
 const renderSeals = () => {
-    const { sealCount, sealShape, currentSeals = 0 } = cardData;
+    const { sealCount, currentSeals = 0 } = cardData;
     const seals = [] as JSX.Element[];
     const { cols, rows } = getOptimalGrid(sealCount);
+    
+    // Determinar estilo automático: logo se disponível, senão estrela
+    const autoSealStyle = cardData.logo_url ? 'logo' : 'shape';
     
     // Tamanhos adaptativos
     const sealSize = sealCount <= 4 ? 'w-10 h-10' : sealCount <= 9 ? 'w-8 h-8' : sealCount <= 16 ? 'w-6 h-6' : 'w-5 h-5';
@@ -109,7 +109,7 @@ const renderSeals = () => {
             }}
             onClick={(e) => handleSealClick(e, i)}
           >
-            {sealStyle === 'logo' && cardData.logo_url ? (
+            {autoSealStyle === 'logo' && cardData.logo_url ? (
               <>
                 <img 
                   src={cardData.logo_url} 
@@ -120,22 +120,14 @@ const renderSeals = () => {
                   )}
                 />
                 {!isFilled && (
-                  <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white/70">
+                  <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white/70 bg-black/20 rounded-full">
                     {i + 1}
                   </span>
                 )}
               </>
             ) : (
               <>
-                {sealShape === 'star' ? (
-                  <Star className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
-                ) : sealShape === 'heart' ? (
-                  <Heart className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
-                ) : sealShape === 'square' ? (
-                  <Square className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
-                ) : (
-                  <Circle className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
-                )}
+                <Star className={cn(iconSize, isFilled ? "text-current" : "text-white/90", "fill-current")} />
                 {!isFilled && (
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white/60">
                     {i + 1}
@@ -162,40 +154,15 @@ const renderSeals = () => {
   };
 
   const getBackgroundPattern = () => {
-    const { pattern, primary_color, backgroundColor } = cardData;
-    const isLight = isLightColor(backgroundColor);
-    const patternOpacity = isLight ? '0.03' : '0.08';
+    const { primary_color, backgroundColor } = cardData;
     
-    // Textura de papel base
+    // Textura de papel base - sempre limpa e minimalista
     const paperTexture = `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle at 75% 75%, rgba(0,0,0,0.05) 0.5px, transparent 0.5px)`;
 
-    switch (pattern) {
-      case 'dots':
-        return { 
-          backgroundImage: `${paperTexture}, radial-gradient(circle, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
-          backgroundSize: '8px 8px, 20px 20px' 
-        };
-      case 'lines':
-        return { 
-          backgroundImage: `${paperTexture}, repeating-linear-gradient(45deg, transparent, transparent 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 10px, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 11px)`,
-          backgroundSize: '8px 8px, auto' 
-        };
-      case 'waves':
-        return { 
-          backgroundImage: `${paperTexture}, radial-gradient(ellipse at top, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')}, transparent 70%)`,
-          backgroundSize: '8px 8px, 30px 20px' 
-        };
-      case 'grid':
-        return { 
-          backgroundImage: `${paperTexture}, linear-gradient(${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px), linear-gradient(90deg, ${primary_color}${Math.round(255 * parseFloat(patternOpacity)).toString(16).padStart(2, '0')} 1px, transparent 1px)`,
-          backgroundSize: '8px 8px, 20px 20px, 20px 20px' 
-        };
-      default:
-        return { 
-          backgroundImage: paperTexture,
-          backgroundSize: '8px 8px' 
-        };
-    }
+    return { 
+      backgroundImage: paperTexture,
+      backgroundSize: '8px 8px' 
+    };
   };
 
   // Configurações de tamanho
@@ -551,30 +518,22 @@ const renderSeals = () => {
                 {cardData.instructions || "Complete sua cartela de fidelidade e ganhe prêmios incríveis! A cada compra você ganha um selo."}
               </p>
               
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <div 
-                    className="w-6 h-6 rounded-full border-2 flex items-center justify-center"
-                    style={{ borderColor: cardData.primary_color }}
-                  >
-                    {cardData.sealShape === 'star' ? (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div 
+                      className="w-6 h-6 rounded-full border-2 flex items-center justify-center"
+                      style={{ borderColor: cardData.primary_color }}
+                    >
                       <Star className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : cardData.sealShape === 'heart' ? (
-                      <Heart className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : cardData.sealShape === 'square' ? (
-                      <Square className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    ) : (
-                      <Circle className="w-3 h-3 fill-current" style={{ color: cardData.primary_color }} />
-                    )}
+                    </div>
+                    <span className="text-sm font-medium text-gray-800">
+                      Colete {cardData.sealCount} selos
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-gray-800">
-                    Colete {cardData.sealCount} selos
-                  </span>
+                  <p className="text-xs text-gray-600 ml-8">
+                    {cardData.reward_description}
+                  </p>
                 </div>
-                <p className="text-xs text-gray-600 ml-8">
-                  {cardData.reward_description}
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -594,7 +553,6 @@ export const CardPreviewWizard = () => {
     reward_description: state.rewardConfig.rewardDescription || 'Complete sua cartela e ganhe prêmios incríveis!',
     primary_color: state.customization.primaryColor,
     backgroundColor: state.customization.backgroundColor,
-    pattern: state.customization.backgroundPattern,
     clientCode: state.businessData.clientCode || 'FI0001',
     clientName: undefined,
     phone: state.businessData.phone,
@@ -603,7 +561,6 @@ export const CardPreviewWizard = () => {
     whatsapp: state.businessData.isWhatsApp ? state.businessData.phone : undefined,
     socialNetwork: state.businessData.socialNetwork,
     sealCount: state.rewardConfig.sealCount,
-    sealShape: state.rewardConfig.sealShape,
     instructions: state.rewardConfig.instructions,
   };
   

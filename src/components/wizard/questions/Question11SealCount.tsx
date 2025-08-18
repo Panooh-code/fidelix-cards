@@ -32,7 +32,7 @@ export const Question11SealCount = ({ onNext, onPrev }: QuestionProps) => {
     return "Para compras muito frequentes";
   };
 
-  const SealIcon = getIconByShape(state.rewardConfig.sealShape);
+  const SealIcon = Star; // Sempre usar estrela
 
   return (
     <div className="h-full flex flex-col p-4">

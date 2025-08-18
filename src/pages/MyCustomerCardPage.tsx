@@ -229,7 +229,6 @@ setCardInfo({
     reward_description: cardInfo.loyaltyCard.rewardDescription,
     primary_color: cardInfo.loyaltyCard.primaryColor,
     backgroundColor: cardInfo.loyaltyCard.backgroundColor,
-    pattern: cardInfo.loyaltyCard.backgroundPattern as any,
     clientCode: cardInfo.cardCode,
     phone: cardInfo.loyaltyCard.businessPhone,
     email: cardInfo.loyaltyCard.businessEmail,
@@ -237,7 +236,6 @@ setCardInfo({
     whatsapp: cardInfo.loyaltyCard.isWhatsapp ? cardInfo.loyaltyCard.businessPhone : undefined,
     socialNetwork: cardInfo.loyaltyCard.socialNetwork,
     sealCount: cardInfo.loyaltyCard.sealCount,
-    sealShape: cardInfo.loyaltyCard.sealShape as any,
     instructions: cardInfo.loyaltyCard.instructions,
     qrCodeUrl: cardInfo.qrCodeUrl,
     currentSeals: cardInfo.currentSeals,
@@ -328,7 +326,6 @@ setCardInfo({
                     size="md"
                     isFlipped={isFlipped}
                     showFlipButton={false}
-                    sealStyle="logo"
                   />
                 </div>
                 

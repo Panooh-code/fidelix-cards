@@ -8,7 +8,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FidelixTip } from "./FidelixTip";
 
-// Importar todos os 15 componentes de pergunta
+// Importar todos os 13 componentes de pergunta
 import { Question1Name } from "./questions/Question1Name";
 import { Question2Segment } from "./questions/Question2Segment";
 import { Question3Logo } from "./questions/Question3Logo";
@@ -17,8 +17,6 @@ import { Question5Address } from "./questions/Question5Address";
 import { Question6Social } from "./questions/Question6Social";
 import { Question7PrimaryColor } from "./questions/Question7PrimaryColor";
 import { Question8SecondaryColor } from "./questions/Question8SecondaryColor";
-import { Question9Texture } from "./questions/Question9Texture";
-import { Question10SealShape } from "./questions/Question10SealShape";
 import { Question11SealCount } from "./questions/Question11SealCount";
 import { Question12CardLimit } from "./questions/Question12CardLimit";
 import { Question13Reward } from "./questions/Question13Reward";
@@ -26,7 +24,7 @@ import { Question14Rules } from "./questions/Question14Rules";
 import { Question15Expiration } from "./questions/Question15Expiration";
 
 
-const TOTAL_QUESTIONS = 15;
+const TOTAL_QUESTIONS = 13;
 
 export const QuestionWizard = () => {
   const { state, nextQuestion, prevQuestion, setComplete, isEditMode } = useWizard();
@@ -68,16 +66,14 @@ export const QuestionWizard = () => {
       case 4: return !!state.businessData.phone;
       case 7: return !!state.customization.primaryColor;
       case 8: return !!state.customization.backgroundColor;
-      case 10: return !!state.rewardConfig.sealShape;
-      case 11: return !!state.rewardConfig.sealCount;
-      case 13: return !!state.rewardConfig.rewardDescription;
-      case 14: return !!state.rewardConfig.instructions;
+      case 9: return !!state.rewardConfig.sealCount;
+      case 11: return !!state.rewardConfig.rewardDescription;
+      case 12: return !!state.rewardConfig.instructions;
       // Perguntas opcionais permitem avançar sempre
       case 5:
       case 6:
-      case 9:
-      case 12:
-      case 15:
+      case 10:
+      case 13:
       default: return true;
     }
   };
@@ -93,13 +89,11 @@ export const QuestionWizard = () => {
       case 6: return <Question6Social {...questionProps} />;
       case 7: return <Question7PrimaryColor {...questionProps} />;
       case 8: return <Question8SecondaryColor {...questionProps} />;
-      case 9: return <Question9Texture {...questionProps} />;
-      case 10: return <Question10SealShape {...questionProps} />;
-      case 11: return <Question11SealCount {...questionProps} />;
-      case 12: return <Question12CardLimit {...questionProps} />;
-      case 13: return <Question13Reward {...questionProps} />;
-      case 14: return <Question14Rules {...questionProps} />;
-      case 15: return <Question15Expiration {...questionProps} />;
+      case 9: return <Question11SealCount {...questionProps} />;
+      case 10: return <Question12CardLimit {...questionProps} />;
+      case 11: return <Question13Reward {...questionProps} />;
+      case 12: return <Question14Rules {...questionProps} />;
+      case 13: return <Question15Expiration {...questionProps} />;
       default: return <Question1Name {...questionProps} />;
     }
   };
@@ -124,8 +118,8 @@ export const QuestionWizard = () => {
         {renderQuestion()}
       </div>
 
-      {/* Botões de navegação - ocultos na pergunta 15 para evitar redundância */}
-      {state.currentQuestion !== 15 && (
+      {/* Botões de navegação - ocultos na pergunta 13 para evitar redundância */}
+      {state.currentQuestion !== 13 && (
         <div className="px-4 py-3 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
           <Button
             onClick={handlePrev}

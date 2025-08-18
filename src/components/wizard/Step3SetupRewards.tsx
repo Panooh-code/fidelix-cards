@@ -45,34 +45,6 @@ export const Step3SetupRewards = ({ onBack }: Step3Props) => {
       </div>
 
       <div className="space-y-6">
-        {/* Formato do Selo */}
-        <div>
-          <Label className="text-base font-medium">Formato do Selo</Label>
-          <p className="text-sm text-muted-foreground mb-3">
-            Escolha o formato visual dos selos
-          </p>
-          <div className="grid grid-cols-3 gap-3">
-            {shapes.map((shape) => {
-              const IconComponent = shape.icon;
-              return (
-                <button
-                  key={shape.value}
-                  onClick={() => updateRewardConfig({ sealShape: shape.value })}
-                  className={cn(
-                    "flex flex-col items-center space-y-2 p-4 rounded-lg border-2 transition-all hover:scale-[1.02]",
-                    state.rewardConfig.sealShape === shape.value
-                      ? "border-foreground bg-muted"
-                      : "border-muted hover:border-muted-foreground"
-                  )}
-                >
-                  <IconComponent className="w-8 h-8" />
-                  <span className="text-sm font-medium">{shape.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Número de Selos */}
         <div>
           <Label className="text-base font-medium">Número de Selos</Label>

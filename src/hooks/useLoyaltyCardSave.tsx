@@ -57,8 +57,8 @@ export const useLoyaltyCardSave = () => {
         client_code: wizardState.businessData.clientCode!, // Garante que o client_code do estado é enviado
         primary_color: wizardState.customization.primaryColor,
         background_color: wizardState.customization.backgroundColor,
-        background_pattern: wizardState.customization.backgroundPattern,
-        seal_shape: wizardState.rewardConfig.sealShape,
+        background_pattern: 'none', // Sempre 'none' agora
+        seal_shape: 'star', // Sempre 'star' como fallback
         seal_count: wizardState.rewardConfig.sealCount,
         max_cards: wizardState.rewardConfig.maxCards || null,
         reward_description: wizardState.rewardConfig.rewardDescription,
