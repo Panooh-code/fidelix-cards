@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft, Loader2 } from 'lucide-react';
 import { formatPhoneNumber } from '@/utils/phoneMask';
 import { toast } from 'sonner';
 import Logo from '@/components/Logo';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -19,6 +20,7 @@ export default function AuthPage() {
   const [whatsapp, setWhatsapp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessingAdhesion, setIsProcessingAdhesion] = useState(false);
 
   const { user, signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
@@ -26,21 +28,66 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (user) {
-      // CORREÇÃO: Sempre usar o parâmetro redirect se existir
-      const redirectPath = searchParams.get('redirect');
-      console.log('User logged in, redirecting to:', redirectPath);
+      const autoAdhesion = searchParams.get('autoAdhesion');
+      const publicCode = searchParams.get('publicCode');
+      const businessName = searchParams.get('businessName');
       
-      if (redirectPath) {
-        // Decodificar a URL e navegar para ela
-        const decodedPath = decodeURIComponent(redirectPath);
-        console.log('Decoded redirect path:', decodedPath);
-        navigate(decodedPath, { replace: true });
+      // If auto adhesion is requested, process it
+      if (autoAdhesion === 'true' && publicCode && businessName) {
+        processAutoAdhesion(publicCode, decodeURIComponent(businessName), user.id);
       } else {
-        // Só ir para home se não há redirect específico
-        navigate('/', { replace: true });
+        // Normal redirect flow
+        const redirectPath = searchParams.get('redirect');
+        console.log('User logged in, redirecting to:', redirectPath);
+        
+        if (redirectPath) {
+          const decodedPath = decodeURIComponent(redirectPath);
+          console.log('Decoded redirect path:', decodedPath);
+          navigate(decodedPath, { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
       }
     }
   }, [user, navigate, searchParams]);
+
+  const processAutoAdhesion = async (publicCode: string, businessName: string, userId: string) => {
+    setIsProcessingAdhesion(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('process-customer-participation', {
+        body: { 
+          publicCode: publicCode, 
+          customerId: userId, 
+          agreedToTerms: true 
+        },
+      });
+
+      if (error) {
+        throw new Error("A função de adesão falhou: " + error.message);
+      }
+
+      toast.success(`Parabéns! Já faz parte do cartão fidelidade ${businessName}! Você ganhou seu primeiro selo!`);
+      
+      // Redirect to customer cards page
+      if (data?.customerCard?.cardCode) {
+        navigate(`/my-card/${data.customerCard.cardCode}`, { replace: true });
+      } else {
+        navigate('/my-customer-cards', { replace: true });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Ocorreu um erro na adesão automática.");
+      // Fallback to normal redirect
+      const redirectPath = searchParams.get('redirect');
+      if (redirectPath) {
+        const decodedPath = decodeURIComponent(redirectPath);
+        navigate(decodedPath, { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    } finally {
+      setIsProcessingAdhesion(false);
+    }
+  };
 
   const validateForm = () => {
     if (isResetPassword) {
@@ -130,6 +177,37 @@ export default function AuthPage() {
     const redirectPath = searchParams.get('redirect') || '/';
     navigate(redirectPath);
   };
+
+  // Show loading state during auto adhesion
+  if (isProcessingAdhesion) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero p-4">
+        <div className="mb-6">
+          <img
+            className="h-10 w-auto"
+            src="https://i.imgur.com/ZaW7mB9.png"
+            alt="Logo do Fidelix"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = 'https://placehold.co/150x40/FFFFFF/1E1B4B?text=Fidelix';
+            }}
+          />
+        </div>
+        <Card className="w-full max-w-md shadow-xl">
+          <CardContent className="flex flex-col items-center justify-center py-8 space-y-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Processando Adesão</h3>
+              <p className="text-sm text-muted-foreground">
+                Aguarde enquanto processamos sua participação no programa de fidelidade...
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isResetPassword) {
     return (

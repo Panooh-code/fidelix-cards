@@ -68,13 +68,7 @@ const PublicCardPage = () => {
     fetchAndCheckData();
   }, [publicCode, user, navigate]);
 
-  // Redirect unauthenticated users to auth page
-  useEffect(() => {
-    if (!loading && !user && !error) {
-      const redirectUrl = encodeURIComponent(window.location.pathname + window.location.search);
-      navigate(`/auth?redirect=${redirectUrl}`);
-    }
-  }, [loading, user, error, navigate]);
+  // No redirect for unauthenticated users - allow public viewing
 
   const handleAdhesionSuccess = () => {
     navigate('/my-customer-cards');
@@ -107,14 +101,7 @@ const PublicCardPage = () => {
     );
   }
 
-  // If user is not authenticated, auth redirect will handle it
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-hero-new flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-white" />
-      </div>
-    );
-  }
+  // Allow public viewing - no auth check needed here
 
 const cardData: CardData = { 
   logo_url: card.logo_url, 
@@ -140,9 +127,11 @@ const cardData: CardData = {
           <h1 className="text-3xl font-bold text-white drop-shadow-lg">
             Cartão de Fidelidade
           </h1>
-          <p className="text-white/90 text-lg">
-            Olá, {user.user_metadata.full_name || user.email}!
-          </p>
+          {user && (
+            <p className="text-white/90 text-lg">
+              Olá, {user.user_metadata.full_name || user.email}!
+            </p>
+          )}
           <p className="text-white/80">
             Adira ao programa de fidelidade com apenas um clique
           </p>
@@ -164,7 +153,7 @@ const cardData: CardData = {
           publicCode={publicCode!}
           businessName={card.business_name}
           onSuccess={handleAdhesionSuccess}
-          userId={user.id}
+          userId={user?.id}
           showCardPreview={false}
         />
       </main>

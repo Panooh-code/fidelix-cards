@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -13,7 +14,7 @@ interface OneClickAdhesionBoxProps {
   publicCode: string;
   businessName: string;
   onSuccess: () => void;
-  userId: string;
+  userId?: string | null;
   showCardPreview?: boolean;
 }
 
@@ -27,10 +28,21 @@ export const OneClickAdhesionBox = ({
 }: OneClickAdhesionBoxProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const navigate = useNavigate();
+  
+  const isAuthenticated = Boolean(userId);
 
   const handleAdhesion = async () => {
     if (!agreedToTerms) {
       toast.error('Deve concordar com os termos para poder participar.');
+      return;
+    }
+
+    // If user is not authenticated, redirect to auth with adhesion parameters
+    if (!isAuthenticated) {
+      const currentUrl = encodeURIComponent(window.location.pathname);
+      const authUrl = `/auth?redirect=${currentUrl}&autoAdhesion=true&publicCode=${publicCode}&businessName=${encodeURIComponent(businessName)}`;
+      navigate(authUrl);
       return;
     }
 
@@ -124,8 +136,10 @@ export const OneClickAdhesionBox = ({
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Processando...
               </>
-            ) : (
+            ) : isAuthenticated ? (
               `Aderir ao Cartão ${businessName}`
+            ) : (
+              `Fazer Login e Aderir`
             )}
           </Button>
         </CardContent>
