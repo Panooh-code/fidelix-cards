@@ -21,6 +21,10 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isProcessingAdhesion, setIsProcessingAdhesion] = useState(false);
+  const [pendingAdhesion, setPendingAdhesion] = useState<{
+    publicCode: string;
+    businessName: string;
+  } | null>(null);
 
   const { user, signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
@@ -35,6 +39,10 @@ export default function AuthPage() {
       // If auto adhesion is requested, process it
       if (autoAdhesion === 'true' && publicCode && businessName) {
         processAutoAdhesion(publicCode, decodeURIComponent(businessName), user.id);
+      } else if (pendingAdhesion) {
+        // Process pending adhesion from signup
+        processAutoAdhesion(pendingAdhesion.publicCode, pendingAdhesion.businessName, user.id);
+        setPendingAdhesion(null);
       } else {
         // Normal redirect flow
         const redirectPath = searchParams.get('redirect');
@@ -49,7 +57,7 @@ export default function AuthPage() {
         }
       }
     }
-  }, [user, navigate, searchParams]);
+  }, [user, navigate, searchParams, pendingAdhesion]);
 
   const processAutoAdhesion = async (publicCode: string, businessName: string, userId: string) => {
     setIsProcessingAdhesion(true);
@@ -138,6 +146,18 @@ export default function AuthPage() {
       } else if (isLogin) {
         await signIn(email, password);
       } else {
+        // Check if we have adhesion parameters to save for after signup
+        const autoAdhesion = searchParams.get('autoAdhesion');
+        const publicCode = searchParams.get('publicCode');
+        const businessName = searchParams.get('businessName');
+        
+        if (autoAdhesion === 'true' && publicCode && businessName) {
+          setPendingAdhesion({
+            publicCode,
+            businessName: decodeURIComponent(businessName)
+          });
+        }
+        
         await signUp(email, password, fullName, whatsapp || undefined);
       }
     } finally {

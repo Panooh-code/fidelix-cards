@@ -47,14 +47,14 @@ const PublicCardPage = () => {
         if (user) {
           const { data: participationData } = await supabase
             .from('customer_cards')
-            .select('id')
+            .select('id, card_code')
             .eq('customer_id', user.id)
             .eq('loyalty_card_id', cardData.id)
             .maybeSingle();
             
           if (participationData) {
             toast.info("Já participa neste programa! A redirecionar...");
-            navigate('/my-customer-cards');
+            navigate(`/my-card/${participationData.card_code}`);
             return;
           }
         }
