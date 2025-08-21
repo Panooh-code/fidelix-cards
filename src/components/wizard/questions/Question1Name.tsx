@@ -19,7 +19,7 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
 
   return (
     <StandardQuestionLayout title="Qual o nome do seu negócio?">
-      <div className="space-y-2">
+      <div className="space-y-1">
         <div className="relative w-full">
           <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -28,10 +28,10 @@ export const Question1Name = ({ onNext, onPrev }: QuestionProps) => {
             value={state.businessData.name}
             onChange={(e) => updateBusinessData({ name: e.target.value })}
             onKeyPress={handleKeyPress}
-            className="h-10 text-sm text-center pl-10 pr-4"
+            className="h-9 text-sm text-center pl-10 pr-4"
           />
         </div>
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground text-center leading-tight">
           Este será o nome principal no seu cartão de fidelidade.
         </p>
       </div>
