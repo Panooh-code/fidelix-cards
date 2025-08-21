@@ -15,9 +15,9 @@ export const StandardQuestionLayout = ({
   className 
 }: StandardQuestionLayoutProps) => {
   return (
-    <div className={cn("h-full flex flex-col p-3", className)}>
+    <div className={cn("h-full flex flex-col p-2", className)}>
       {/* Title Section */}
-      <div className="flex-shrink-0 text-center mb-3">
+      <div className="flex-shrink-0 text-center mb-2">
         <h2 className="text-lg font-semibold text-foreground leading-tight">
           {title}
         </h2>
