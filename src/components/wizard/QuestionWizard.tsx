@@ -121,8 +121,8 @@ export const QuestionWizard = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="px-2 py-2 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
-          {state.currentQuestion > 1 && (
+        {state.currentQuestion !== 13 && (
+          <div className="px-3 py-2 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
             <Button
               onClick={handlePrev}
               variant="ghost"
@@ -132,21 +132,19 @@ export const QuestionWizard = () => {
               <ArrowLeft className="w-3 h-3 mr-1" />
               Voltar
             </Button>
-          )}
-          
-          {state.currentQuestion !== 13 && (
+              
             <Button
               onClick={handleNext}
               variant="default"
               size="sm"
               disabled={!canAdvance()}
-              className="bg-primary hover:bg-primary-glow h-8 ml-auto"
+              className="bg-primary hover:bg-primary-glow h-8"
             >
               {state.currentQuestion === TOTAL_QUESTIONS ? "Publicar" : "Avançar"}
               <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </Card>
     </div>
   );
