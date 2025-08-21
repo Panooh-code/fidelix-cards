@@ -18,14 +18,14 @@ export const Question5Address = ({ onNext, onPrev }: QuestionProps) => {
 
   return (
     <StandardQuestionLayout title="Endereço (opcional)">
-      <div className="space-y-2">
+      <div className="space-y-1">
         <Textarea
           id="address"
           placeholder="Rua das Flores, 123 - Centro - SP"
           value={state.businessData.address}
           onChange={(e) => updateBusinessData({ address: e.target.value })}
           onKeyPress={handleKeyPress}
-          className="min-h-[60px] text-sm resize-none"
+          className="min-h-[50px] text-sm resize-none"
         />
         
         {state.businessData.address && (

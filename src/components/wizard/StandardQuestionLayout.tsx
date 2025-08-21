@@ -28,8 +28,8 @@ export const StandardQuestionLayout = ({
         )}
       </div>
       
-      {/* Content Section - Centered and scrollable if needed */}
-      <div className="flex-1 flex flex-col justify-center min-h-0">
+      {/* Content Section - Compact layout */}
+      <div className="flex-1 flex flex-col justify-start pt-2 min-h-0">
         <div className="mx-auto w-full max-w-xs">
           {children}
         </div>
