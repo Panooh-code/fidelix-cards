@@ -15,21 +15,21 @@ export const StandardQuestionLayout = ({
   className 
 }: StandardQuestionLayoutProps) => {
   return (
-    <div className={cn("h-full flex flex-col px-2", className)}>
+    <div className={cn("h-full flex flex-col p-2", className)}>
       {/* Title Section */}
-      <div className="flex-shrink-0 text-center mb-1">
-        <h2 className="text-base font-semibold text-foreground leading-tight">
+      <div className="flex-shrink-0 text-center mb-2">
+        <h2 className="text-lg font-semibold text-foreground leading-tight">
           {title}
         </h2>
         {subtitle && (
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground mt-1">
             {subtitle}
           </p>
         )}
       </div>
       
-      {/* Content Section - Compact layout */}
-      <div className="flex-1 flex flex-col justify-start pt-2 min-h-0">
+      {/* Content Section - Centered and scrollable if needed */}
+      <div className="flex-1 flex flex-col justify-center min-h-0">
         <div className="mx-auto w-full max-w-xs">
           {children}
         </div>

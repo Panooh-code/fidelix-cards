@@ -103,12 +103,12 @@ export const QuestionWizard = () => {
       <Card className="flex-1 shadow-elegant border-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm overflow-hidden flex flex-col">
         
         {/* Progress Bar */}
-        <div className="px-2 pt-2 pb-1 flex-shrink-0">
+        <div className="px-3 pt-3 pb-2 flex-shrink-0">
           <Progress value={progress} className="h-1" />
         </div>
 
         {/* Tip Section */}
-        <div className="px-2 py-0.5 flex items-center justify-center flex-shrink-0">
+        <div className="px-3 py-1 flex items-center justify-center flex-shrink-0">
           <FidelixTip questionNumber={state.currentQuestion} />
         </div>
 
@@ -121,7 +121,7 @@ export const QuestionWizard = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="px-2 py-1.5 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
+        <div className="px-2 py-2 border-t border-slate-200/80 bg-slate-50/50 dark:border-slate-700/50 dark:bg-slate-900/30 flex items-center justify-between flex-shrink-0">
           {state.currentQuestion > 1 && (
             <Button
               onClick={handlePrev}

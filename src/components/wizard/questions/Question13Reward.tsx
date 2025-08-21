@@ -22,14 +22,14 @@ export const Question13Reward = ({ onNext, onPrev }: QuestionProps) => {
 
   return (
     <StandardQuestionLayout title="Definir recompensa *">
-      <div className="space-y-1">
+      <div className="space-y-2">
         <Input
           id="reward"
           placeholder="Ex: Complete a cartela e ganhe um café grátis*"
           value={state.rewardConfig.rewardDescription}
           onChange={(e) => handleRewardChange(e.target.value)}
           onKeyPress={handleKeyPress}
-          className="h-9 text-sm"
+          className="h-10 text-sm"
           maxLength={45}
         />
         
