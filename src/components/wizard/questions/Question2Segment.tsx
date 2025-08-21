@@ -1,7 +1,6 @@
 import { useWizard } from "../WizardContext";
 import { Utensils, Shirt, Heart, Calendar, Monitor, GraduationCap, Stethoscope, MapPin, Gamepad2, Wrench, MoreHorizontal } from "lucide-react";
 import { CompactSelect } from "../CompactSelect";
-import { StandardQuestionLayout } from "../StandardQuestionLayout";
 
 interface QuestionProps {
   onNext: () => void;
@@ -30,15 +29,23 @@ export const Question2Segment = ({ onNext, onPrev }: QuestionProps) => {
   };
 
   return (
-    <StandardQuestionLayout title="Segmento do negócio *">
-      <CompactSelect
-        options={segments}
-        value={state.businessData.segment || ''}
-        onValueChange={handleSelect}
-        placeholder="Escolha seu segmento"
-        showIcons={true}
-        showDescriptions={true}
-      />
-    </StandardQuestionLayout>
+    <div className="h-full flex flex-col p-4">
+      <h2 className="text-lg font-semibold text-center mb-3">
+        Segmento do negócio *
+      </h2>
+      
+      <div className="flex-1 flex flex-col justify-center">
+        <div className="mx-auto w-full max-w-xs">
+          <CompactSelect
+            options={segments}
+            value={state.businessData.segment || ''}
+            onValueChange={handleSelect}
+            placeholder="Escolha seu segmento"
+            showIcons={true}
+            showDescriptions={true}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
