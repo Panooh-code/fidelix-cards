@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, QrCode, Loader2 } from 'lucide-react';
+import { Search, QrCode } from 'lucide-react';
 
 interface CustomerSearchToolbarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  onSearchByCode: (code: string) => void;
   onOpenQRScanner: () => void;
   isSearching?: boolean;
 }
@@ -14,60 +12,20 @@ interface CustomerSearchToolbarProps {
 export const CustomerSearchToolbar = ({
   searchTerm,
   onSearchChange,
-  onSearchByCode,
   onOpenQRScanner,
   isSearching = false
 }: CustomerSearchToolbarProps) => {
-  const [codeSearchInput, setCodeSearchInput] = useState('');
-
-  const handleSearchByCode = () => {
-    if (codeSearchInput.trim()) {
-      onSearchByCode(codeSearchInput.trim());
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearchByCode();
-    }
-  };
-
   return (
     <div className="space-y-4">
-      {/* Quick Search by Code */}
-      <div className="flex gap-2">
-        <div className="flex-1">
-          <Input
-            placeholder="Digitar código do cliente..."
-            value={codeSearchInput}
-            onChange={(e) => setCodeSearchInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="text-sm"
-            disabled={isSearching}
-          />
-        </div>
+      {/* Scan Button - Prominent */}
+      <div className="flex justify-center">
         <Button
-          variant="outline"
-          onClick={handleSearchByCode}
-          disabled={!codeSearchInput.trim() || isSearching}
-          className="min-w-[100px]"
-        >
-          {isSearching ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <>
-              <Search className="w-4 h-4 mr-2" />
-              Procurar
-            </>
-          )}
-        </Button>
-        <Button
-          variant="outline"
+          variant="default"
           onClick={onOpenQRScanner}
           disabled={isSearching}
-          className="flex items-center gap-2 px-3"
+          className="flex items-center gap-3 px-6 py-3 text-base font-medium h-12 bg-primary hover:bg-primary/90"
         >
-          <QrCode className="w-4 h-4" />
+          <QrCode className="w-6 h-6" />
           <span className="hidden sm:inline">Escanear Cartão do Cliente</span>
           <span className="sm:hidden">Escanear</span>
         </Button>

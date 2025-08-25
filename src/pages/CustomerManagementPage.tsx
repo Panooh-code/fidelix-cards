@@ -409,7 +409,6 @@ const CustomerManagementPage = () => {
           <CustomerSearchToolbar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
-            onSearchByCode={searchCustomerByCode}
             onOpenQRScanner={() => setShowQRScanner(true)}
             isSearching={isSearching}
           />
