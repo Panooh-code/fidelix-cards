@@ -274,12 +274,21 @@ const CustomerManagementPage = () => {
   const searchCustomerByCode = async (code: string) => {
     if (!code.trim() || !user?.id) return;
 
+    // Extract card code from URL if it's a full URL
+    let cardCode = code.trim();
+    if (cardCode.includes('/customer-scan/')) {
+      const urlParts = cardCode.split('/customer-scan/');
+      cardCode = urlParts[1] || cardCode;
+    }
+
+    console.log('Searching for customer with code:', cardCode, 'from original input:', code);
+
     setIsSearching(true);
     
     try {
       const response = await supabase.functions.invoke('get-customer-card-info', {
         body: {
-          cardCode: code.trim(),
+          cardCode: cardCode,
           businessOwnerId: user.id
         }
       });

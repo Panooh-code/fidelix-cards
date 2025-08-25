@@ -56,7 +56,17 @@ export const QRScannerModal = ({ isOpen, onClose, onScanSuccess }: QRScannerModa
           (result, error) => {
             if (result) {
               const scannedText = result.getText();
-              onScanSuccess(scannedText);
+              console.log('QR Code scanned:', scannedText);
+              
+              // Extract card code from URL if it's a full URL
+              let cardCode = scannedText;
+              if (scannedText.includes('/customer-scan/')) {
+                const urlParts = scannedText.split('/customer-scan/');
+                cardCode = urlParts[1] || scannedText;
+                console.log('Extracted card code from URL:', cardCode);
+              }
+              
+              onScanSuccess(cardCode);
               onClose();
             }
           }
