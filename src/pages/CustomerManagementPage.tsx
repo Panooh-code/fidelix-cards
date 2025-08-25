@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -76,6 +76,7 @@ const CustomerManagementPage = () => {
   const { cardId } = useParams<{ cardId: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   
   console.log('CustomerManagementPage - cardId:', cardId);
   console.log('CustomerManagementPage - user:', user?.id);
@@ -97,6 +98,19 @@ const CustomerManagementPage = () => {
     if (!user || !cardId) return;
     fetchData();
   }, [user, cardId]);
+
+  // Auto-open customer management modal when openCard parameter is present
+  useEffect(() => {
+    const openCardCode = searchParams.get('openCard');
+    if (openCardCode && user?.id && !isManagementModalOpen && !loading) {
+      console.log('Auto-opening customer management for:', openCardCode);
+      searchCustomerByCode(openCardCode);
+      // Clear the openCard parameter from URL
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('openCard');
+      setSearchParams(newParams, { replace: true });
+    }
+  }, [searchParams, user, isManagementModalOpen, loading]);
 
   const fetchData = async () => {
     try {

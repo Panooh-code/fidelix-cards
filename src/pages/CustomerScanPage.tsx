@@ -67,6 +67,7 @@ const CustomerScanPage = () => {
         }
 
         // Redirecionar para gestão do cliente com o modal aberto
+        console.log('Redirecting to customer management with openCard:', cardCode);
         navigate(`/my-cards/${loyaltyCards[0].id}/customers?openCard=${cardCode}`);
         
       } catch (error) {
